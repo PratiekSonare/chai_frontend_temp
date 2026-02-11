@@ -3,6 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #000;
+  --border-radius: 16px;
 }
 
 @theme inline {
@@ -34,4 +35,56 @@ body {
 
 img {
   user-select: none;
+}
+
+.card {
+  border-radius: var(--border-radius);
+}
+
+.card .inner {
+  background: white;
+  color: #000;
+  border-radius: var(--border-radius);
+}
+
+.example-2 {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.example-2 .inner {
+  position: relative;
+  z-index: 16;
+  width: 100%;
+  margin: 1px;
+}
+
+.example-2::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80px;
+  height: 1500px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 25, 177, 0) 0%,
+    rgba(0, 25, 177, 0.75) 50%,
+    rgba(0, 25, 177, 0) 100%
+  );
+  transform-origin: center center;
+  animation: rotate 5s linear infinite;
+  z-index: 15;
+}
+
+@keyframes rotate {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }
