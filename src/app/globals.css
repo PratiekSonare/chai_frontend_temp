@@ -32,6 +32,6 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
-img, input {
-  pointer-events: none;
+img {
+  user-select: none;
 }
