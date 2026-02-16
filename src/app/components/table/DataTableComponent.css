@@ -40,3 +40,29 @@
   color: #6b7280;
   font-size: 0.875rem;
 }
+
+/* Table row styling - make rows clickable */
+.datatable-container tbody tr {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.datatable-container tbody tr:hover {
+  background-color: #f3f4f6 !important;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.datatable-container tbody tr:active {
+  background-color: #e5e7eb !important;
+}
+
+/* Badge styling */
+.datatable-container .nested-data-btn {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.datatable-container .nested-data-btn:hover {
+  transform: scale(1.05);
+  opacity: 0.8;
+}

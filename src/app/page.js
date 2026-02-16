@@ -49,7 +49,7 @@ export default function Home() {
     // Animate searchbar on mount
     if (searchbarRef.current) {
       gsap.from(searchbarRef.current, {
-        y: 85,
+        y: 125,
         opacity: 0,
         duration: 1,
         ease: "bounce"
