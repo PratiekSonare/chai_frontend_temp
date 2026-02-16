@@ -49,10 +49,10 @@ export default function Home() {
     // Animate searchbar on mount
     if (searchbarRef.current) {
       gsap.from(searchbarRef.current, {
-        y: 50,
+        y: 85,
         opacity: 0,
         duration: 1,
-        ease: "circ"
+        ease: "bounce"
       });
 
       // Scroll animation
@@ -64,13 +64,13 @@ export default function Home() {
         onUpdate: (self) => {
           const progress = self.progress;
           gsap.to(searchbarRef.current, {
-            width: progress > 0 ? "92%" : "60%",
+            width: progress > 0 ? "93%" : "75%",
             position: progress > 0 ? "fixed" : "relative",
-            top: progress > 0 ? "20px" : "auto",
+            top: progress > 0 ? "30px" : "auto",
             left: progress > 0 ? "7%" : "auto",
             zIndex: progress > 0 ? 1000 : "auto",
-            duration: 0.8,
-            ease: "elastic"
+            duration: 0.05,
+            ease: "circ.in"
           });
         }
       });
@@ -115,7 +115,7 @@ export default function Home() {
             <img className='absolute top-0 w-3/4 opacity-10' src='./grid.png'></img>
           </div>
 
-          <div className='my-2'></div>
+          <div className='my-3'></div>
 
           {/* searchbar */}
           <Searchbar

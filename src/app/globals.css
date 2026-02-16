@@ -217,6 +217,18 @@ button:active {
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 15px;
+  background: white;
+}
+
+::-webkit-scrollbar-thumb {
+  background: white;
+  border-radius: 6px;
+  border: 2px solid #2563eb;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

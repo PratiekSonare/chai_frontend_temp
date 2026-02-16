@@ -26,8 +26,9 @@ export default function header() {
                         <DrawerHeader>
                             <DrawerTitle>Changelog</DrawerTitle>
                             <DrawerDescription>
-                                History of all changes done to ChAI™ - Data Portal 
-                                <p className="italic">(<span className="text-blue-600">highlighted pointers</span> are future targets)</p>
+                                <span>History of all changes done to ChAI™ - Data Portal</span>
+                                <br /> 
+                                <span className="italic">(<span className="text-blue-600">highlighted pointers</span> are future targets)</span>
                             </DrawerDescription>
                         </DrawerHeader>
                         <div className="no-scrollbar overflow-y-auto px-4">
