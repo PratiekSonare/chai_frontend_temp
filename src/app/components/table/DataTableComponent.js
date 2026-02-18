@@ -193,7 +193,8 @@ export default function DataTableComponent({ data }) {
 
   return (
     <>
-      <div className='relative datatable-container my-5 px-4 text-xs!'>
+      <div className='datatable-container my-5 px-4 text-xs!'>
+        <span className="block text-xs py-1 px-4 bg-[#001FB0] text-white rounded-t-xl oswald text-center">DATA TABLE</span>
         <div className='table-responsive'>
           <table id='dataTable' className='table table-striped table-hover table-bordered'></table>
         </div>
@@ -201,8 +202,8 @@ export default function DataTableComponent({ data }) {
 
       {/* Order Details Modal */}
       {selectedOrder && (
-        <OrderDataCard 
-          orderData={selectedOrder} 
+        <OrderDataCard
+          orderData={selectedOrder}
           position={clickPosition}
           onClose={() => setSelectedOrder(null)}
         />

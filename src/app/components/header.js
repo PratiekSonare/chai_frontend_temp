@@ -36,8 +36,11 @@ export default function header() {
                             <p>[12-02-2026] UI: searchbar developed</p>
                             <p>[13-02-2026] UI: changelog, faq drawer added; DataTables table added for orders</p>
                             <p className="italic text-blue-600">[15-02-2026] UI: Develop query based displaying layout</p>
-                            <p className="italic text-blue-600">[16-02-2026] Fetch and display appropriate params with styling + GSAP based graph animation </p>
+                            <p className="italic text-blue-600">[16-02-2026] Fetch and display appropriate params with styling + GSAP based graph animation</p>
+                            <p className="italic text-blue-600">[Coming Soon...] Handle orders pagination from EasyECom API</p>
                             <p className="italic text-blue-600">[Coming Soon...] Deploy for testing</p>
+                            <p className="italic text-blue-600">[Coming Soon...] Add distinction b/w sku-size & just sku!</p>
+                            <p className="italic text-blue-600">[Coming Soon...] Make LLM calls efficient, add redis caching + pinecone vector DB for tool call fetching</p>
                             <p className="italic text-blue-600">[Coming Soon...] Backend: achieve filtering+comparison on rest of the data sources </p>
                             <p className="italic text-blue-600">[Coming Soon...] Backend: metrics tool calls (mean, median, etc...) + forecasting + ml methods support</p>
                             <p className="italic text-blue-600">[Coming Soon...] Frontend: display layouts for different query types</p>

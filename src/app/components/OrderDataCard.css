@@ -127,6 +127,39 @@
   margin: 0.25rem 0 0 0;
 }
 
+/* Status Badge */
+.status-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  margin-top: 0.5rem;
+  width: fit-content;
+  font-size: 0.675rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.status-badge.status-50 {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge.status-7 {
+  background-color: #dbeafe;
+  color: #0c4a6e;
+}
+
+.status-badge.status-2 {
+  background-color: #fecdd3;
+  color: #9f1239;
+}
+
+.status-badge.status-1 {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
 /* Card Content */
 .card-content {
   flex: 1;
@@ -206,6 +239,10 @@
     padding: 0.75rem 1rem;
   }
 
+  .status-badge {
+    align-self: flex-start;
+  }
+  
   .card-title {
     font-size: 1rem;
   }

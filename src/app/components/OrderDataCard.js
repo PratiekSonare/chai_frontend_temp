@@ -33,7 +33,7 @@ export default function OrderDataCard({ orderData, position, onClose }) {
     if (e.target.closest('.close-btn') || e.target.closest('.card-content')) {
       return;
     }
-    
+
     setIsDragging(true);
     setDragOffset({
       x: e.clientX - modalPosition.x,
@@ -201,7 +201,7 @@ export default function OrderDataCard({ orderData, position, onClose }) {
   };
 
   return (
-    <div 
+    <div
       className={`order-card-modal ${isClosing ? 'closing' : 'opening'}`}
       style={{
         position: 'fixed',
@@ -224,7 +224,7 @@ export default function OrderDataCard({ orderData, position, onClose }) {
       <div className="modal-backdrop"></div>
 
       {/* Modal Content */}
-      <div 
+      <div
         ref={modalRef}
         className={`order-card modal-card ${isDragging ? 'dragging' : ''}`}
         style={{
@@ -240,10 +240,13 @@ export default function OrderDataCard({ orderData, position, onClose }) {
           <div className="flex-1">
             <h2 className="card-title text-lg">Order #{orderData.order_id}</h2>
             <p className="card-subtitle text-xs">{orderData.marketplace} • {orderData.company_name}</p>
+            <div className={`status-badge status-${orderData.order_status_id}`}>
+              {orderData.order_status}
+            </div>
           </div>
-          
+
           {/* Position Widget Toggle */}
-          <button 
+          <button
             onClick={() => setShowPositionWidget(!showPositionWidget)}
             className="position-btn"
             title="Adjust position"
@@ -252,7 +255,7 @@ export default function OrderDataCard({ orderData, position, onClose }) {
             ⊕
           </button>
 
-          <button 
+          <button
             onClick={handleClose}
             className="close-btn"
             aria-label="Close"
@@ -262,7 +265,7 @@ export default function OrderDataCard({ orderData, position, onClose }) {
         </div>
 
         {/* Position Control Widget */}
-       
+
 
         {/* Accordion with Categories */}
         <div className="card-content max-h-96 overflow-y-scroll">
@@ -272,7 +275,21 @@ export default function OrderDataCard({ orderData, position, onClose }) {
             className="w-full"
             defaultValue="item-0"
           >
-            {Object.entries(categories).map(([ categoryName, categoryData ], idx) => (
+            {/* Suborders Section */}
+            {orderData.suborders && orderData.suborders.length > 0 && (
+              <AccordionItem value="suborders" className="border-b border-gray-200">
+                <AccordionTrigger className="hover:bg-gray-50 py-2 px-3">
+                  <span className="font-semibold text-gray-800 text-sm">
+                    Suborders ({orderData.suborders.length})
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent className="bg-gray-50 text-xs">
+                  {renderArrayItems(orderData.suborders, 'Suborders')}
+                </AccordionContent>
+              </AccordionItem>
+            )}
+
+            {Object.entries(categories).map(([categoryName, categoryData], idx) => (
               <AccordionItem key={idx} value={`item-${idx}`} className="border-b border-gray-200">
                 <AccordionTrigger className="hover:bg-gray-50 py-2 px-3">
                   <span className="font-semibold text-gray-800 text-sm">{categoryName}</span>
@@ -291,20 +308,6 @@ export default function OrderDataCard({ orderData, position, onClose }) {
                 </AccordionTrigger>
                 <AccordionContent className="bg-gray-50 text-xs">
                   {renderObjectDetails(orderData.documents)}
-                </AccordionContent>
-              </AccordionItem>
-            )}
-
-            {/* Suborders Section */}
-            {orderData.suborders && orderData.suborders.length > 0 && (
-              <AccordionItem value="suborders" className="border-b border-gray-200">
-                <AccordionTrigger className="hover:bg-gray-50 py-2 px-3">
-                  <span className="font-semibold text-gray-800 text-sm">
-                    Suborders ({orderData.suborders.length})
-                  </span>
-                </AccordionTrigger>
-                <AccordionContent className="bg-gray-50 text-xs">
-                  {renderArrayItems(orderData.suborders, 'Suborders')}
                 </AccordionContent>
               </AccordionItem>
             )}

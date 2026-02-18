@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useMachine } from '@xstate/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import axios from 'axios';
 import Down from './components/down';
 import Development from './components/development';
 import Active from './components/active';
@@ -15,6 +15,9 @@ import DataTableComponent from './components/table/DataTableComponent';
 import tempResultData from './components/tempResult.json';
 import QuickLinks from './components/quickLinks';
 import Header from './components/header';
+import { searchMachine } from '../lib/searchMachine';
+import { LoadingComponent, ErrorComponent, EmptyStateComponent } from './components/StateComponents';
+import { Button } from '@/components/ui/button';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -29,13 +32,32 @@ export default function Home() {
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [status, setStatus] = useState("development");
   const [inputValue, setInputValue] = useState('');
-  const [result, setResult] = useState("");
+  const [searchState, sendSearch] = useMachine(searchMachine);
   const searchbarRef = useRef(null);
+  const searchResultsRef = useRef(null);
 
-  // Load tempResult.json data for testing
+  // Extract search state data
+  const isLoading = searchState.matches('loading');
+  const isSuccess = searchState.matches('success');
+  const isError = searchState.matches('failure');
+  const searchData = searchState.context.data;
+  const searchError = searchState.context.error;
+
+  // Debug logging for state changes and scroll to results
   useEffect(() => {
-    setResult(tempResultData.data);
-  }, []);
+    console.log('Search state changed:', {
+      state: searchState.value,
+      context: searchState.context,
+      isLoading,
+      isSuccess,
+      isError
+    });
+
+    // Scroll to search results when state changes (indicates POST request)
+    if ((isLoading || isSuccess || isError) && searchResultsRef.current) {
+      searchResultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [searchState.value, isLoading, isSuccess, isError]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -70,7 +92,7 @@ export default function Home() {
             left: progress > 0 ? "7%" : "auto",
             zIndex: progress > 0 ? 1000 : "auto",
             duration: 0.05,
-            ease: "circ.in"
+            ease: "circ.in",
           });
         }
       });
@@ -81,17 +103,28 @@ export default function Home() {
     };
   }, []);
 
-  const handleSearch = useCallback(async (inputValue) => {
-    try {
+  const handleSearch = useCallback((inputValue) => {
+    if (inputValue.trim()) {
       console.log('Search initiated with:', inputValue);
-      const response = await axios.post('http://localhost:5000/query', { query: inputValue });
-      console.log('Response:', response);
-      console.log('Response data:', response.data);
-      setResult(response.data);
-    } catch (error) {
-      console.error('Error:', error);
+      sendSearch({ type: 'SEARCH', query: inputValue.trim() });
+
+      
     }
-  }, []);
+  }, [sendSearch]);
+
+  const handleCancel = useCallback(() => {
+    console.log('Search cancelled');
+    sendSearch({ type: 'CANCEL' });
+  }, [sendSearch]);
+
+  const handleRetry = useCallback(() => {
+    sendSearch({ type: 'RETRY' });
+  }, [sendSearch]);
+
+  const handleReset = useCallback(() => {
+    sendSearch({ type: 'RESET' });
+    setInputValue('');
+  }, [sendSearch]);
 
   return (
     <div className="min-h-screen bg-zinc-50 font-sans">
@@ -112,7 +145,7 @@ export default function Home() {
 
           <div className='flex flex-col justify-center items-center w-full'>
             <img className="w-2/5" src="./data_portal.png" alt="grid" />
-            <img className='absolute top-0 w-3/4 opacity-10' src='./grid.png'></img>
+            <img className='absolute top-0 w-1/2 opacity-10' src='./grid.png'></img>
           </div>
 
           <div className='my-3'></div>
@@ -131,9 +164,55 @@ export default function Home() {
           <QuickLinks />
         </div>
 
+        <img src='./divider.png' className='w-1/6' />
 
-        {/* DataTable Results Section */}
-        <DataTableComponent data={result} />
+        {/* Search Results Section with State Management */}
+        <div ref={searchResultsRef} className="w-full max-w-full h-screen flex justify-center items-center mx-auto px-4">
+          {isLoading && <LoadingComponent onCancel={handleCancel} />}
+          
+          {isError && (
+            <ErrorComponent 
+              error={searchError}
+              onRetry={handleRetry}
+              onReset={handleReset}
+            />
+          )}
+          
+          {isSuccess && (
+            <div className="w-full">
+              
+              <div className="flex w-6xl mx-auto items-center justify-between">
+                <h2 className="text-lg font-semibold text-gray-800 oswald">
+                  Search Results
+                </h2>
+                <Button
+                  type="secondary"
+                  onClick={handleReset}
+                >
+                  New Search
+                </Button>
+              </div>
+
+              <DataTableComponent data={searchData} />
+            </div>
+          )}
+          
+          {isSuccess && searchData && searchData.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-gray-500">No results found for your search.</p>
+              <button
+                onClick={handleReset}
+                className="mt-4 text-blue-600 hover:text-blue-800 font-medium"
+              >
+                Try a different search
+              </button>
+            </div>
+          )}
+          
+          {!isLoading && !isSuccess && !isError && (
+            <EmptyStateComponent />
+          )}
+        </div>
 
         {/* GSAP Graph Example */}
         {/* <div className='flex justify-center items-center w-full my-20'>
