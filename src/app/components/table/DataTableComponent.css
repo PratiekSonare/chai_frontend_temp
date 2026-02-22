@@ -13,7 +13,6 @@
   max-width: 100%;
   margin: 0 auto;
   padding: 0;
-  z-index: 200;
 }
 
 .datatable-container .table-responsive {
@@ -38,6 +37,8 @@
 
 .datatable-container .dataTables_wrapper .dataTables_paginate {
   margin-top: 0rem;
+  max-height: 50%;
+  overflow: scroll;
 }
 
 .datatable-container .dataTables_wrapper .dataTables_info {

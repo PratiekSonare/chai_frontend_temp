@@ -82,7 +82,7 @@
 }
 
 body {
-  font-family: 'Poppins', Arial, Helvetica, sans-serif;
+  font-family: 'Poppins', Arial, Helvetica, sans-serif !important;
 }
 
 /* poppins-latin-400-normal */
@@ -92,7 +92,7 @@ body {
   font-display: swap;
   font-weight: 400;
   src: url(https://cdn.jsdelivr.net/fontsource/fonts/poppins@latest/latin-400-normal.woff2) format('woff2'), url(https://cdn.jsdelivr.net/fontsource/fonts/poppins@latest/latin-400-normal.woff) format('woff');
-  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 /* oswald-latin-wght-normal */
@@ -102,7 +102,7 @@ body {
   font-display: swap;
   font-weight: 200 700;
   src: url(https://cdn.jsdelivr.net/fontsource/fonts/oswald:vf@latest/latin-wght-normal.woff2) format('woff2-variations');
-  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 .poppins {
@@ -127,6 +127,11 @@ img {
   border-radius: var(--border-radius);
 }
 
+.data-card {
+  border-radius: var(--border-radius);
+  box-shadow: rgba(112, 112, 112, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+}
+
 .example-2 {
   position: relative;
   overflow: hidden;
@@ -149,12 +154,10 @@ img {
   left: 50%;
   width: 80px;
   height: 1800px;
-  background: linear-gradient(
-    90deg,
-    rgba(0, 25, 177, 0) 0%,
-    rgba(0, 25, 177, 0.75) 50%,
-    rgba(0, 25, 177, 0) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(0, 25, 177, 0) 0%,
+      rgba(0, 25, 177, 0.75) 50%,
+      rgba(0, 25, 177, 0) 100%);
   transform-origin: center center;
   animation: rotate 5s linear infinite;
   z-index: 15;
@@ -164,6 +167,7 @@ img {
   from {
     transform: translate(-50%, -50%) rotate(0deg);
   }
+
   to {
     transform: translate(-50%, -50%) rotate(360deg);
   }
@@ -220,11 +224,11 @@ button:active {
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 15px;
-  background: white;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: white;
+  background: transparent;
   border-radius: 6px;
   border: 2px solid #2563eb;
 }
@@ -234,6 +238,7 @@ button:active {
     @apply border-border outline-ring/50;
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
     @apply bg-background text-foreground;

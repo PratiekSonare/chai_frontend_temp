@@ -1,66 +1,250 @@
-import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import React, { useState, useEffect, useRef } from 'react';
 
-// Loading component
-export const LoadingComponent = ({ onCancel }) => (
-  <div id='loading' className="flex flex-col items-center justify-center py-12">
-    <div className="flex items-center space-x-2">
-      <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce"></div>
-      <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-      <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+// Enhanced Loading component with real-time log streaming
+export const LoadingComponent = ({ onCancel, requestId, showLogs = false }) => {
+  const [logs, setLogs] = useState([])
+  const [isConnected, setIsConnected] = useState(false)
+  const [viewLogs, setViewLogs] = useState(showLogs)
+  const wsRef = useRef(null)
+  const logsEndRef = useRef(null)
+
+  const scrollToBottom = () => {
+    logsEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [logs])
+
+  // Clear logs when toggle is turned off
+  useEffect(() => {
+    if (!viewLogs) {
+      setLogs([])
+    }
+  }, [viewLogs])
+
+  useEffect(() => {
+    if (!viewLogs) return
+
+    // Create WebSocket connection
+    const ws = new WebSocket('ws://localhost:5000/ws/logs')
+    wsRef.current = ws
+
+    ws.onopen = () => {
+      setIsConnected(true)
+      console.log('LoadingComponent: WebSocket connected')
+    }
+
+    ws.onmessage = (event) => {
+      try {
+        const logData = JSON.parse(event.data)
+
+        // Filter logs by request ID if provided, otherwise show all
+        if (!requestId || logData.request_id === requestId || logData.type === 'connection') {
+          setLogs(prevLogs => {
+            // Keep only recent logs to prevent memory issues
+            const newLogs = [...prevLogs, logData]
+            return newLogs.slice(-20) // Keep last 20 logs
+          })
+        }
+      } catch (error) {
+        console.error('Error parsing log data:', error)
+      }
+    }
+
+    ws.onclose = () => {
+      setIsConnected(false)
+      console.log('LoadingComponent: WebSocket disconnected')
+    }
+
+    ws.onerror = (error) => {
+      console.error('LoadingComponent WebSocket error:', error)
+      setIsConnected(false)
+    }
+
+    // Cleanup on unmount
+    return () => {
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.close()
+      }
+    }
+  }, [showLogs, requestId, viewLogs])
+
+  const formatTimestamp = (timestamp) => {
+    try {
+      const date = new Date(timestamp)
+      return date.toLocaleTimeString('en-US', {
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      })
+    } catch (error) {
+      return timestamp
+    }
+  }
+
+  const getLogIcon = (type, level) => {
+    if (level === 'ERROR') return '❌'
+    switch (type) {
+      case 'connection': return '🔗'
+      case 'request_start': return '🚀'
+      case 'request_step': return '⚙️'
+      case 'request_end': return '✅'
+      default: return '📝'
+    }
+  }
+
+  return (
+    <div id='loading' className="relative flex flex-col items-center justify-center py-6 w-full max-w-4xl h-1/2 bg-blue-100 rounded-xl border-2 border-dashed border-blue-700">
+      {/* Loading Animation */}
+      <div className="flex flex-col items-center mb-6">
+
+        {/* show logs when toggle is enabled */}
+        {!viewLogs ? (
+          <div className='flex flex-col gap-2 items-center justify-center'>
+            <div className="flex items-center space-x-2 mb-3">
+              <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce"></div>
+              <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+              <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+            </div>
+            <p className="text-lg text-gray-700 font-medium">Searching data...</p>
+          </div>
+        ) : (
+          <div className="h-full w-full">
+            <p className='text-center mt-4'>Logs</p>
+            <div className="p-3">
+              {logs.length === 0 ? (
+                <div className="text-xs text-gray-500 text-center py-8">
+                  {isConnected ? 'Waiting for logs...' : 'Connecting...'}
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  {logs.map((log, index) => (
+                    <div
+                      key={index}
+                      className={`text-xs p-2 rounded ${log.level === 'ERROR' ? 'bg-red-100 text-red-800' :
+                        log.type === 'request_start' ? 'bg-green-100 text-green-800' :
+                          log.type === 'request_end' ? 'bg-blue-100 text-blue-800' :
+                            'bg-white text-gray-700'
+                        }`}
+                    >
+                      <div className="flex items-start space-x-2">
+                        <span className="text-sm flex-shrink-0">{getLogIcon(log.type, log.level)}</span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center space-x-2 mb-1">
+                            <span className="text-gray-500 font-mono">{formatTimestamp(log.timestamp)}</span>
+                            {log.level && (
+                              <span className={`px-1 rounded font-medium ${log.level === 'ERROR' ? 'bg-red-200 text-red-800' :
+                                'bg-gray-200 text-gray-600'
+                                }`}>
+                                {log.level}
+                              </span>
+                            )}
+                          </div>
+                          <div className="font-medium break-words">{log.message}</div>
+                          {log.details && (
+                            <div className="text-gray-600 mt-1 break-words">{log.details}</div>
+                          )}
+                          {log.step && (
+                            <div className="text-blue-600 mt-1">Step: {log.step}</div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <div ref={logsEndRef} />
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* View Logs Toggle */}
+        {(
+          <div className="absolute top-2 right-5 flex items-center space-x-2! mt-3">
+            <Switch
+              id="view-logs-toggle"
+              checked={viewLogs}
+              onCheckedChange={setViewLogs}
+              className="data-[state=checked]:bg-blue-400 data-[state=unchecked]:border-blue-300 border-2 rounded-lg!"
+            />
+            <Label
+              htmlFor="view-logs-toggle"
+              className="text-sm text-gray-700 font-medium cursor-pointer"
+            >
+              View Logs
+            </Label>
+          </div>
+        )}
+
+        {requestId && (
+          <p className="text-xs text-blue-700 mt-1">
+            Request ID: <span className="font-mono bg-blue-200 px-1 rounded">{requestId}</span>
+          </p>
+        )}
+      </div>
+
+      {/* Cancel Button */}
+      {onCancel && (
+        <Button
+          variant="destructive"
+          onClick={onCancel}
+          className="rounded-lg! absolute bottom-5"
+          size="sm"
+        >
+          Cancel
+        </Button>
+      )}
     </div>
-    <p className="mt-4 text-gray-600 font-medium">Searching data...</p>
-    {onCancel && (
-      <button
-        onClick={onCancel}
-        className="mt-4 px-4 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 hover:border-gray-400 rounded-md transition-colors"
-      >
-        Cancel
-      </button>
-    )}
-  </div>
-);
+  )
+};
 
 // Error component
 export const ErrorComponent = ({ error, onRetry, onReset }) => (
-  <div className="flex flex-col items-center justify-center py-12 px-6">
-    <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md w-full">
-      <div className="flex items-center space-x-3 mb-4">
-        <div className="flex-shrink-0">
-          <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-          </svg>
-        </div>
-        <h3 className="text-sm font-medium text-red-800">
-          Search Failed
-        </h3>
-      </div>
-      <div className="text-sm text-red-700 mb-4">
-        {error || 'An error occurred while searching. Please try again.'}
-      </div>
-      <div className="flex space-x-3">
-        <button
-          onClick={onRetry}
-          className="bg-red-100 hover:bg-red-200 text-red-800 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-        >
-          Retry
-        </button>
-        <button
-          onClick={onReset}
-          className="bg-gray-100 hover:bg-gray-200 text-gray-800 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-        >
-          Start New Search
-        </button>
-      </div>
+  <div className="relative bg-red-50 border-2 border-dashed border-red-200 rounded-lg flex flex-col items-center justify-center w-1/2 h-1/3">
+
+    <div className="absolute top-10">
+      <svg className='w-8 h-8' fill="#ff0000" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg" id="memory-cancel" stroke="#ff0000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M21 7V15H20V17H19V18H18V19H17V20H15V21H7V20H5V19H4V18H3V17H2V15H1V7H2V5H3V4H4V3H5V2H7V1H15V2H17V3H18V4H19V5H20V7H21M17 6V5H16V4H14V3H8V4H6V5H7V6H8V7H9V8H10V9H11V10H12V11H13V12H14V13H15V14H16V15H17V16H18V14H19V8H18V6H17M14 16V15H13V14H12V13H11V12H10V11H9V10H8V9H7V8H6V7H5V6H4V8H3V14H4V16H5V17H6V18H8V19H14V18H16V17H15V16H14Z"></path></g></svg>
+    </div>
+
+    <p className="oswald font-bold text-4xl text-red-700">
+      PLEASE TRY AGAIN!
+    </p>
+    <div className="text-sm text-red-700 mb-8">
+      {'Refine your search, add date range if not already given. Let the agent understand what you want.'}
+    </div>
+    <div className="text-sm text-red-700">
+      {error || 'An error occurred while searching. Please try again.'}
+    </div>
+
+    <div className="poppins absolute bottom-5 flex space-x-3!">
+      <Button
+        variant='destructive'
+        onClick={onRetry}
+        className="rounded-lg!"
+      >
+        Retry
+      </Button>
+      <Button
+        onClick={onReset}
+        className="rounded-lg!"
+      >
+        Start New Search
+      </Button>
     </div>
   </div>
 );
 
 // Empty state component
 export const EmptyStateComponent = () => (
-  <div className="flex flex-col items-center justify-center py-12 text-gray-500">
-    <svg className="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <div className='flex flex-col items-center justify-center py-12 w-11/12 h-1/2 border-2 border-dashed border-yellow-700 bg-yellow-100 rounded-2xl'>
+    <svg className="animate-none w-12 h-12 mb-4 text-yellow-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
     </svg>
-    <p className="text-lg font-medium">Enter a search query above to get started</p>
+    <p className="animate-none oswald text-2xl text-yellow-700">Enter a search query above to get started</p>
   </div>
 );

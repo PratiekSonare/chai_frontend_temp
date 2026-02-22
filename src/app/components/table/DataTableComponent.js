@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import OrderDataCard from '../OrderDataCard';
 import './DataTableComponent.css';
 
-export default function DataTableComponent({ data }) {
+export default function DataTableComponent({ data, summarized_query }) {
   const [showModal, setShowModal] = useState(false);
   const [modalData, setModalData] = useState(null);
   const [modalTitle, setModalTitle] = useState('Details');
@@ -84,7 +84,7 @@ export default function DataTableComponent({ data }) {
               responsive: true,
               processing: true,
               pageLength: 5,
-              lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
+              lengthMenu: [[5, 10, -1], [5, 10]],
               order: [[0, 'asc']],
               searching: true,
               paging: true,
@@ -193,8 +193,12 @@ export default function DataTableComponent({ data }) {
 
   return (
     <>
-      <div className='datatable-container my-5 px-4 text-xs!'>
-        <span className="block text-xs py-1 px-4 bg-[#001FB0] text-white rounded-t-xl oswald text-center">DATA TABLE</span>
+      <div className='datatable-container my-5 text-xs!'>
+        <div className='flex justify-between w-full'>
+          <span className="text-xs py-1 px-4 bg-[#001FB0] text-white rounded-t-xl oswald text-center">DATA TABLE</span>
+          {/* {summarized_query.length > 0 && (<span className="text-xs py-1 px-4 bg-[#001FB0] text-white rounded-t-xl oswald text-center">{summarized_query}</span>)} */}
+          <span className="text-xs py-1 px-4 bg-[#001FB0] text-white rounded-t-xl oswald text-center">{summarized_query}</span>
+        </div>
         <div className='table-responsive'>
           <table id='dataTable' className='table table-striped table-hover table-bordered'></table>
         </div>
