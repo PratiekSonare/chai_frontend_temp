@@ -8,7 +8,8 @@ export const searchMachine = createMachine({
   context: {
     query: '',
     data: [],
-    error: null
+    error: null,
+    metrics: null
   },
   states: {
     idle: {
@@ -60,7 +61,17 @@ export const searchMachine = createMachine({
             error: null
           })
         },
-        RESET: 'idle'
+        SET_METRICS: {
+          actions: assign({
+            metrics: ({ event }) => event.metrics
+          })
+        },
+        RESET: {
+          target: 'idle',
+          actions: assign({
+            metrics: null
+          })
+        }
       }
     },
     failure: {
@@ -73,7 +84,12 @@ export const searchMachine = createMachine({
           })
         },
         RETRY: 'loading',
-        RESET: 'idle'
+        RESET: {
+          target: 'idle',
+          actions: assign({
+            metrics: null
+          })
+        }
       }
     }
   }

@@ -193,13 +193,13 @@ export default function DataTableComponent({ data, summarized_query }) {
 
   return (
     <>
-      <div className='datatable-container my-5 text-xs!'>
+      <div className='datatable-container'>
         <div className='flex justify-between w-full'>
-          <span className="text-xs py-1 px-4 bg-[#001FB0] text-white rounded-t-xl oswald text-center">DATA TABLE</span>
+          <span className="text-md! py-1 px-4 bg-[#001FB0] text-white rounded-t-xl oswald text-center">DATA TABLE</span>
           {/* {summarized_query.length > 0 && (<span className="text-xs py-1 px-4 bg-[#001FB0] text-white rounded-t-xl oswald text-center">{summarized_query}</span>)} */}
-          <span className="text-xs py-1 px-4 bg-[#001FB0] text-white rounded-t-xl oswald text-center">{summarized_query}</span>
+          <span className="text-md! font-stretch-200%% py-1 px-4 bg-[#001FB0] text-white rounded-t-xl oswald text-center">{summarized_query}</span>
         </div>
-        <div className='table-responsive'>
+        <div className='table-responsive text-xs! poppins'>
           <table id='dataTable' className='table table-striped table-hover table-bordered'></table>
         </div>
       </div>

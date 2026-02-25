@@ -111,7 +111,7 @@ export const LoadingComponent = ({ onCancel, requestId, showLogs = false }) => {
               <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
               <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
             </div>
-            <p className="text-lg text-gray-700 font-medium">Searching data...</p>
+            <p className="text-2xl text-gray-700 font-bold poppins">Searching data...</p>
           </div>
         ) : (
           <div className="h-full w-full">
@@ -205,10 +205,10 @@ export const LoadingComponent = ({ onCancel, requestId, showLogs = false }) => {
 
 // Error component
 export const ErrorComponent = ({ error, onRetry, onReset }) => (
-  <div className="relative bg-red-50 border-2 border-dashed border-red-200 rounded-lg flex flex-col items-center justify-center w-1/2 h-1/3">
+  <div className="relative bg-red-50 border-2 border-dashed border-red-700 text-center rounded-lg flex flex-col items-center justify-center w-11/12 h-1/2">
 
     <div className="absolute top-10">
-      <svg className='w-8 h-8' fill="#ff0000" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg" id="memory-cancel" stroke="#ff0000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M21 7V15H20V17H19V18H18V19H17V20H15V21H7V20H5V19H4V18H3V17H2V15H1V7H2V5H3V4H4V3H5V2H7V1H15V2H17V3H18V4H19V5H20V7H21M17 6V5H16V4H14V3H8V4H6V5H7V6H8V7H9V8H10V9H11V10H12V11H13V12H14V13H15V14H16V15H17V16H18V14H19V8H18V6H17M14 16V15H13V14H12V13H11V12H10V11H9V10H8V9H7V8H6V7H5V6H4V8H3V14H4V16H5V17H6V18H8V19H14V18H16V17H15V16H14Z"></path></g></svg>
+      <svg className='w-8 h-8' fill="#ff0000" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg" id="memory-cancel" stroke="#ff0000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M21 7V15H20V17H19V18H18V19H17V20H15V21H7V20H5V19H4V18H3V17H2V15H1V7H2V5H3V4H4V3H5V2H7V1H15V2H17V3H18V4H19V5H20V7H21M17 6V5H16V4H14V3H8V4H6V5H7V6H8V7H9V8H10V9H11V10H12V11H13V12H14V13H15V14H16V15H17V16H18V14H19V8H18V6H17M14 16V15H13V14H12V13H11V12H10V11H9V10H8V9H7V8H6V7H5V6H4V8H3V14H4V16H5V17H6V18H8V19H14V18H16V17H15V16H14Z"></path></g></svg>
     </div>
 
     <p className="oswald font-bold text-4xl text-red-700">
@@ -245,6 +245,6 @@ export const EmptyStateComponent = () => (
     <svg className="animate-none w-12 h-12 mb-4 text-yellow-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
     </svg>
-    <p className="animate-none oswald text-2xl text-yellow-700">Enter a search query above to get started</p>
+    <p className="animate-none poppins font-bold text-2xl text-yellow-700">Enter a search query above to get started</p>
   </div>
 );

@@ -33,9 +33,10 @@
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.1);
   pointer-events: all;
   z-index: 0;
+  transition: 0.2s ease
 }
 
 .modal-card {

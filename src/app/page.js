@@ -19,6 +19,7 @@ import { searchMachine } from '../lib/searchMachine';
 import { LoadingComponent, ErrorComponent, EmptyStateComponent } from './components/StateComponents';
 import { Button } from '@/components/ui/button';
 import MetricCard from './components/metricCard';
+import MetricCarousel from './components/metrics/MetricCarousel';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -34,8 +35,8 @@ export default function Home() {
   const [status, setStatus] = useState("development");
   const [inputValue, setInputValue] = useState('');
   const [searchState, sendSearch] = useMachine(searchMachine);
-  const [metricsData, setMetricsData] = useState(null);
   const [metricsLoading, setMetricsLoading] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
   const searchbarRef = useRef(null);
   const searchResultsRef = useRef(null);
 
@@ -46,6 +47,7 @@ export default function Home() {
   const searchData = searchState.context.data;
   const searchError = searchState.context.error;
   const searchType = searchState.context.data.query_type;
+  const finalMetrics = searchState.context.metrics;
 
   // Debug logging for state changes and scroll to results
   useEffect(() => {
@@ -78,12 +80,14 @@ export default function Home() {
               orders: searchData.data
             })
           });
-          
-          console.log("metric response: ", response);
+
+          // console.log("metric response: ", response);
 
           if (response.ok) {
             const metrics = await response.json();
-            setMetricsData(metrics);
+
+            // Add metrics to searchState.context.metrics
+            sendSearch({ type: 'SET_METRICS', metrics });
             console.log('Metrics calculated:', metrics);
           } else {
             console.error('Failed to calculate metrics:', response.statusText);
@@ -93,9 +97,6 @@ export default function Home() {
         } finally {
           setMetricsLoading(false);
         }
-      } else {
-        // Clear metrics if conditions not met
-        setMetricsData(null);
       }
     };
 
@@ -154,7 +155,6 @@ export default function Home() {
   }, [sendSearch]);
 
 
-
   const summarized_query = useCallback(() => {
     if (isSuccess && searchData) {
       return searchData.summarized_query || '';
@@ -174,12 +174,24 @@ export default function Home() {
   const handleReset = useCallback(() => {
     sendSearch({ type: 'RESET' });
     setInputValue('');
-    setMetricsData(null); // Clear metrics on reset
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [sendSearch]);
 
+  const handleRefreshComponents = useCallback(() => {
+    setRefreshKey(prev => prev + 1);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-zinc-50 font-sans">
+    <div className="relative overflow-x-hidden min-h-screen bg-zinc-50 font-sans">
+      
+      <Button
+        variant='outline'
+        className="z-50! fixed bottom-5 right-5 rounded-full! active:scale-80 scale-100 transition-all duration-75 ease-in"
+        onClick={handleRefreshComponents}
+      >
+        ↻
+      </Button>
+
 
       {/* sidebar */}
       <div className="fixed left-0 top-0 w-[5.56%] h-screen flex flex-col items-start bg-[#001fb0]">
@@ -209,6 +221,7 @@ export default function Home() {
             inputValue={inputValue}
             setInputValue={setInputValue}
             onSearch={handleSearch}
+            isError={isError}
           />
 
           <div className='my-2'></div>
@@ -235,19 +248,15 @@ export default function Home() {
           )}
 
           {isSuccess && searchType === "standard" && (
-            <div className="w-full h-screen p-5">
-              <div className='w-full h-1/4 flex flex-row gap-5'>
-                <div className='flex flex-col justify-center items-center rounded-lg w-full h-full bg-blue-200 border-2 border-blue-300 shadow-xl'>
-
-                </div>
-                <div className='flex flex-col justify-center items-center rounded-lg w-full h-full bg-blue-200 border-2 border-blue-300 shadow-xl'>
-
-                </div>
-                <div className='flex flex-col justify-center items-center rounded-lg w-full h-full bg-blue-200 border-2 border-blue-300 shadow-xl'>
-
-                </div>
-              </div>
-              <DataTableComponent data={searchData} summarized_query={summarized_query()} />
+            <div className="w-full h-screen px-5 -my-20!">
+              {isSuccess && !metricsLoading && (
+                <MetricCarousel key={`metrics-${refreshKey}`} metrics={finalMetrics} />
+              )}
+              <DataTableComponent 
+                key={`datatable-${refreshKey}`} 
+                data={searchData} 
+                summarized_query={summarized_query()} 
+              />
             </div>
           )}
 
@@ -264,13 +273,15 @@ export default function Home() {
           )}
 
           {!isLoading && !isSuccess && !isError && (
-            // <EmptyStateComponent />
-            // <LoadingComponent onCancel={handleCancel} />
-            <ErrorComponent
-              error={searchError}
-              onRetry={handleRetry}
-              onReset={handleReset}
-            />
+            <>
+              <EmptyStateComponent />
+              {/* <LoadingComponent onCancel={handleCancel} />
+              <ErrorComponent
+                error={searchError}
+                onRetry={handleRetry}
+                onReset={handleReset}
+              /> */}
+            </>
           )}
         </div>
 
@@ -284,7 +295,7 @@ export default function Home() {
           <LineGraph />
         </div> */}
 
-        <div className='my-80'></div>
+        <div className=''></div>
       </div>
     </div>
   );
