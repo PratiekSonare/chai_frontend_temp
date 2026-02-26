@@ -10,7 +10,7 @@ import {
 import { cn } from "@/lib/utils"
 import MetricGrid from "./MetricGrid";
 
-export default function MetricCarousel({ metrics }) {
+export default function MetricCarousel({ metrics, searchData, isSuccess }) {
 
     const volume = metrics?.metrics.volume_metrics;
     const time_based = metrics?.metrics.time_based_metrics;
@@ -50,6 +50,8 @@ export default function MetricCarousel({ metrics }) {
                                 { title: "Unique SKUs", desc: "Count of unique SKUs ordered within this time frame." }
                             ]
                         }
+                        searchData={searchData}
+                        isSuccess={isSuccess}
                     />
                 </CarouselItem>
 
@@ -65,7 +67,10 @@ export default function MetricCarousel({ metrics }) {
                             { title: "Gross Margin", desc: "Profit margin as a percentage of revenue." },
                             { title: "AOV", desc: "Average Order Value across all orders." },
                             { title: "ASP", desc: "Average Selling Price per unit." }
-                        ]} />
+                        ]}
+                        searchData={searchData}
+                        isSuccess={isSuccess}
+                    />
                 </CarouselItem>
 
                 {/* Payment Metrics */}
@@ -80,7 +85,10 @@ export default function MetricCarousel({ metrics }) {
                             { title: "Prepaid Orders", desc: "Number of orders paid in advance." },
                             { title: "COD %", desc: "Percentage of total orders that are COD." },
                             { title: "Prepaid %", desc: "Percentage of total orders that are prepaid." }
-                        ]} />
+                        ]}
+                        searchData={searchData}
+                        isSuccess={isSuccess}
+                    />
                 </CarouselItem>
 
                 {/* Cancellation Metrics */}
@@ -95,7 +103,10 @@ export default function MetricCarousel({ metrics }) {
                             { title: "Cancel Rate", desc: "Percentage of orders that were cancelled." },
                             { title: "Cancelled", desc: "Total number of cancelled orders." },
                             { title: "RTO Orders", desc: "Total number of return to origin orders." }
-                        ]} />
+                        ]}
+                        searchData={searchData}
+                        isSuccess={isSuccess}
+                    />
                 </CarouselItem>
 
                 {/* Time-based Metrics */}
@@ -110,7 +121,10 @@ export default function MetricCarousel({ metrics }) {
                             { title: "Avg QC Time", desc: "Average quality control time in hours." },
                             { title: "Avg Processing", desc: "Average order processing time in hours." },
                             { title: "Active Days", desc: "Number of days with order activity." }
-                        ]} />
+                        ]}
+                        searchData={searchData}
+                        isSuccess={isSuccess}
+                    />
                 </CarouselItem>
 
                 {/* Geographic Metrics */}
@@ -130,7 +144,10 @@ export default function MetricCarousel({ metrics }) {
                             { title: geographic?.state_wise_order_count && Object.entries(geographic.state_wise_order_count).sort(([, a], [, b]) => b - a)[1]?.[0] || "State 2", desc: "Orders from the second top state." },
                             { title: geographic?.state_wise_order_count && Object.entries(geographic.state_wise_order_count).sort(([, a], [, b]) => b - a)[2]?.[0] || "State 3", desc: "Orders from the third top state." },
                             { title: geographic?.state_wise_order_count && Object.entries(geographic.state_wise_order_count).sort(([, a], [, b]) => b - a)[3]?.[0] || "State 4", desc: "Orders from the fourth top state." }
-                        ]} />
+                        ]}
+                        searchData={searchData}
+                        isSuccess={isSuccess}
+                    />
                 </CarouselItem>
 
                 {/* Product Metrics */}
@@ -150,7 +167,10 @@ export default function MetricCarousel({ metrics }) {
                             { title: `2nd Qty: ${product?.top_skus_by_quantity && Object.entries(product.top_skus_by_quantity)[1]?.[0]?.substring(0, 8) || 'SKU'}`, desc: "SKU with second highest quantity sold." },
                             { title: `Top Rev: ${product?.top_skus_by_revenue && Object.entries(product.top_skus_by_revenue)[0]?.[0]?.substring(0, 8) || 'SKU'}`, desc: "SKU generating highest revenue." },
                             { title: `2nd Rev: ${product?.top_skus_by_revenue && Object.entries(product.top_skus_by_revenue)[1]?.[0]?.substring(0, 8) || 'SKU'}`, desc: "SKU generating second highest revenue." }
-                        ]} />
+                        ]}
+                        searchData={searchData}
+                        isSuccess={isSuccess}
+                    />
                 </CarouselItem>
             </CarouselContent>
             <CarouselPrevious />

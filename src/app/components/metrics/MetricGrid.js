@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import OrderCountChart from '../charts/orderCount';
 
-export default function MetricGrid({ cN, textCn, data, titles, header = "METRICS", content }) {
+export default function MetricGrid({ cN, textCn, data, titles, header = "METRICS", searchData, isSuccess }) {
 
     const [isOpen, setIsOpen] = useState(false);
 
@@ -36,22 +37,28 @@ export default function MetricGrid({ cN, textCn, data, titles, header = "METRICS
                 )}
             </div>
 
-            <div className="grid grid-cols-2 grid-rows-2 w-1/2 h-full gap-0">
-                <div className="p-2 border-r-2 border-b-2 border-gray-400 w-full flex flex-col justify-center items-center gap-1! bg-transparent hover:bg-white! transition-colors duration-100 ease-in">
-                    <span className="text-md poppins font-bold">{titles[0].title}</span>
-                    <span className={cn("text-3xl poppins font-bold", textCn)}>{data[0]}</span>
-                </div >
-                <div className="p-2 border-r-2 border-b-2 border-gray-400 w-full flex flex-col justify-center items-center gap-1! bg-transparent hover:bg-white! transition-colors duration-100 ease-in">
-                    <span className="text-md poppins font-bold">{titles[1].title}</span>
-                    <span className={cn("text-3xl poppins font-bold", textCn)}>{data[1]}</span>
+            <div className='flex flex-row justify-between w-full'>
+                <div className="grid grid-cols-2 grid-rows-2 w-1/2 h-full gap-0">
+                    <div className="p-2 border-r-2 border-b-2 border-gray-400 w-full flex flex-col justify-center items-center gap-1! bg-transparent hover:bg-white! transition-colors duration-100 ease-in">
+                        <span className="text-md poppins font-bold">{titles[0].title}</span>
+                        <span className={cn("text-3xl poppins font-bold", textCn)}>{data[0]}</span>
+                    </div >
+                    <div className="p-2 border-r-2 border-b-2 border-gray-400 w-full flex flex-col justify-center items-center gap-1! bg-transparent hover:bg-white! transition-colors duration-100 ease-in">
+                        <span className="text-md poppins font-bold">{titles[1].title}</span>
+                        <span className={cn("text-3xl poppins font-bold", textCn)}>{data[1]}</span>
+                    </div>
+                    <div className="p-2 border-r-2 border-gray-400 w-full flex flex-col justify-center items-center gap-1! bg-transparent hover:bg-white! transition-colors duration-100 ease-in">
+                        <span className="text-md poppins font-bold">{titles[2].title}</span>
+                        <span className={cn("text-3xl poppins font-bold", textCn)}>{data[2]}</span>
+                    </div>
+                    <div className="p-2 border-r-2 border-gray-400 w-full flex flex-col justify-center items-center gap-1! bg-transparent hover:bg-white! transition-colors duration-100 ease-in">
+                        <span className="text-md poppins font-bold">{titles[3].title}</span>
+                        <span className={cn("text-3xl poppins font-bold", textCn)}>{data[3]}</span>
+                    </div>
                 </div>
-                <div className="p-2 border-r-2 border-gray-400 w-full flex flex-col justify-center items-center gap-1! bg-transparent hover:bg-white! transition-colors duration-100 ease-in">
-                    <span className="text-md poppins font-bold">{titles[2].title}</span>
-                    <span className={cn("text-3xl poppins font-bold", textCn)}>{data[2]}</span>
-                </div>
-                <div className="p-2 border-r-2 border-gray-400 w-full flex flex-col justify-center items-center gap-1! bg-transparent hover:bg-white! transition-colors duration-100 ease-in">
-                    <span className="text-md poppins font-bold">{titles[3].title}</span>
-                    <span className={cn("text-3xl poppins font-bold", textCn)}>{data[3]}</span>
+                
+                <div className='w-1/2'>
+                    <OrderCountChart searchData={searchData} isSuccess={isSuccess} />
                 </div>
             </div>
         </div >

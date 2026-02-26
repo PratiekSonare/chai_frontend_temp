@@ -4,13 +4,14 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useMachine } from '@xstate/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+import OrderCountChart from './components/charts/orderCount';
+
 import Down from './components/down';
 import Development from './components/development';
 import Active from './components/active';
 import Card from './components/card';
 import Searchbar from './components/searchbar';
-import Graph from './components/graph';
-import LineGraph from './components/linegraph';
 import DataTableComponent from './components/table/DataTableComponent';
 import tempResultData from './components/tempResult.json';
 import QuickLinks from './components/quickLinks';
@@ -18,8 +19,8 @@ import Header from './components/header';
 import { searchMachine } from '../lib/searchMachine';
 import { LoadingComponent, ErrorComponent, EmptyStateComponent } from './components/StateComponents';
 import { Button } from '@/components/ui/button';
-import MetricCard from './components/metricCard';
 import MetricCarousel from './components/metrics/MetricCarousel';
+import tempStateObject from './components/standard_state.json';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -34,16 +35,36 @@ export default function Home() {
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [status, setStatus] = useState("development");
   const [inputValue, setInputValue] = useState('');
-  const [searchState, sendSearch] = useMachine(searchMachine);
+  const [searchState, setSearchState] = useState(tempStateObject);
+
+  // Mock sendSearch function for debugging with static state
+  const sendSearch = useCallback((action) => {
+    if (action.type === 'SET_METRICS') {
+      setSearchState(prev => ({
+        ...prev,
+        context: {
+          ...prev.context,
+          metrics: action.metrics
+        }
+      }));
+    } else if (action.type === 'SEARCH') {
+      // For debugging, maybe set to loading or something, but keep success
+    } else if (action.type === 'CANCEL' || action.type === 'RESET') {
+      // Reset to initial state
+      setSearchState(tempStateObject);
+      setInputValue('');
+    }
+  }, []);
+
   const [metricsLoading, setMetricsLoading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const searchbarRef = useRef(null);
   const searchResultsRef = useRef(null);
 
   // Extract search state data
-  const isLoading = searchState.matches('loading');
-  const isSuccess = searchState.matches('success');
-  const isError = searchState.matches('failure');
+  const isLoading = searchState.state === 'loading';
+  const isSuccess = searchState.state === 'success';
+  const isError = searchState.state === 'failure';
   const searchData = searchState.context.data;
   const searchError = searchState.context.error;
   const searchType = searchState.context.data.query_type;
@@ -52,7 +73,7 @@ export default function Home() {
   // Debug logging for state changes and scroll to results
   useEffect(() => {
     console.log('Search state changed:', {
-      state: searchState.value,
+      state: searchState.state,
       context: searchState.context,
       isLoading,
       isSuccess,
@@ -63,7 +84,7 @@ export default function Home() {
     if ((isLoading || isSuccess || isError) && searchResultsRef.current) {
       searchResultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  }, [searchState.value, isLoading, isSuccess, isError]);
+  }, [searchState.state, isLoading, isSuccess, isError]);
 
   // Calculate metrics when search data is available for standard queries
   useEffect(() => {
@@ -183,7 +204,7 @@ export default function Home() {
 
   return (
     <div className="relative overflow-x-hidden min-h-screen bg-zinc-50 font-sans">
-      
+
       <Button
         variant='outline'
         className="z-50! fixed bottom-5 right-5 rounded-full! active:scale-80 scale-100 transition-all duration-75 ease-in"
@@ -250,12 +271,13 @@ export default function Home() {
           {isSuccess && searchType === "standard" && (
             <div className="w-full h-screen px-5 -my-20!">
               {isSuccess && !metricsLoading && (
-                <MetricCarousel key={`metrics-${refreshKey}`} metrics={finalMetrics} />
+                <MetricCarousel key={`metrics-${refreshKey}`} metrics={finalMetrics} searchData={searchData} isSuccess={isSuccess} />
               )}
-              <DataTableComponent 
-                key={`datatable-${refreshKey}`} 
-                data={searchData} 
-                summarized_query={summarized_query()} 
+
+              <DataTableComponent
+                key={`datatable-${refreshKey}`}
+                data={searchData}
+                summarized_query={summarized_query()}
               />
             </div>
           )}
@@ -285,10 +307,7 @@ export default function Home() {
           )}
         </div>
 
-        {/* GSAP Graph Example */}
-        {/* <div className='flex justify-center items-center w-full my-20'>
-          <Graph />
-        </div> */}
+        {/* <OrderCountChart searchData={searchData} isSuccess={isSuccess} /> */}
 
         {/* GSAP Line Graph Example */}
         {/* <div className='flex justify-center items-center w-full my-20'>

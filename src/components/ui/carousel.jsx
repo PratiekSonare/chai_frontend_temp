@@ -134,7 +134,7 @@ function CarouselItem({
       aria-roledescription="slide"
       data-slot="carousel-item"
       className={cn(
-        "min-w-0 shrink-0 grow",
+        "overflow-y-scroll min-w-0 shrink-0 grow",
         orientation === "horizontal" ? "pl-4" : "pt-4",
         className
       )}
