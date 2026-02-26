@@ -4,10 +4,10 @@ import { useState, useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-const OrderCountChart = ({ searchData, isSuccess }) => {
+const RevenueLineChart = ({ searchData, isSuccess }) => {
     const [chartData, setChartData] = useState(null);
     const [chartLoading, setChartLoading] = useState(false);
-    const [currentDataset, setCurrentDataset] = useState('order_count'); // 'order_count' or 'unique_sku_count'
+    const [currentDataset, setCurrentDataset] = useState('revenue'); // 'revenue' or 'aov'
     const chartRef = useRef(null);
     const chartInstanceRef = useRef(null);
     const intervalRef = useRef(null);
@@ -18,7 +18,7 @@ const OrderCountChart = ({ searchData, isSuccess }) => {
             if (isSuccess && searchData && searchData.data && searchData.data.length > 0 && searchData.query_type === "standard") {
                 setChartLoading(true);
                 try {
-                    const response = await fetch('http://localhost:5000/orders/chart/count', {
+                    const response = await fetch('http://localhost:5000/revenue/chart/line', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -31,12 +31,12 @@ const OrderCountChart = ({ searchData, isSuccess }) => {
                     if (response.ok) {
                         const chartResponse = await response.json();
                         setChartData(chartResponse);
-                        console.log('Chart data fetched:', chartResponse);
+                        console.log('Revenue chart data fetched:', chartResponse);
                     } else {
-                        console.error('Failed to fetch chart data:', response.statusText);
+                        console.error('Failed to fetch revenue chart data:', response.statusText);
                     }
                 } catch (error) {
-                    console.error('Error fetching chart data:', error);
+                    console.error('Error fetching revenue chart data:', error);
                 } finally {
                     setChartLoading(false);
                 }
@@ -57,9 +57,9 @@ const OrderCountChart = ({ searchData, isSuccess }) => {
             // Start alternating between datasets every 2 seconds
             intervalRef.current = setInterval(() => {
                 setCurrentDataset(prev =>
-                    prev === 'order_count' ? 'unique_sku_count' : 'order_count'
+                    prev === 'revenue' ? 'aov' : 'revenue'
                 );
-            }, 2000);
+            }, 5000);
         }
 
         // Cleanup function
@@ -81,22 +81,28 @@ const OrderCountChart = ({ searchData, isSuccess }) => {
 
             // Get current dataset data
             const currentData = chartData.datasets[currentDataset];
-            const isOrderCount = currentDataset === 'order_count';
+            const isRevenue = currentDataset === 'revenue';
 
             // Register the datalabels plugin
             Chart.register(ChartDataLabels);
 
             // Create new chart
             chartInstanceRef.current = new Chart(chartRef.current, {
-                type: 'bar',
+                type: 'line',
                 data: {
                     labels: chartData.labels,
                     datasets: [{
                         data: currentData,
-                        backgroundColor: 'rgba(0, 25, 177, 1)',
+                        borderColor: 'rgba(67, 160, 71, 1)',
+                        backgroundColor: 'rgba(67, 160, 71, 0.1)',
                         borderWidth: 1,
-                        borderRadius: 3,
-                        borderSkipped: false,
+                        fill: false,
+                        tension: 0.5,
+                        pointBackgroundColor: 'rgba(67, 160, 71, 1)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 1,
+                        pointRadius: 3,
+                        pointHoverRadius: 8,
                     }]
                 },
                 options: {
@@ -104,10 +110,10 @@ const OrderCountChart = ({ searchData, isSuccess }) => {
                     maintainAspectRatio: false,
                     layout: {
                         padding: {
-                            top: 40,
-                            bottom: -20,
-                            left:  20,
-                            right: 20
+                            top: 50,
+                            bottom: 20,
+                            left:  50,
+                            right: 50
                         }
                     },
                     plugins: {
@@ -116,33 +122,34 @@ const OrderCountChart = ({ searchData, isSuccess }) => {
                         },
                         title: {
                             display: false,
-                            text: isOrderCount ? 'Order Count by ' + (chartData.chart_type === 'daily' ? 'Day' : chartData.chart_type === 'weekly' ? 'Week' : 'Month') :
-                                'Unique SKUs by ' + (chartData.chart_type === 'daily' ? 'Day' : chartData.chart_type === 'weekly' ? 'Week' : 'Month'),
+                            text: isRevenue ? 'Revenue by ' + (chartData.chart_type === 'daily' ? 'Day' : chartData.chart_type === 'weekly' ? 'Week' : 'Month') :
+                                'AOV by ' + (chartData.chart_type === 'daily' ? 'Day' : chartData.chart_type === 'weekly' ? 'Week' : 'Month'),
                             font: {
                                 size: 14,
                                 weight: 'bold',
                                 family: 'Poppins'
                             },
-                            color: '#0019b1'
+                            color: 'rgba(67, 160, 71, 1)'
                         },
                         datalabels: {
                             display: true,
-                            anchor: 'center',
-                            align: 'center',
+                            anchor: 'end',
+                            align: 'top',
                             formatter: function (value) {
-                                return value;
+                                return isRevenue ? `₹${value.toLocaleString('en-IN')}` : `₹${value.toFixed(0)}`;
                             },
                             font: {
-                                size: 18,
+                                size: 10,
                                 weight: 'bold',
                                 family: 'Poppins'
                             },
-                            color: '#ffffff',
+                            color: 'rgba(67, 160, 71, 1)',
+                            offset: 4
                         }
                     },
                     scales: {
                         y: {
-                            beginAtZero: true,
+                            beginAtZero: false,
                             title: {
                                 display: false,
                             },
@@ -184,13 +191,13 @@ const OrderCountChart = ({ searchData, isSuccess }) => {
                         const ctx = chart.ctx;
                         chart.data.datasets.forEach(function (dataset, i) {
                             const meta = chart.getDatasetMeta(i);
-                            meta.data.forEach(function (bar, index) {
-                                // Draw x-axis label on top of bar
+                            meta.data.forEach(function (point, index) {
+                                // Draw x-axis label below the point
                                 const label = chart.data.labels[index];
-                                ctx.fillStyle = '#0019b1';
-                                ctx.font = 'bold 12px Poppins';
+                                ctx.fillStyle = 'rgba(67, 160, 71, 1)';
+                                ctx.font = 'bold 10px Poppins';
                                 ctx.textAlign = 'center';
-                                ctx.fillText(label, bar.x, bar.y - 10);
+                                ctx.fillText(label, point.x, point.y + 20);
                             });
                         });
                     }
@@ -224,14 +231,14 @@ const OrderCountChart = ({ searchData, isSuccess }) => {
 
     return (
         <div className="relative group bg-transparent w-full h-42">
-            {currentDataset === "order_count" ? (
-                <span className='absolute group-hover:translate-y-0 -translate-y-100 transition-all duration-200 ease-in-out top-2 left-2 font-bold poppins text-gray-400'>Total Orders</span>
+            {currentDataset === "revenue" ? (
+                <span className='absolute group-hover:translate-y-0 -translate-y-100 transition-all duration-200 ease-in-out top-2 left-2 font-bold poppins text-gray-400'>Total Revenue</span>
             ) : (
-                <span className='absolute group-hover:translate-y-0 -translate-y-100 transition-all duration-200 ease-in-out top-2 left-2 font-bold poppins text-gray-400'>Unique SKUs</span>
+                <span className='absolute group-hover:translate-y-0 -translate-y-100 transition-all duration-200 ease-in-out top-2 left-2 font-bold poppins text-gray-400'>Average Order Value</span>
             )}
             <canvas ref={chartRef} className='w-full h-full' style={{ backgroundColor: 'transparent' }}></canvas>
         </div>
     );
 };
 
-export default OrderCountChart;
+export default RevenueLineChart;

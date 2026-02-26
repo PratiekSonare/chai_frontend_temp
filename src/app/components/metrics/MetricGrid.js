@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import OrderCountChart from '../charts/orderCount';
 
-export default function MetricGrid({ cN, textCn, data, titles, header = "METRICS", searchData, isSuccess }) {
+export default function MetricGrid({ cN, textCn, data, titles, header = "METRICS", ChartingComponent }) {
 
     const [isOpen, setIsOpen] = useState(false);
 
@@ -57,8 +56,8 @@ export default function MetricGrid({ cN, textCn, data, titles, header = "METRICS
                     </div>
                 </div>
                 
-                <div className='w-1/2'>
-                    <OrderCountChart searchData={searchData} isSuccess={isSuccess} />
+                <div className='w-1/2 relative flex flex-col justify-end items-end'>
+                    {ChartingComponent}
                 </div>
             </div>
         </div >

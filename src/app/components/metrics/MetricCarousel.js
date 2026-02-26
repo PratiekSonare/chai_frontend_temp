@@ -9,6 +9,8 @@ import {
 } from "@/components/ui/carousel"
 import { cn } from "@/lib/utils"
 import MetricGrid from "./MetricGrid";
+import OrderCountChart from '../charts/orderCount';
+import RevenueLineChart from "../charts/revenueLine";
 
 export default function MetricCarousel({ metrics, searchData, isSuccess }) {
 
@@ -50,8 +52,7 @@ export default function MetricCarousel({ metrics, searchData, isSuccess }) {
                                 { title: "Unique SKUs", desc: "Count of unique SKUs ordered within this time frame." }
                             ]
                         }
-                        searchData={searchData}
-                        isSuccess={isSuccess}
+                        ChartingComponent={<OrderCountChart searchData={searchData} isSuccess={isSuccess} />}
                     />
                 </CarouselItem>
 
@@ -68,8 +69,8 @@ export default function MetricCarousel({ metrics, searchData, isSuccess }) {
                             { title: "AOV", desc: "Average Order Value across all orders." },
                             { title: "ASP", desc: "Average Selling Price per unit." }
                         ]}
-                        searchData={searchData}
-                        isSuccess={isSuccess}
+                        ChartingComponent={<RevenueLineChart searchData={searchData} isSuccess={isSuccess} />}
+
                     />
                 </CarouselItem>
 
