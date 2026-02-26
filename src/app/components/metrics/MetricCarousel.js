@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils"
 import MetricGrid from "./MetricGrid";
 import OrderCountChart from '../charts/orderCount';
 import RevenueLineChart from "../charts/revenueLine";
+import PaymentRadial from "../charts/paymentRadial";
 
 export default function MetricCarousel({ metrics, searchData, isSuccess }) {
 
@@ -87,8 +88,7 @@ export default function MetricCarousel({ metrics, searchData, isSuccess }) {
                             { title: "COD %", desc: "Percentage of total orders that are COD." },
                             { title: "Prepaid %", desc: "Percentage of total orders that are prepaid." }
                         ]}
-                        searchData={searchData}
-                        isSuccess={isSuccess}
+                        ChartingComponent={<PaymentRadial searchData={searchData} isSuccess={isSuccess} />}
                     />
                 </CarouselItem>
 
