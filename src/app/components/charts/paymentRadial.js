@@ -7,10 +7,13 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 const PaymentRadialChart = ({ searchData, isSuccess }) => {
     const [chartData, setChartData] = useState(null);
     const [chartLoading, setChartLoading] = useState(false);
+    const [currentChartType, setCurrentChartType] = useState('radial'); // 'radial' or 'stacked'
     const chartRef = useRef(null);
     const chartInstanceRef = useRef(null);
+    const intervalRef = useRef(null);
+    const debounceTimeoutRef = useRef(null);
 
-    // Fetch chart data when search data is available
+    // Fetch chart data when search data is available (with debouncing)
     useEffect(() => {
         const fetchChartData = async () => {
             if (isSuccess && searchData && searchData.data && searchData.data.length > 0 && searchData.query_type === "standard") {
@@ -41,118 +44,254 @@ const PaymentRadialChart = ({ searchData, isSuccess }) => {
             }
         };
 
-        fetchChartData();
+        // Debounce API call to minimize load
+        if (debounceTimeoutRef.current) {
+            clearTimeout(debounceTimeoutRef.current);
+        }
+        
+        debounceTimeoutRef.current = setTimeout(() => {
+            fetchChartData();
+        }, 500); // 500ms delay
+
+        // Cleanup timeout on unmount
+        return () => {
+            if (debounceTimeoutRef.current) {
+                clearTimeout(debounceTimeoutRef.current);
+            }
+        };
     }, [isSuccess, searchData]);
 
-    // Create/update chart when chart data changes
+    // Chart switching effect - switch every 5 seconds
     useEffect(() => {
-        if (chartData && chartData.success && chartData.data && chartRef.current) {
-            // Destroy existing chart if it exists
-            if (chartInstanceRef.current) {
-                chartInstanceRef.current.destroy();
-            }
+        if (chartData && chartData.success) {
+            intervalRef.current = setInterval(() => {
+                setCurrentChartType(prev => prev === 'radial' ? 'stacked' : 'radial');
+            }, 4000);
 
-            // Calculate total orders for percentage calculation
-            const totalOrders = chartData.data.cod + chartData.data.prepaid;
-            const codPercentage = totalOrders > 0 ? ((chartData.data.cod / totalOrders) * 100).toFixed(1) : 0;
-            const prepaidPercentage = totalOrders > 0 ? ((chartData.data.prepaid / totalOrders) * 100).toFixed(1) : 0;
+            return () => {
+                if (intervalRef.current) {
+                    clearInterval(intervalRef.current);
+                }
+            };
+        }
+    }, [chartData]);
 
-            // Register the datalabels plugin
-            Chart.register(ChartDataLabels);
+    // Create radial chart
+    const createRadialChart = () => {
+        if (chartInstanceRef.current) {
+            chartInstanceRef.current.destroy();
+        }
 
-            // Create new chart
-            chartInstanceRef.current = new Chart(chartRef.current, {
-                type: 'pie',
-                data: {
-                    labels: chartData.labels,
-                    datasets: [{
-                        data: [chartData.data.cod, chartData.data.prepaid],
-                        backgroundColor: [
-                            'rgba(138, 43, 226, 0.7)',  // COD - Dark Purple
-                            'rgba(186, 85, 211, 0.7)'   // Prepaid - Medium Orchid
-                        ],
-                        borderColor: [
-                            'rgba(138, 43, 226, 1)',
-                            'rgba(186, 85, 211, 1)'
-                        ],
-                        borderWidth: 2,
-                        hoverOffset: 4
-                    }]
+        // Use totals for radial chart
+        const totalOrders = chartData.totals.cod + chartData.totals.prepaid;
+        const codPercentage = totalOrders > 0 ? ((chartData.totals.cod / totalOrders) * 100).toFixed(1) : 0;
+        const prepaidPercentage = totalOrders > 0 ? ((chartData.totals.prepaid / totalOrders) * 100).toFixed(1) : 0;
+
+        Chart.register(ChartDataLabels);
+
+        chartInstanceRef.current = new Chart(chartRef.current, {
+            type: 'pie',
+            data: {
+                labels: ['COD', 'PrePaid'],
+                datasets: [{
+                    data: [chartData.totals.cod, chartData.totals.prepaid],
+                    backgroundColor: [
+                        'rgba(138, 43, 226, 0.7)',  // COD - Dark Purple
+                        'rgba(186, 85, 211, 0.7)'   // Prepaid - Medium Orchid
+                    ],
+                    borderColor: [
+                        'rgba(138, 43, 226, 1)',
+                        'rgba(186, 85, 211, 1)'
+                    ],
+                    borderWidth: 1,
+                    hoverOffset: 15
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        top: 20,
+                        bottom: 20,
+                        left: 20,
+                        right: 20
+                    }
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    layout: {
-                        padding: {
-                            top: 50,
-                            bottom: 20,
-                            left: 20,
-                            right: 20
-                        }
+                plugins: {
+                    legend: {
+                        display: false
                     },
-                    plugins: {
-                        legend: {
-                            display: false,
-                            position: 'bottom',
-                            labels: {
-                                color: 'rgba(75, 85, 99, 1)',
-                                font: {
-                                    size: 12,
-                                    weight: 'bold',
-                                    family: 'Poppins'
-                                },
-                                generateLabels: function (chart) {
-                                    const data = chart.data;
-                                    return data.labels.map((label, index) => ({
-                                        text: `${label}: ${data.datasets[0].data[index]} orders`,
-                                        fillStyle: data.datasets[0].backgroundColor[index],
-                                        strokeStyle: data.datasets[0].borderColor[index],
-                                        lineWidth: data.datasets[0].borderWidth,
-                                        hidden: false,
-                                        index: index
-                                    }));
-                                }
-                            }
+                    title: {
+                        display: false
+                    },
+                    datalabels: {
+                        display: true,
+                        formatter: function (value, context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                            return `${percentage}%`;
                         },
-                        title: {
+                        font: {
+                            size: 14,
+                            weight: 'bold',
+                            family: 'Poppins'
+                        },
+                        color: '#fff',
+                        anchor: 'center',
+                        align: 'center',
+                        padding: 20
+                    }
+                },
+                animation: {
+                    animateRotate: true,
+                    duration: 1000,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+    };
+
+    // Create stacked bar chart
+    const createStackedChart = () => {
+        if (chartInstanceRef.current) {
+            chartInstanceRef.current.destroy();
+        }
+
+        Chart.register(ChartDataLabels);
+
+        chartInstanceRef.current = new Chart(chartRef.current, {
+            type: 'bar',
+            data: {
+                labels: chartData.labels || [],
+                datasets: [
+                    {
+                        label: 'COD',
+                        data: chartData.datasets?.cod || [],
+                        backgroundColor: 'rgba(138, 43, 226, 0.7)',
+                        borderColor: 'rgba(138, 43, 226, 1)',
+                        borderWidth: 1,
+                        borderRadius: 3,
+                        stack: 'payment-stack'
+                    },
+                    {
+                        label: 'PrePaid',
+                        data: chartData.datasets?.prepaid || [],
+                        backgroundColor: 'rgba(186, 85, 211, 0.7)',
+                        borderColor: 'rgba(186, 85, 211, 1)',
+                        borderWidth: 1,
+                        borderRadius: 3,
+                        stack: 'payment-stack'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        top: 40,
+                        bottom: -20,
+                        left: 20,
+                        right: 20
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
                             display: false,
-                            text: 'Payment Mode Distribution',
-                            font: {
-                                size: 16,
-                                weight: 'bold',
-                                family: 'Poppins'
-                            },
                             color: 'rgba(75, 85, 99, 1)',
-                            padding: {
-                                top: 10,
-                                bottom: 20
-                            }
-                        },
-                        datalabels: {
-                            display: true,
-                            formatter: function (value, context) {
-                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-                                return `${percentage}%`;
-                            },
                             font: {
                                 size: 14,
                                 weight: 'bold',
                                 family: 'Poppins'
                             },
-                            color: '#fff',
-                            anchor: 'center',
-                            align: 'center',
-                            padding: 20
+                            maxRotation: 45
                         }
                     },
-                    animation: {
-                        animateRotate: true,
-                        duration: 1000,
-                        easing: 'easeOutQuart'
+                    y: {
+                        display: false,
+                        stacked: true,
+                        beginAtZero: true,
+                        grid: {
+                            display: false,
+                        },
+                        ticks: {
+                            display: false,
+
+                        }
                     }
+                },
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    title: {
+                        display: false
+                    },
+                    datalabels: {
+                        formatter: function (value) {
+                            return value > 0 ? value : '';
+                        },
+                        font: {
+                            size: 14,
+                            weight: 'bold',
+                            family: 'Poppins'
+                        },
+                        color: '#fff',
+                        anchor: 'center',
+                        align: 'center'
+                    }
+                },
+                animation: {
+                    duration: 1000,
+                    easing: 'easeOutQuart'
                 }
-            });
+            },
+            plugins: [{
+                id: 'customDataPoints',
+                afterDraw: function (chart) {
+                    const ctx = chart.ctx;
+                    
+                    // Only process the first dataset to avoid duplicate labels
+                    const firstMeta = chart.getDatasetMeta(0);
+                    
+                    // For each x-axis position, find the topmost bar and draw label above it
+                    chart.data.labels.forEach(function (label, index) {
+                        let topY = chart.chartArea.bottom;
+                        let xPosition = firstMeta.data[index].x;
+                        
+                        // Find the topmost point among all datasets for this index
+                        chart.data.datasets.forEach(function (dataset, datasetIndex) {
+                            const meta = chart.getDatasetMeta(datasetIndex);
+                            if (meta.data[index] && meta.data[index].y < topY) {
+                                topY = meta.data[index].y;
+                            }
+                        });
+                        
+                        // Draw x-axis label above the topmost bar
+                        ctx.fillStyle = '#0019b1';
+                        ctx.font = 'bold 12px Poppins';
+                        ctx.textAlign = 'center';
+                        ctx.fillText(label, xPosition, topY - 5);
+                    });
+                }
+            }],
+        });
+    };
+
+    // Create/update chart when chart data or chart type changes
+    useEffect(() => {
+        if (chartData && chartData.success && chartRef.current) {
+            if (currentChartType === 'radial') {
+                createRadialChart();
+            } else {
+                createStackedChart();
+            }
         }
 
         // Cleanup function
@@ -162,8 +301,17 @@ const PaymentRadialChart = ({ searchData, isSuccess }) => {
                 chartInstanceRef.current = null;
             }
         };
-    }, [chartData]);
-    
+    }, [chartData, currentChartType]);
+
+    // Cleanup interval on unmount
+    useEffect(() => {
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+        };
+    }, []);
+
     if (chartLoading) {
         return (
             <div className="w-full mx-auto my-8 p-6 bg-transparent">
@@ -180,9 +328,9 @@ const PaymentRadialChart = ({ searchData, isSuccess }) => {
     }
 
     return (
-        <div className="relative group bg-transparent w-full h-42">
-            <span className='absolute group-hover:translate-y-0 -translate-y-100 transition-all duration-200 ease-in-out top-2 left-2 font-bold poppins text-gray-400'>
-                Payment Distribution
+        <div className="relative group bg-transparent w-full h-42 pt-2">
+            <span className='absolute animate-pulse top-2 left-2 font-bold poppins text-gray-400'>
+                {currentChartType === 'radial' ? 'Payment Distribution' : `Payment Trends (${chartData.chart_type || 'time-based'})`}
             </span>
             <canvas ref={chartRef} className='w-full h-full' style={{ backgroundColor: 'transparent' }}></canvas>
         </div>

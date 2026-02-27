@@ -1,4 +1,5 @@
 import * as React from "react"
+import { useState } from "react"
 import Autoplay from "embla-carousel-autoplay"
 import {
     Carousel,
@@ -12,8 +13,14 @@ import MetricGrid from "./MetricGrid";
 import OrderCountChart from '../charts/orderCount';
 import RevenueLineChart from "../charts/revenueLine";
 import PaymentRadial from "../charts/paymentRadial";
+import CancellationBarChart from "../charts/cancellationBar";
+import ProductImage from "../charts/productImage";
+import StatePincode from "../charts/statePincode";
 
 export default function MetricCarousel({ metrics, searchData, isSuccess }) {
+    const [selectedState, setSelectedState] = useState(null);
+    const [pincodeData, setPincodeData] = useState(null);
+    const [pincodeLoading, setPincodeLoading] = useState(false);
 
     const volume = metrics?.metrics.volume_metrics;
     const time_based = metrics?.metrics.time_based_metrics;
@@ -22,6 +29,39 @@ export default function MetricCarousel({ metrics, searchData, isSuccess }) {
     const payment = metrics?.metrics.payment_metrics;
     const geographic = metrics?.metrics.geographic_metrics;
     const cancellation = metrics?.metrics.cancellation_metrics;
+
+    // Function to handle state clicks
+    const handleStateClick = async (stateName) => {
+        if (!searchData?.data) return;
+        
+        setSelectedState(stateName);
+        setPincodeLoading(true);
+        setPincodeData(null);
+
+        try {
+            const response = await fetch('http://localhost:5000/geography/chart/pincode', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    orders: searchData.data,
+                    state: stateName
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setPincodeData(data);
+            } else {
+                console.error('Failed to fetch pincode data');
+            }
+        } catch (error) {
+            console.error('Error fetching pincode data:', error);
+        } finally {
+            setPincodeLoading(false);
+        }
+    };
 
     return (
         <Carousel
@@ -62,6 +102,7 @@ export default function MetricCarousel({ metrics, searchData, isSuccess }) {
                     <MetricGrid
                         cN="bg-green-600"
                         textCn="text-green-600"
+                        opacityCn="opacity-10!"
                         header="REVENUE"
                         data={[revenue?.gross_revenue?.toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 2 }), revenue?.gross_margin?.toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 2 }), revenue?.aov?.toFixed(2), revenue?.asp?.toFixed(2)]}
                         titles={[
@@ -105,8 +146,7 @@ export default function MetricCarousel({ metrics, searchData, isSuccess }) {
                             { title: "Cancelled", desc: "Total number of cancelled orders." },
                             { title: "RTO Orders", desc: "Total number of return to origin orders." }
                         ]}
-                        searchData={searchData}
-                        isSuccess={isSuccess}
+                        ChartingComponent={<CancellationBarChart searchData={searchData} isSuccess={isSuccess} />}
                     />
                 </CarouselItem>
 
@@ -133,7 +173,7 @@ export default function MetricCarousel({ metrics, searchData, isSuccess }) {
                     <MetricGrid
                         cN="bg-teal-600"
                         textCn="text-teal-600"
-                        header="GEOGRAPHIC"
+                        header="TOP PERFORMING STATES"
                         data={[
                             geographic?.state_wise_order_count && Object.entries(geographic.state_wise_order_count).sort(([, a], [, b]) => b - a)[0]?.[1] || 0,
                             geographic?.state_wise_order_count && Object.entries(geographic.state_wise_order_count).sort(([, a], [, b]) => b - a)[1]?.[1] || 0,
@@ -146,8 +186,14 @@ export default function MetricCarousel({ metrics, searchData, isSuccess }) {
                             { title: geographic?.state_wise_order_count && Object.entries(geographic.state_wise_order_count).sort(([, a], [, b]) => b - a)[2]?.[0] || "State 3", desc: "Orders from the third top state." },
                             { title: geographic?.state_wise_order_count && Object.entries(geographic.state_wise_order_count).sort(([, a], [, b]) => b - a)[3]?.[0] || "State 4", desc: "Orders from the fourth top state." }
                         ]}
-                        searchData={searchData}
-                        isSuccess={isSuccess}
+                        ChartingComponent={<StatePincode 
+                            selectedState={selectedState}
+                            pincodeData={pincodeData}
+                            pincodeLoading={pincodeLoading}
+                            searchData={searchData} 
+                            isSuccess={isSuccess} 
+                        />}
+                        onMetricClick={handleStateClick}
                     />
                 </CarouselItem>
 
@@ -169,8 +215,7 @@ export default function MetricCarousel({ metrics, searchData, isSuccess }) {
                             { title: `Top Rev: ${product?.top_skus_by_revenue && Object.entries(product.top_skus_by_revenue)[0]?.[0]?.substring(0, 8) || 'SKU'}`, desc: "SKU generating highest revenue." },
                             { title: `2nd Rev: ${product?.top_skus_by_revenue && Object.entries(product.top_skus_by_revenue)[1]?.[0]?.substring(0, 8) || 'SKU'}`, desc: "SKU generating second highest revenue." }
                         ]}
-                        searchData={searchData}
-                        isSuccess={isSuccess}
+                        ChartingComponent={<ProductImage />}
                     />
                 </CarouselItem>
             </CarouselContent>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 
-export default function MetricGrid({ cN, textCn, data, titles, header = "METRICS", ChartingComponent }) {
+export default function MetricGrid({ cN, textCn, opacityCn, data, titles, header = "METRICS", ChartingComponent, onMetricClick }) {
 
     const [isOpen, setIsOpen] = useState(false);
 
@@ -24,7 +24,7 @@ export default function MetricGrid({ cN, textCn, data, titles, header = "METRICS
                             <span className='poppins text-sm font-extrabold text-white'>{titles[1].title}</span>
                             <span className='poppins text-xs italic text-gray-300'>{titles[1].desc}</span>
                         </div>
-                        <div className='flex flex-col gap-0!'>
+                        <div className={cn(`flex flex-col gap-0!`, opacityCn)}>
                             <span className='poppins text-sm font-extrabold text-white'>{titles[2].title}</span>
                             <span className='poppins text-xs italic text-gray-300'>{titles[2].desc}</span>
                         </div>
@@ -38,22 +38,34 @@ export default function MetricGrid({ cN, textCn, data, titles, header = "METRICS
 
             <div className='flex flex-row justify-between w-full'>
                 <div className="grid grid-cols-2 grid-rows-2 w-1/2 h-full gap-0">
-                    <div className="p-2 border-r-2 border-b-2 border-gray-400 w-full flex flex-col justify-center items-center gap-1! bg-transparent hover:bg-white! transition-colors duration-100 ease-in">
+                    <button 
+                        className="p-2 border-r-2 border-b-2 border-gray-400 w-full flex flex-col justify-center items-center gap-1! bg-transparent hover:bg-white! transition-colors duration-100 ease-in"
+                        onClick={() => onMetricClick && onMetricClick(titles[0].title)}
+                    >
                         <span className="text-md poppins font-bold">{titles[0].title}</span>
                         <span className={cn("text-3xl poppins font-bold", textCn)}>{data[0]}</span>
-                    </div >
-                    <div className="p-2 border-r-2 border-b-2 border-gray-400 w-full flex flex-col justify-center items-center gap-1! bg-transparent hover:bg-white! transition-colors duration-100 ease-in">
+                    </button >
+                    <button 
+                        className="p-2 border-r-2 border-b-2 border-gray-400 w-full flex flex-col justify-center items-center gap-1! bg-transparent hover:bg-white! transition-colors duration-100 ease-in"
+                        onClick={() => onMetricClick && onMetricClick(titles[1].title)}
+                    >
                         <span className="text-md poppins font-bold">{titles[1].title}</span>
                         <span className={cn("text-3xl poppins font-bold", textCn)}>{data[1]}</span>
-                    </div>
-                    <div className="p-2 border-r-2 border-gray-400 w-full flex flex-col justify-center items-center gap-1! bg-transparent hover:bg-white! transition-colors duration-100 ease-in">
+                    </button>
+                    <button 
+                        className="p-2 border-r-2 border-gray-400 w-full flex flex-col justify-center items-center gap-1! bg-transparent hover:bg-white! transition-colors duration-100 ease-in"
+                        onClick={() => onMetricClick && onMetricClick(titles[2].title)}
+                    >
                         <span className="text-md poppins font-bold">{titles[2].title}</span>
                         <span className={cn("text-3xl poppins font-bold", textCn)}>{data[2]}</span>
-                    </div>
-                    <div className="p-2 border-r-2 border-gray-400 w-full flex flex-col justify-center items-center gap-1! bg-transparent hover:bg-white! transition-colors duration-100 ease-in">
+                    </button>
+                    <button 
+                        className="p-2 border-r-2 border-gray-400 w-full flex flex-col justify-center items-center gap-1! bg-transparent hover:bg-white! transition-colors duration-100 ease-in"
+                        onClick={() => onMetricClick && onMetricClick(titles[3].title)}
+                    >
                         <span className="text-md poppins font-bold">{titles[3].title}</span>
                         <span className={cn("text-3xl poppins font-bold", textCn)}>{data[3]}</span>
-                    </div>
+                    </button>
                 </div>
                 
                 <div className='w-1/2 relative flex flex-col justify-end items-end'>

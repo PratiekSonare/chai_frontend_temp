@@ -18,7 +18,7 @@ export default function Searchbar({ searchbarRef, placeholder, inputValue, setIn
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyPress}
             />
-            <button className={`${isError ? "animate-ping" : "animate-none"} h-full flex flex-1/6 items-center justify-center text-white bg-[#0019B1] rounded-xl! scale-100 active:scale-95 transition-all duration-100`}
+            <button className={`${isError ? "animate-pulse" : "animate-none"} h-full flex flex-1/6 items-center justify-center text-white bg-[#0019B1] rounded-xl! scale-100 active:scale-95 transition-all duration-100`}
               onClick={() => onSearch(inputValue)}
             >
               <svg className="w-10" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg" fill="#000000">

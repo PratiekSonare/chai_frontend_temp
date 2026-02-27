@@ -11,8 +11,9 @@ const RevenueLineChart = ({ searchData, isSuccess }) => {
     const chartRef = useRef(null);
     const chartInstanceRef = useRef(null);
     const intervalRef = useRef(null);
+    const debounceTimeoutRef = useRef(null);
 
-    // Fetch chart data when search data is available
+    // Fetch chart data when search data is available (with debouncing)
     useEffect(() => {
         const fetchChartData = async () => {
             if (isSuccess && searchData && searchData.data && searchData.data.length > 0 && searchData.query_type === "standard") {
@@ -43,7 +44,21 @@ const RevenueLineChart = ({ searchData, isSuccess }) => {
             }
         };
 
-        fetchChartData();
+        // Debounce API call to minimize load
+        if (debounceTimeoutRef.current) {
+            clearTimeout(debounceTimeoutRef.current);
+        }
+        
+        debounceTimeoutRef.current = setTimeout(() => {
+            fetchChartData();
+        }, 500); // 500ms delay
+
+        // Cleanup timeout on unmount
+        return () => {
+            if (debounceTimeoutRef.current) {
+                clearTimeout(debounceTimeoutRef.current);
+            }
+        };
     }, [isSuccess, searchData]);
 
     // Start dataset alternation timer when chart data is available
@@ -59,7 +74,7 @@ const RevenueLineChart = ({ searchData, isSuccess }) => {
                 setCurrentDataset(prev =>
                     prev === 'revenue' ? 'aov' : 'revenue'
                 );
-            }, 5000);
+            }, 4000);
         }
 
         // Cleanup function
@@ -232,9 +247,9 @@ const RevenueLineChart = ({ searchData, isSuccess }) => {
     return (
         <div className="relative group bg-transparent w-full h-42">
             {currentDataset === "revenue" ? (
-                <span className='absolute group-hover:translate-y-0 -translate-y-100 transition-all duration-200 ease-in-out top-2 left-2 font-bold poppins text-gray-400'>Total Revenue</span>
+                <span className='absolute animate-pulse top-2 left-2 font-bold poppins text-gray-400'>Total Revenue</span>
             ) : (
-                <span className='absolute group-hover:translate-y-0 -translate-y-100 transition-all duration-200 ease-in-out top-2 left-2 font-bold poppins text-gray-400'>Average Order Value</span>
+                <span className='absolute animate-pulse top-2 left-2 font-bold poppins text-gray-400'>Average Order Value</span>
             )}
             <canvas ref={chartRef} className='w-full h-full' style={{ backgroundColor: 'transparent' }}></canvas>
         </div>

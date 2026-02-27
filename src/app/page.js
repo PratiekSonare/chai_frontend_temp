@@ -20,7 +20,6 @@ import { searchMachine } from '../lib/searchMachine';
 import { LoadingComponent, ErrorComponent, EmptyStateComponent } from './components/StateComponents';
 import { Button } from '@/components/ui/button';
 import MetricCarousel from './components/metrics/MetricCarousel';
-import tempStateObject from './components/standard_state.json';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -35,36 +34,16 @@ export default function Home() {
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [status, setStatus] = useState("development");
   const [inputValue, setInputValue] = useState('');
-  const [searchState, setSearchState] = useState(tempStateObject);
-
-  // Mock sendSearch function for debugging with static state
-  const sendSearch = useCallback((action) => {
-    if (action.type === 'SET_METRICS') {
-      setSearchState(prev => ({
-        ...prev,
-        context: {
-          ...prev.context,
-          metrics: action.metrics
-        }
-      }));
-    } else if (action.type === 'SEARCH') {
-      // For debugging, maybe set to loading or something, but keep success
-    } else if (action.type === 'CANCEL' || action.type === 'RESET') {
-      // Reset to initial state
-      setSearchState(tempStateObject);
-      setInputValue('');
-    }
-  }, []);
-
+  const [searchState, sendSearch] = useMachine(searchMachine);
   const [metricsLoading, setMetricsLoading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const searchbarRef = useRef(null);
   const searchResultsRef = useRef(null);
 
   // Extract search state data
-  const isLoading = searchState.state === 'loading';
-  const isSuccess = searchState.state === 'success';
-  const isError = searchState.state === 'failure';
+  const isLoading = searchState.matches('loading');
+  const isSuccess = searchState.matches('success');
+  const isError = searchState.matches('failure');
   const searchData = searchState.context.data;
   const searchError = searchState.context.error;
   const searchType = searchState.context.data.query_type;
@@ -73,7 +52,7 @@ export default function Home() {
   // Debug logging for state changes and scroll to results
   useEffect(() => {
     console.log('Search state changed:', {
-      state: searchState.state,
+      state: searchState.value,
       context: searchState.context,
       isLoading,
       isSuccess,
@@ -84,7 +63,7 @@ export default function Home() {
     if ((isLoading || isSuccess || isError) && searchResultsRef.current) {
       searchResultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  }, [searchState.state, isLoading, isSuccess, isError]);
+  }, [searchState.value, isLoading, isSuccess, isError]);
 
   // Calculate metrics when search data is available for standard queries
   useEffect(() => {
