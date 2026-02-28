@@ -102,7 +102,7 @@ export default function MetricCarousel({ metrics, searchData, isSuccess }) {
                     <MetricGrid
                         cN="bg-green-600"
                         textCn="text-green-600"
-                        opacityCn="opacity-10!"
+                        opacityCn="opacity-50"
                         header="REVENUE"
                         data={[revenue?.gross_revenue?.toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 2 }), revenue?.gross_margin?.toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 2 }), revenue?.aov?.toFixed(2), revenue?.asp?.toFixed(2)]}
                         titles={[

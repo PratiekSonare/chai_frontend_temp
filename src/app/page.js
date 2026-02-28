@@ -40,6 +40,12 @@ export default function Home() {
   const searchbarRef = useRef(null);
   const searchResultsRef = useRef(null);
 
+  // SSE connection state
+  const [logs, setLogs] = useState([]);
+  const [isSSEConnected, setIsSSEConnected] = useState(false);
+  const [viewLogs, setViewLogs] = useState(true); // Enable logs by default
+  const eventSourceRef = useRef(null);
+
   // Extract search state data
   const isLoading = searchState.matches('loading');
   const isSuccess = searchState.matches('success');
@@ -60,7 +66,7 @@ export default function Home() {
     });
 
     // Scroll to search results when state changes (indicates POST request)
-    if ((isLoading || isSuccess || isError) && searchResultsRef.current) {
+    if ((isLoading || isSuccess || isError) && searchResultsRef.current && !metricsLoading) {
       searchResultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, [searchState.value, isLoading, isSuccess, isError]);
@@ -146,6 +152,60 @@ export default function Home() {
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
   }, []);
+
+  // Establish SSE connection on component mount
+  useEffect(() => {
+    console.log('Establishing SSE connection...');
+    const eventSource = new EventSource('http://localhost:5000/sse/logs');
+    eventSourceRef.current = eventSource;
+
+    eventSource.onopen = () => {
+      setIsSSEConnected(true);
+      console.log('SSE connected');
+    };
+
+    eventSource.onmessage = (event) => {
+      try {
+        const logData = JSON.parse(event.data);
+        // Always collect logs when viewLogs is enabled
+        if (viewLogs) {
+          setLogs(prevLogs => {
+            const newLogs = [...prevLogs, logData];
+            return newLogs.slice(-20); // Keep last 20 logs
+          });
+        }
+      } catch (error) {
+        console.error('Error parsing SSE log data:', error);
+      }
+    };
+
+    eventSource.onerror = (error) => {
+      console.error('SSE error:', error);
+      setIsSSEConnected(false);
+    };
+
+    return () => {
+      if (eventSource) {
+        eventSource.close();
+      }
+    };
+  }, []); // Empty dependency array - establish connection once
+
+  // Clear logs when viewLogs is turned off
+  useEffect(() => {
+    if (!viewLogs) {
+      setLogs([]);
+    }
+  }, [viewLogs]);
+
+  // Update logs display when viewLogs changes
+  useEffect(() => {
+    if (viewLogs && logs.length === 0) {
+      // If turning on logs and we have no logs, we might want to fetch recent logs
+      // For now, just ensure the connection is active
+      console.log('View logs enabled, SSE should be receiving logs');
+    }
+  }, [viewLogs, logs.length]);
 
   const handleSearch = useCallback((inputValue) => {
     if (inputValue.trim()) {
@@ -237,7 +297,16 @@ export default function Home() {
 
         {/* Search Results Section with State Management */}
         <div ref={searchResultsRef} className="w-full max-w-full h-screen flex justify-center items-center mx-auto px-4">
-          {isLoading && <LoadingComponent onCancel={handleCancel} />}
+          {isLoading && (
+            <LoadingComponent 
+              onCancel={handleCancel} 
+              requestId={searchState.context.query}
+              logs={logs}
+              isConnected={isSSEConnected}
+              viewLogs={viewLogs}
+              setViewLogs={setViewLogs}
+            />
+          )}
 
           {isError && (
             <ErrorComponent

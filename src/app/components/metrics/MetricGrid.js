@@ -24,7 +24,7 @@ export default function MetricGrid({ cN, textCn, opacityCn, data, titles, header
                             <span className='poppins text-sm font-extrabold text-white'>{titles[1].title}</span>
                             <span className='poppins text-xs italic text-gray-300'>{titles[1].desc}</span>
                         </div>
-                        <div className={cn(`flex flex-col gap-0!`, opacityCn)}>
+                        <div className={`flex flex-col gap-0!`}>
                             <span className='poppins text-sm font-extrabold text-white'>{titles[2].title}</span>
                             <span className='poppins text-xs italic text-gray-300'>{titles[2].desc}</span>
                         </div>
@@ -49,8 +49,8 @@ export default function MetricGrid({ cN, textCn, opacityCn, data, titles, header
                         className="p-2 border-r-2 border-b-2 border-gray-400 w-full flex flex-col justify-center items-center gap-1! bg-transparent hover:bg-white! transition-colors duration-100 ease-in"
                         onClick={() => onMetricClick && onMetricClick(titles[1].title)}
                     >
-                        <span className="text-md poppins font-bold">{titles[1].title}</span>
-                        <span className={cn("text-3xl poppins font-bold", textCn)}>{data[1]}</span>
+                        <span className={cn(`text-md poppins font-bold`, opacityCn)}>{titles[1].title}</span>
+                        <span className={cn("text-3xl poppins font-bold", textCn, opacityCn)}>{data[1]}</span>
                     </button>
                     <button 
                         className="p-2 border-r-2 border-gray-400 w-full flex flex-col justify-center items-center gap-1! bg-transparent hover:bg-white! transition-colors duration-100 ease-in"

@@ -4,11 +4,15 @@ import { Label } from '@/components/ui/label';
 import React, { useState, useEffect, useRef } from 'react';
 
 // Enhanced Loading component with real-time log streaming
-export const LoadingComponent = ({ onCancel, requestId, showLogs = false }) => {
-  const [logs, setLogs] = useState([])
-  const [isConnected, setIsConnected] = useState(false)
-  const [viewLogs, setViewLogs] = useState(showLogs)
-  const wsRef = useRef(null)
+export const LoadingComponent = ({ 
+  onCancel, 
+  requestId, 
+  logs, 
+  isConnected, 
+  viewLogs, 
+  setViewLogs,
+  showLogs = false 
+}) => {
   const logsEndRef = useRef(null)
 
   const scrollToBottom = () => {
@@ -18,60 +22,6 @@ export const LoadingComponent = ({ onCancel, requestId, showLogs = false }) => {
   useEffect(() => {
     scrollToBottom()
   }, [logs])
-
-  // Clear logs when toggle is turned off
-  useEffect(() => {
-    if (!viewLogs) {
-      setLogs([])
-    }
-  }, [viewLogs])
-
-  useEffect(() => {
-    if (!viewLogs) return
-
-    // Create WebSocket connection
-    const ws = new WebSocket('ws://localhost:5000/ws/logs')
-    wsRef.current = ws
-
-    ws.onopen = () => {
-      setIsConnected(true)
-      console.log('LoadingComponent: WebSocket connected')
-    }
-
-    ws.onmessage = (event) => {
-      try {
-        const logData = JSON.parse(event.data)
-
-        // Filter logs by request ID if provided, otherwise show all
-        if (!requestId || logData.request_id === requestId || logData.type === 'connection') {
-          setLogs(prevLogs => {
-            // Keep only recent logs to prevent memory issues
-            const newLogs = [...prevLogs, logData]
-            return newLogs.slice(-20) // Keep last 20 logs
-          })
-        }
-      } catch (error) {
-        console.error('Error parsing log data:', error)
-      }
-    }
-
-    ws.onclose = () => {
-      setIsConnected(false)
-      console.log('LoadingComponent: WebSocket disconnected')
-    }
-
-    ws.onerror = (error) => {
-      console.error('LoadingComponent WebSocket error:', error)
-      setIsConnected(false)
-    }
-
-    // Cleanup on unmount
-    return () => {
-      if (ws.readyState === WebSocket.OPEN) {
-        ws.close()
-      }
-    }
-  }, [showLogs, requestId, viewLogs])
 
   const formatTimestamp = (timestamp) => {
     try {
@@ -87,13 +37,11 @@ export const LoadingComponent = ({ onCancel, requestId, showLogs = false }) => {
     }
   }
 
-  const getLogIcon = (type, level) => {
+  const getLogIcon = (step, level) => {
     if (level === 'ERROR') return '❌'
-    switch (type) {
-      case 'connection': return '🔗'
-      case 'request_start': return '🚀'
-      case 'request_step': return '⚙️'
-      case 'request_end': return '✅'
+    switch (step) {
+      case 'REQUEST_START': return '🚀'
+      case 'REQUEST_END': return '✅'
       default: return '📝'
     }
   }
@@ -127,13 +75,13 @@ export const LoadingComponent = ({ onCancel, requestId, showLogs = false }) => {
                     <div
                       key={index}
                       className={`text-xs p-2 rounded ${log.level === 'ERROR' ? 'bg-red-100 text-red-800' :
-                        log.type === 'request_start' ? 'bg-green-100 text-green-800' :
-                          log.type === 'request_end' ? 'bg-blue-100 text-blue-800' :
+                        log.step === 'REQUEST_START' ? 'bg-green-100 text-green-800' :
+                          log.step === 'REQUEST_END' ? 'bg-blue-100 text-blue-800' :
                             'bg-white text-gray-700'
                         }`}
                     >
                       <div className="flex items-start space-x-2">
-                        <span className="text-sm flex-shrink-0">{getLogIcon(log.type, log.level)}</span>
+                        <span className="text-sm flex-shrink-0">{getLogIcon(log.step, log.level)}</span>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center space-x-2 mb-1">
                             <span className="text-gray-500 font-mono">{formatTimestamp(log.timestamp)}</span>
