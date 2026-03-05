@@ -30,6 +30,8 @@ export default function MetricCarousel({ metrics, searchData, isSuccess }) {
     const geographic = metrics?.metrics.geographic_metrics;
     const cancellation = metrics?.metrics.cancellation_metrics;
 
+
+
     // Function to handle state clicks
     const handleStateClick = async (stateName) => {
         if (!searchData?.data) return;

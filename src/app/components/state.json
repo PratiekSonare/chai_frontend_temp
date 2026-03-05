@@ -1,0 +1,148 @@
+{
+    "success": true,
+    "query_type": "comparison",
+    "request_id": "fa8ffb9c",
+    "summarized_query": "Compare Maharashtra Telangana orders",
+    "insights": "- **[Order Volume Performance]:** Maharashtra processed 61 orders while Telangana processed 19, making Maharashtra's order volume 68.9% higher (61 vs. 19).  \n- **[Revenue Performance]:** Maharashtra generated ₹38,965.40 in total revenue compared with Telangana's ₹13,197.00, a 195% increase and a revenue advantage of ₹25,768.40.  \n- **[Average Order Value (AOV)]:** Telangana's average order value is ₹694.58, which is 8.7% higher than Maharashtra's ₹638.78.  \n- **[Revenue Efficiency]:** Despite a lower AOV, Maharashtra's higher order count drives substantially larger total revenue, securing the win by revenue.  \n- **[Payment Mode Distribution]:** In Maharashtra, COD accounts for 35 orders (57%) and Pre‑Paid for 26 orders (43%); in Telangana, COD is 11 orders (58%) and Pre‑Paid 8 orders (42%), showing similar preferences but a slightly higher COD share in Maharashtra.  \n- **[Order Status Distribution]:** Maharashtra has 36 Open orders (59% of its total), while Telangana has 13 Open orders (68%); however, Maharashtra records 2 Cancellations versus 1 in Telangana.  \n- **[Top Cities]:** Maharashtra's orders are spread across 27 cities with Mumbai alone contributing 20 orders; Telangana's orders concentrate in 9 cities, led by Hyderabad with 10 orders.  \n- **[Geographic Reach]:** Maharashtra demonstrates a more dispersed city footprint, whereas Telangana's orders are clustered in major urban centers.  \n- **[Winner by Metrics]:** Maharashtra wins by order volume and total revenue; Telangana wins by average order value.  \n- **[Strategic Implication]:** Focus on boosting AOV in Maharashtra through cross‑selling and targeted upsells, while using Telangana's higher AOV as a benchmark for pricing strategies.",
+    "comparison_data": {
+        "comparison_type": "pairwise",
+        "groups": {
+            "a": "maharashtra",
+            "b": "telangana"
+        },
+        "order_count": {
+            "a": 61,
+            "b": 19,
+            "diff": -42,
+            "diff_pct": -68.85245901639344
+        },
+        "total_revenue": {
+            "a": 38965.404699999985,
+            "b": 13197.000100000001,
+            "diff": -25768.404599999983,
+            "diff_pct": -66.13149484368115
+        },
+        "avg_order_value": {
+            "a": 638.777126229508,
+            "b": 694.578952631579,
+            "diff": 55.801826402071015,
+            "diff_pct": 8.735727080813133
+        },
+        "winner_by_volume": "maharashtra",
+        "winner_by_revenue": "maharashtra",
+        "winner_by_avg_value": "telangana"
+    },
+    "detailed_metrics": {
+        "maharashtra": {
+            "count": 61,
+            "total_revenue": 38965.404699999985,
+            "avg_order_value": 638.777126229508,
+            "payment_mode_distribution": {
+                "PrePaid": 26,
+                "COD": 35
+            },
+            "order_status_distribution": {
+                "Open": 36,
+                "Confirmed": 9,
+                "Shipped": 12,
+                "Printed": 2,
+                "Cancelled": 2
+            },
+            "top_cities": {
+                "Pune": 6,
+                "DHULE": 1,
+                "MUMBAI": 3,
+                "Ambernath": 1,
+                "Thane": 2,
+                "Mumbai": 20,
+                "Ghoti Budruk": 1,
+                "Bhiwandi": 5,
+                "Nashik": 2,
+                "Amravati": 2,
+                "Mumbai,": 1,
+                "NAVI MUMBAI": 1,
+                "Nallasopara": 1,
+                "Navi Mumbai": 4,
+                "Deolali": 1,
+                "Nagpur": 1,
+                "Raigarh": 1,
+                "Ahmed Nagar": 1,
+                "Mira Bhayandar": 1,
+                "PUNE": 1,
+                "Dahanu": 1,
+                "Shahada": 1,
+                "Navi mumbai": 1,
+                "Malkapur": 1,
+                "Kolhapur": 1
+            }
+        },
+        "telangana": {
+            "count": 19,
+            "total_revenue": 13197.000100000001,
+            "avg_order_value": 694.578952631579,
+            "payment_mode_distribution": {
+                "COD": 11,
+                "PrePaid": 8
+            },
+            "order_status_distribution": {
+                "Open": 13,
+                "Confirmed": 4,
+                "Shipped": 1,
+                "Cancelled": 1
+            },
+            "top_cities": {
+                "Siddipet": 1,
+                "Hyderabad": 10,
+                "Secunderabad": 1,
+                "Ranga Reddy_TG": 1,
+                "Medak": 1,
+                "Ranga Reddy": 2,
+                "Nalgonda": 1,
+                "Pargi": 1,
+                "Karimnagar": 1
+            }
+        }
+    },
+    "comparison_results": {
+        "comparison_type": "pairwise",
+        "groups": {
+            "a": "maharashtra",
+            "b": "telangana"
+        },
+        "order_count": {
+            "a": 61,
+            "b": 19,
+            "diff": -42,
+            "diff_pct": -68.85245901639344
+        },
+        "total_revenue": {
+            "a": 38965.404699999985,
+            "b": 13197.000100000001,
+            "diff": -25768.404599999983,
+            "diff_pct": -66.13149484368115
+        },
+        "avg_order_value": {
+            "a": 638.777126229508,
+            "b": 694.578952631579,
+            "diff": 55.801826402071015,
+            "diff_pct": 8.735727080813133
+        },
+        "winner_by_volume": "maharashtra",
+        "winner_by_revenue": "maharashtra",
+        "winner_by_avg_value": "telangana"
+    },
+    "comparison_groups": [
+        {
+            "group_id": "maharashtra",
+            "filters": {
+                "state": "Maharashtra"
+            }
+        },
+        {
+            "group_id": "telangana",
+            "filters": {
+                "state": "Telangana"
+            }
+        }
+    ]
+}

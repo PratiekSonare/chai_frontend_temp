@@ -223,7 +223,7 @@ button:active {
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 15px;
+  width: 10px;
   background: transparent;
 }
 

@@ -39,6 +39,8 @@ export default function header() {
                             <p>[21-02-2026] Handle orders pagination from EasyECom API</p>
                             <p>[24-02-2026] UI: Develop query based displaying layout (ORDERS complete)</p>
                             <p>[26-02-2026] Backend: Chart.js based charting, Orders Metric Grids complete</p>
+                            <p className="italic text-blue-600">[Coming Soon...] Add 6 months of orders in a temp DB for faster query!</p>
+                            <p className="italic text-blue-600">[Coming Soon...] Create DB for profitability data</p>
                             <p className="italic text-blue-600">[Coming Soon...] Deploy for testing</p>
                             <p className="italic text-blue-600">[Coming Soon...] Add distinction b/w sku-size & just sku!</p>
                             <p className="italic text-blue-600">[Coming Soon...] Make LLM calls efficient, add redis caching + pinecone vector DB for tool call fetching</p>

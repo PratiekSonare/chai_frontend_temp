@@ -70,7 +70,7 @@ export const LoadingComponent = ({
                   {isConnected ? 'Waiting for logs...' : 'Connecting...'}
                 </div>
               ) : (
-                <div className="space-y-1">
+                <div className="space-y-1 h-42 overflow-y-scroll">
                   {logs.map((log, index) => (
                     <div
                       key={index}
