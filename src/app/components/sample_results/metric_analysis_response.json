@@ -1,0 +1,128 @@
+{
+    "state": "success",
+    "context": {
+        "query": "how much revenue was lost by cod based orders returned yesterday?",
+        "data": {
+            "success": true,
+            "query_type": "metric_analysis",
+            "request_id": "d4074feb",
+            "summarized_query": "Revenue loss from COD returns",
+            "query": "how much revenue was lost by cod based orders returned yesterday?",
+            "metrics": {
+                "get_total_revenue": 0.0,
+                "get_cod_vs_prepaid_metrics": {
+                    "cod": {
+                        "count": 242,
+                        "total_revenue": 163048.67,
+                        "avg_order_value": 673.75
+                    },
+                    "prepaid": {
+                        "count": 153,
+                        "total_revenue": 102694.78,
+                        "avg_order_value": 671.21
+                    }
+                }
+            },
+            "analysis": "- **[COD Order Count]:** 242 COD orders constitute 61.3% of the 395 total orders (242 vs 153 prepaid), showing COD dominates order volume.  \n- **[COD Revenue Share]:** COD generated ₹163,048.67, which is 61.4% of the combined ₹265,743.45 revenue from COD and prepaid modes.  \n- **[Prepaid Revenue Share]:** Prepaid contributed ₹102,694.78, representing 38.6% of total revenue.  \n- **[Revenue Gap]:** COD revenue exceeds prepaid by ₹60,353.89, a 58.8% higher contribution relative to prepaid.  \n- **[Average Order Value]:** COD AOV is ₹673.75 versus prepaid ₹671.21, a marginal 0.38% advantage.  \n- **[Potential Return Loss]:** If yesterday's returned COD orders equal the full COD volume, the maximum revenue loss could be ₹163,048.67, equivalent to 61.4% of total payment‑mode revenue.  \n- **[Overall Revenue Metric]:** The system reports a total revenue of ₹0.00, indicating no consolidated revenue figure is currently available for analysis.",
+            "metrics_calculated": [
+                "get_total_revenue",
+                "get_cod_vs_prepaid_metrics"
+            ],
+            "plan": {
+                "query_type": "metric_analysis",
+                "steps": [
+                    {
+                        "id": "step1",
+                        "tool": "get_all_orders",
+                        "params": {
+                            "start_date": "2026-03-06 00:00:00",
+                            "end_date": "2026-03-06 23:59:59"
+                        },
+                        "depends_on": [],
+                        "save_as": "orders_raw"
+                    },
+                    {
+                        "id": "step2",
+                        "tool": "apply_filters",
+                        "params": {
+                            "data": "{orders_raw}",
+                            "filters": [
+                                {
+                                    "field": "payment_mode",
+                                    "operator": "eq",
+                                    "value": "COD"
+                                },
+                                {
+                                    "field": "order_status",
+                                    "operator": "eq",
+                                    "value": "Returned"
+                                }
+                            ]
+                        },
+                        "depends_on": [
+                            "step1"
+                        ],
+                        "save_as": "cod_returned_raw"
+                    },
+                    {
+                        "id": "step3",
+                        "tool": "convert_to_df",
+                        "params": {
+                            "raw": "{cod_returned_raw}"
+                        },
+                        "depends_on": [
+                            "step2"
+                        ],
+                        "save_as": "cod_returned_df"
+                    },
+                    {
+                        "id": "step4",
+                        "tool": "get_total_revenue",
+                        "params": {
+                            "table": "{cod_returned_df}"
+                        },
+                        "depends_on": [
+                            "step3"
+                        ],
+                        "save_as": "revenue_lost"
+                    },
+                    {
+                        "id": "step5",
+                        "tool": "convert_to_df",
+                        "params": {
+                            "raw": "{orders_raw}"
+                        },
+                        "depends_on": [
+                            "step1"
+                        ],
+                        "save_as": "orders_df"
+                    },
+                    {
+                        "id": "step6",
+                        "tool": "get_cod_vs_prepaid_metrics",
+                        "params": {
+                            "table": "{orders_df}"
+                        },
+                        "depends_on": [
+                            "step5"
+                        ],
+                        "save_as": "cod_vs_prepaid_metrics_result"
+                    }
+                ],
+                "manipulation": {
+                    "required": true,
+                    "type": "filter"
+                },
+                "base_params": {
+                    "start_date": "2026-03-06 00:00:00",
+                    "end_date": "2026-03-06 23:59:59"
+                },
+                "tool": "get_all_orders"
+            }
+        },
+        "error": null
+    },
+    "isLoading": false,
+    "isSuccess": true,
+    "isError": false
+}

@@ -8,8 +8,8 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "@/components/ui/carousel"
-import MetricGrid from "./MetricGrid";
-import OrderCountChart from '../charts/orderCount';
+import MetricGrid from "../../standard/MetricGrid";
+import OrderCountChart from '../../../charts/orderCount';
 import StateMapPlotter from '@/components/StateMapPlotter';
 import { cn } from '@/lib/utils';
 

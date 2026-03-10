@@ -4,35 +4,25 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useMachine } from '@xstate/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import ReactMarkdown from 'react-markdown';
 
 import Down from './components/down';
 import Development from './components/development';
 import Active from './components/active';
 import Searchbar from './components/searchbar';
-import DataTableComponent from './components/table/DataTableComponent';
 import QuickLinks from './components/quickLinks';
 import Header from './components/header';
 import { searchMachine } from '../lib/searchMachine';
 import { LoadingComponent, ErrorComponent, EmptyStateComponent } from './components/StateComponents';
 import { Button } from '@/components/ui/button';
-import MetricCarouselOrder from './components/metrics/MetricCarouselOrder';
-import MetricCarouselComp from './components/metrics/MetricCarouselComp';
-
-import standardState from './components/standard_state.json';
-import StateMapPlotter from '@/components/StateMapPlotter';
-import Autoplay from "embla-carousel-autoplay"
-
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel"
-
 import Chart from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+
+import Standard from './components/output/standard/Standard';
+import Comparison from './components/output/comparison/Comparison';
+import MetricAnalysis from './components/output/metric_analysis/MetricAnalysis';
+import SchemaDiscovery from './components/output/schema_discovery/SchemaDiscovery';
+
+import standardState from './components/sample_results/metric_analysis_response.json';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -107,14 +97,14 @@ export default function Home() {
   const searchError = searchState.context?.error;
   const searchType = searchData?.query_type;
   const finalMetrics = searchState.context?.metrics || searchState.context?.data;
+  const comparisonFilter = isSuccess && searchType === "comparison" && searchData?.comparison_data?.comparison_param;
+  const comparisonType = isSuccess && searchType === "comparison" && searchData?.comparison_data?.comparison_type;
+  const detailedMetrics = isSuccess && searchType === "comparison" && searchData?.detailed_metrics;
+  const metric_analysis = isSuccess && searchType === "metric_analysis" && searchData?.analysis;
+  const metric_calculated = isSuccess && searchType === "metric_analysis" && searchData?.metrics;
+  const field_info = isSuccess && searchType === "schema_discovery" && searchData?.data?.field_info; //object with param details
 
-  // Extract groups data for comparison queries
-  const groups = isSuccess && searchType === "comparison" && searchData?.comparison_data?.groups
-    ? Object.values(searchData.comparison_data.groups)
-    : [];
 
-  const insights = isSuccess && searchType === "comparison" && searchData?.insights || "No insights generated.";
-  const detailedMetrics = isSuccess && searchType === "comparison" && searchData?.detailedMetrics;
 
   // Debug logging for state changes and scroll to results
   useEffect(() => {
@@ -214,43 +204,43 @@ export default function Home() {
     };
   }, []);
 
-  // Establish SSE connection on component mount
-  useEffect(() => {
-    console.log('Establishing SSE connection...');
-    const eventSource = new EventSource('http://localhost:5000/sse/logs');
-    eventSourceRef.current = eventSource;
+  // // Establish SSE connection on component mount
+  // useEffect(() => {
+  //   console.log('Establishing SSE connection...');
+  //   const eventSource = new EventSource('http://localhost:5000/sse/logs');
+  //   eventSourceRef.current = eventSource;
 
-    eventSource.onopen = () => {
-      setIsSSEConnected(true);
-      console.log('SSE connected');
-    };
+  //   eventSource.onopen = () => {
+  //     setIsSSEConnected(true);
+  //     console.log('SSE connected');
+  //   };
 
-    eventSource.onmessage = (event) => {
-      try {
-        const logData = JSON.parse(event.data);
-        // Always collect logs when viewLogs is enabled
-        if (viewLogs) {
-          setLogs(prevLogs => {
-            const newLogs = [...prevLogs, logData];
-            return newLogs.slice(-20); // Keep last 20 logs
-          });
-        }
-      } catch (error) {
-        console.error('Error parsing SSE log data:', error);
-      }
-    };
+  //   eventSource.onmessage = (event) => {
+  //     try {
+  //       const logData = JSON.parse(event.data);
+  //       // Always collect logs when viewLogs is enabled
+  //       if (viewLogs) {
+  //         setLogs(prevLogs => {
+  //           const newLogs = [...prevLogs, logData];
+  //           return newLogs.slice(-20); // Keep last 20 logs
+  //         });
+  //       }
+  //     } catch (error) {
+  //       console.error('Error parsing SSE log data:', error);
+  //     }
+  //   };
 
-    eventSource.onerror = (error) => {
-      console.error('SSE error:', error);
-      setIsSSEConnected(false);
-    };
+  //   eventSource.onerror = (error) => {
+  //     console.error('SSE error:', error);
+  //     setIsSSEConnected(false);
+  //   };
 
-    return () => {
-      if (eventSource) {
-        eventSource.close();
-      }
-    };
-  }, []); // Empty dependency array - establish connection once
+  //   return () => {
+  //     if (eventSource) {
+  //       eventSource.close();
+  //     }
+  //   };
+  // }, []); // Empty dependency array - establish connection once
 
   // Clear logs when viewLogs is turned off
   useEffect(() => {
@@ -274,14 +264,6 @@ export default function Home() {
       sendSearch({ type: 'SEARCH', query: inputValue.trim() });
     }
   }, [sendSearch]);
-
-
-  const summarized_query = useCallback(() => {
-    if (isSuccess && searchData) {
-      return searchData.summarized_query || '';
-    }
-    return '';
-  }, [isSuccess, searchData]);
 
   const handleCancel = useCallback(() => {
     console.log('Search cancelled');
@@ -399,37 +381,26 @@ export default function Home() {
     };
   }, []);
 
-  // Generate data from comparison results or use fallback
-  const data = useMemo(() => {
-    if (isSuccess && searchType === "comparison" && searchData?.comparison_data) {
-      const { groups, order_count } = searchData.comparison_data;
-      const colors = ['#283593', '#1E88E5']; // Colors for groups A and B
-
-      return Object.entries(groups).map(([key, groupName], index) => ({
-        name: groupName.charAt(0).toUpperCase() + groupName.slice(1).toLowerCase(),
-        value: order_count[key] || 0,
-        color: colors[index] || '#45b7d1'
-      }));
-    }
-
-    // Fallback data
-    return [
-      { name: 'Maharashtra', value: 3200, color: '#4ecdc4' },
-      { name: 'Telangana', value: 1250, color: '#ff6b6b' },
-    ];
-  }, [isSuccess, searchType, searchData]);
-
   return (
     <div className="relative overflow-x-hidden min-h-screen bg-zinc-50 font-sans">
 
-      <Button
-        variant='outline'
-        className="z-50! fixed bottom-5 right-5 rounded-full! active:scale-80 scale-100 transition-all duration-75 ease-in"
-        onClick={handleRefreshComponents}
-      >
-        ↻
-      </Button>
-
+      <div className='flex flex-row gap-2 z-50! fixed bottom-5 right-5'>
+        <Button
+          variant='outline'
+          className="rounded-full! active:scale-80 scale-100 transition-all duration-75 ease-in"
+          onClick={handleRefreshComponents}
+        >
+          ↻
+        </Button>
+  
+        <Button
+          variant='outline'
+          className="rounded-full! active:scale-80 scale-100 transition-all duration-75 ease-in"
+          onClick={handleRefreshComponents}
+        >
+          ⎙
+        </Button>
+      </div>
 
       {/* sidebar */}
       <div className="fixed left-0 top-0 w-[5.56%] h-screen flex flex-col items-start bg-[#001fb0]">
@@ -495,228 +466,19 @@ export default function Home() {
           )}
 
           {isSuccess && searchType === "standard" && (
-            <div className="w-full h-screen px-5 -my-20!">
-
-              {isSuccess && !metricsLoading && (
-                <MetricCarouselOrder key={`metrics-${refreshKey}`} metrics={finalMetrics} searchData={searchData} isSuccess={isSuccess} />
-              )}
-
-              <DataTableComponent
-                key={`datatable-${refreshKey}`}
-                data={searchData}
-                summarized_query={summarized_query()}
-              />
-            </div>
+            <Standard isSuccess={isSuccess} searchData={searchData} finalMetrics={finalMetrics} metricsLoading={metricsLoading} refreshKey={refreshKey} />
           )}
 
           {isSuccess && searchType === "comparison" && (
-            <div className="w-full h-screen px-5 space-y-2">
+            <Comparison createPaymentChart={createPaymentChart} isSuccess={isSuccess} searchData={searchData} searchType={searchType} comparisonType={comparisonType} searchFilter={comparisonFilter} detailedMetrics={detailedMetrics} refreshKey={refreshKey} />
+          )}
 
-              {/* winner by volume, revenue and aov */}
-              {isSuccess && !metricsLoading && (
-                <MetricCarouselComp key={`metrics-${refreshKey}`} searchData={searchData} isSuccess={isSuccess} />
-              )}
+          {isSuccess && searchType === "metric_analysis" && (
+            <MetricAnalysis metric_analysis={metric_analysis} metric_calculated={metric_calculated} />
+          )}
 
-              <div className='flex flex-row w-full gap-4 -mt-10!'>
-                {searchData.comparison_results.comparison_param === 'state' && (
-                  <Carousel
-                    opts={{
-                      align: "start",
-                      loop: "true",
-                    }}
-                    plugins={[
-                      Autoplay({
-                        delay: 3000,
-                      }),
-                    ]}
-                    className="relative w-1/2 h-full overflow-hidden"
-                  >
-
-                    <CarouselContent className="h-fit!">
-
-                      <CarouselItem className="basis-full">
-                        <div className='relative flex items-center justify-center w-full h-full rounded-xl border-4 border-[#0024af]'>
-                          <span className='absolute top-0 right-0 rounded-bl-xl px-5 py-2 bg-[#0024af] oswald text-white'>MAP</span>
-                          <StateMapPlotter
-                            data={data}
-                            onStateClick={(name, value) => console.log(`${name}: ${value}`)}
-                            width={550}
-                            height={550}
-                          />
-                        </div>
-                      </CarouselItem>
-
-                      {searchData?.detailed_metrics && Object.entries(searchData.detailed_metrics).map(([stateName, metrics], index) => (
-                        <CarouselItem key={stateName} className="basis-1/2">
-
-                          <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-green-200 w-full h-fit!">
-                            <div className='flex flex-row items-center justify-between bg-[#001FB0] rounded-t-xl h-fit cursor-pointer'>
-                              <span className="block text-md py-2 px-4 text-white rounded-t-xl oswald">{stateName.toUpperCase()} METRICS</span>
-                              <svg className={`h-4 px-4 transition-transform duration-200 ease-in`} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M19 5L12.7071 11.2929C12.3166 11.6834 11.6834 11.6834 11.2929 11.2929L5 5" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M19 13L12.7071 19.2929C12.3166 19.6834 11.6834 19.6834 11.2929 19.2929L5 13" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
-                            </div>
-
-                            <div className="space-y-2 poppins">
-                              {/* Key Metrics */}
-                              <div className="grid grid-cols-3">
-                                <div className="p-2 flex flex-col items-center justify-center text-center border-r-2 border-b-2 border-gray-400">
-                                  <div className="text-xl font-bold text-blue-600">{metrics.count}</div>
-                                  <div className="text-sm text-gray-600 poppins">ORDERS</div>
-                                </div>
-                                <div className="p-2 flex flex-col items-center justify-center text-center border-r-2 border-b-2 border-gray-400">
-                                  <div className="text-xl font-bold text-green-600">₹{metrics.total_revenue?.toFixed(2)}</div>
-                                  <div className="text-sm text-gray-600 poppins">REVENUE</div>
-                                </div>
-                                <div className="p-2 flex flex-col items-center justify-center text-center border-b-2 border-gray-400">
-                                  <div className="text-xl font-bold text-purple-600">₹{metrics.avg_order_value?.toFixed(2)}</div>
-                                  <div className="text-sm text-gray-600 poppins">AOV</div>
-                                </div>
-                              </div>
-
-                              {/* Payment Distribution */}
-                              <div className="px-2 border-b-2 border-gray-400">
-                                <p className="oswald text-lg -mb-2">PAYMENT</p>
-                                <div className="w-full h-30 flex justify-center items-center relative">
-                                  <canvas
-                                    ref={(el) => {
-                                      if (el) {
-                                        setTimeout(() => createPaymentChart(el, metrics, stateName), 100);
-                                      }
-                                    }}
-                                    className="w-full h-full -my-3"
-                                  />
-                                  {/* Center label */}
-                                  <div className="absolute bottom-2 flex items-center justify-center pointer-events-none">
-                                    <div className="text-center">
-                                      <div className="text-md font-bold poppins">
-                                        {Object.values(metrics.payment_mode_distribution || {}).reduce((a, b) => a + b, 0)}
-                                      </div>
-                                      <div className="text-sm text-gray-500 poppins">TOTAL</div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* Order Status Distribution */}
-                              <div className="p-2 border-b-2 border-gray-400">
-                                <p className="oswald text-lg mb-2">ORDER STATUS</p>
-                                <div className="grid grid-cols-3 text-xs">
-                                  {Object.entries(metrics.order_status_distribution || {}).map(([status, count]) => (
-                                    <div key={status} className="p-2 text-center">
-                                      <div className="font-bold text-md">{count}</div>
-                                      <div className="text-gray-600 text-sm uppercase">{status}</div>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-
-                              {/* Top Cities */}
-                              <div className="p-2 rounded-lg max-h-32 overflow-y-auto">
-                                <p className="oswald text-lg mb-2">TOP CITIES</p>
-                                <div className="space-y-1">
-                                  {Object.entries(metrics.top_cities || {})
-                                    .sort(([, a], [, b]) => b - a)
-                                    .slice(0, 5)
-                                    .map(([city, count]) => (
-                                      <div key={city} className="flex justify-between text-sm">
-                                        <span className="text-gray-700">{city}</span>
-                                        <span className="font-medium">{count}</span>
-                                      </div>
-                                    ))}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </CarouselItem>
-                      ))}
-
-                    </CarouselContent>
-                  </Carousel>
-                )}
-
-                <div className='z-50 flex flex-col w-1/2 h-full gap-4'>
-
-                  <div className="pointer-events-auto select-none relative rounded-xl  border border-blue-200 w-full h-fit!" onClick={() => setIsOpen(false)}>
-                    <div className='flex flex-row items-center justify-between bg-[#001FB0] rounded-t-xl h-fit cursor-pointer'>
-                      <span className="block text-md py-2 px-4 text-white rounded-t-xl oswald">GROUPS</span>
-                      <svg className={`h-4 px-4 transition-transform duration-200 ease-in`} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M19 5L12.7071 11.2929C12.3166 11.6834 11.6834 11.6834 11.2929 11.2929L5 5" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M19 13L12.7071 19.2929C12.3166 19.6834 11.6834 19.6834 11.2929 19.2929L5 13" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
-                    </div>
-
-                    <div className={`flex flex-row overflow-y-hidden h-full oswald`}>
-                      {groups.map((group, index) => {
-                        const letters = ['A', 'B'];
-                        const borderClasses = [
-                          'border-r-2 border-gray-400',  // top item
-                          ''               // bottom item
-                        ];
-
-                        return (
-                          <div key={index} className="h-full w-full flex flex-col gap-0">
-                            <button className={`p-2 py-3 ${borderClasses[index]} w-full text-center flex flex-col justify-center items-center gap-2`}>
-                              <div className="font-bold text-white rounded-full w-8 h-8 text-md bg-[#001FB0] flex items-center justify-center">
-                                <span>{letters[index]}</span>
-                              </div>
-                              {typeof group === 'string' ? group.toUpperCase() : group.name?.toUpperCase() || 'UNKNOWN'}
-                            </button>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* insights */}
-                  <div className="pointer-events-auto select-none relative rounded-xl  border border-blue-200 w-full h-fit!" onClick={() => setIsOpen(false)}>
-                    <div className='flex flex-row items-center justify-between bg-[#001FB0] rounded-t-xl h-fit cursor-pointer'>
-                      <span className="block text-md py-2 px-4 text-white rounded-t-xl oswald">INSIGHTS</span>
-                      <svg className={`h-4 px-4 transition-transform duration-200 ease-in`} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M19 5L12.7071 11.2929C12.3166 11.6834 11.6834 11.6834 11.2929 11.2929L5 5" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M19 13L12.7071 19.2929C12.3166 19.6834 11.6834 19.6834 11.2929 19.2929L5 13" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
-                    </div>
-
-                    <div className='rounded-b-xl p-1 h-96 overflow-y-scroll bg-gray-50 poppins'>
-                      <ReactMarkdown
-                        components={{
-                          // Style bullet points
-                          ul: ({ children }) => (
-                            <ul className="space-y-3 list-none pl-0!">
-                              {children}
-                            </ul>
-                          ),
-                          // Style individual list items
-                          li: ({ children }) => (
-                            <li className="relative border-b border-gray-200 py-4">
-                              <div className="flex items-start gap-3">
-                                <div className="ml-5! w-2 h-2 bg-blue-600 border-2 border-blue-600 rounded-full mt-2 flex-shrink-0"></div>
-                                <div className=" text-sm text-gray-700 leading-relaxed poppins">
-                                  {children}
-                                </div>
-                              </div>
-                            </li>
-                          ),
-                          // Style bold text
-                          strong: ({ children }) => (
-                            <strong className="text-blue-700 font-semibold">
-                              {children}
-                            </strong>
-                          ),
-                          // Style paragraphs
-                          p: ({ children }) => (
-                            <span className="text-gray-600">
-                              {children}
-                            </span>
-                          )
-                        }}
-                      >
-                        {insights}
-                      </ReactMarkdown>
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-
-
-              {/* insights + comparison card */}
-
-              {/* in this time range */}
-            </div>
+          {isSuccess && searchType === "schema_discovery" && (
+            <SchemaDiscovery metric_analysis={metric_analysis} metric_calculated={metric_calculated} />
           )}
 
           {isSuccess && searchData && searchData.length === 0 && (

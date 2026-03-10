@@ -8,14 +8,13 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "@/components/ui/carousel"
-import { cn } from "@/lib/utils"
 import MetricGrid from "./MetricGrid";
-import OrderCountChart from '../charts/orderCount';
-import RevenueLineChart from "../charts/revenueLine";
-import PaymentRadial from "../charts/paymentRadial";
-import CancellationBarChart from "../charts/cancellationBar";
-import ProductImage from "../charts/productImage";
-import StatePincode from "../charts/statePincode";
+import OrderCountChart from '../../charts/orderCount';
+import RevenueLineChart from "../../charts/revenueLine";
+import PaymentRadial from "../../charts/paymentRadial";
+import CancellationBarChart from "../../charts/cancellationBar";
+import ProductImage from "../../charts/productImage";
+import StatePincode from "../../charts/statePincode";
 
 export default function MetricCarousel({ metrics, searchData, isSuccess }) {
     const [selectedState, setSelectedState] = useState(null);

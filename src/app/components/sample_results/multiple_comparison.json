@@ -1,0 +1,656 @@
+{
+    "state": "success",
+    "context": {
+        "query": "compare orders from maharashtra, telangana and karnataka in the past week.",
+        "data": {
+            "success": true,
+            "query_type": "comparison",
+            "request_id": "c69e5556",
+            "summarized_query": "Compare orders across states yesterday",
+            "insights": "- **Order Volume Comparison:** Maharashtra leads with **66 orders**, while Telangana records **17 orders** (‑74.2 % vs. baseline) and Karnataka records **47 orders** (‑28.8 % vs. baseline).  \n- **Revenue Performance:** Maharashtra generates **₹38,128.66** in revenue, compared to Telangana’s **₹11,822.65** (‑68.99 % diff) and Karnataka’s **₹29,116.00** (‑23.64 % diff).  \n- **Average Order Value (AOV) Trends:** Telangana’s AOV is **₹695.45**, which is **20.38 % higher** than Maharashtra’s **₹577.71**; Karnataka’s AOV is **₹619.49**, **7.23 % higher** than Maharashtra’s baseline.  \n- **Payment Mode Distribution:** Maharashtra shows a COD‑dominant pattern (**37 COD** vs. **29 Pre‑Paid**); Telangana leans toward Pre‑Paid (**5 Pre‑Paid** vs. **12 COD**); Karnataka is nearly balanced (**24 Pre‑Paid** vs. **23 COD**).  \n- **Order Status Outcomes:** Maharashtra has **39 Shipped**, **20 Open**, and **3 Cancelled** orders; Telangana shows **8 Shipped**, **7 Open**, and **1 Cancelled**; Karnataka records **16 Shipped**, **25 Open**, and **5 Cancelled**, indicating higher open/pending fulfillment in Karnataka.  \n- **Geographic Concentration:** Maharashtra’s top city, Mumbai, accounts for **19 orders** (≈28.8 % of state volume); Telangana’s Hyderabad contributes **10 orders** (≈58.8 % of state volume); Karnataka’s Bangalore contributes **38 orders** (≈80.9 % of state volume).  \n- **State‑Level Share of Total:** Maharashtra represents **50.8 %** of the combined 130 orders, Telangana **13.1 %**, and Karnataka **36.2 %**; however, Karnataka’s “top_states” includes **22 null** entries, suggesting data capture issues.  \n- **Market Context Insight:** No specific news was found for the period, but industry trends show a **~12 % YoY growth in Indian footwear e‑commerce**, driven by festive season demand and increasing online adoption; economic slowdown pressures may amplify reliance on COD, explaining Maharashtra’s higher COD share despite lower AOV.  \n- **Actionable Takeaway:** Leverage Maharashtra’s volume leadership to pilot targeted promotions that boost AOV (e.g., bundle offers), while exploring Karnataka’s high AOV potential by enhancing Pre‑Paid incentives to reduce open orders and improve fulfillment efficiency.",
+            "comparison_data": {
+                "comparison_type": "multi_group",
+                "comparison_mode": true,
+                "comparison_param": "state",
+                "num_groups": 3,
+                "groups": [
+                    "maharashtra",
+                    "telangana",
+                    "karnataka"
+                ],
+                "baseline": "maharashtra",
+                "group_summaries": {
+                    "maharashtra": {
+                        "order_count": 66,
+                        "total_revenue": 38128.66259999999,
+                        "avg_order_value": 577.707009090909,
+                        "payment_mode_distribution": {
+                            "COD": 37,
+                            "PrePaid": 29
+                        },
+                        "order_status_distribution": {
+                            "Shipped": 39,
+                            "Manifest Scanned": 4,
+                            "Open": 20,
+                            "Cancelled": 3
+                        },
+                        "top_cities": {
+                            "Mumbai": 19,
+                            "Raigad": 1,
+                            "thane": 1,
+                            "Akola": 3,
+                            "Bhiwandi": 17,
+                            "Pune": 4,
+                            "Baramati": 1,
+                            "Panvel": 1,
+                            "Kolhapur": 1,
+                            "Nagpur": 2,
+                            "Virar": 1,
+                            "Ratnagiri": 1,
+                            "Navi Mumbai": 2,
+                            "MUMBAI": 3,
+                            "Wagholi": 1,
+                            "Thane": 2,
+                            "Navi mumbai": 2,
+                            "Vasai": 1,
+                            "Roha": 1,
+                            "Sanaswadi": 1,
+                            "Malvan": 1
+                        },
+                        "top_states": {
+                            "Maharashtra": 66
+                        }
+                    },
+                    "telangana": {
+                        "order_count": 17,
+                        "total_revenue": 11822.65,
+                        "avg_order_value": 695.4499999999999,
+                        "payment_mode_distribution": {
+                            "PrePaid": 5,
+                            "COD": 12
+                        },
+                        "order_status_distribution": {
+                            "Open": 7,
+                            "Shipped": 8,
+                            "Manifest Scanned": 1,
+                            "Cancelled": 1
+                        },
+                        "top_cities": {
+                            "Hyderabad": 10,
+                            "Warangal": 1,
+                            "Rangareddy": 1,
+                            "Jogipet": 1,
+                            "MEDCHAL MALKAJGIRI": 1,
+                            "Khammam": 2,
+                            "Medchal": 1
+                        },
+                        "top_states": {
+                            "Telangana": 17
+                        }
+                    },
+                    "karnataka": {
+                        "order_count": 47,
+                        "total_revenue": 29116.0003,
+                        "avg_order_value": 619.4893680851063,
+                        "payment_mode_distribution": {
+                            "PrePaid": 24,
+                            "COD": 23
+                        },
+                        "order_status_distribution": {
+                            "Open": 25,
+                            "Shipped": 16,
+                            "Cancelled": 5,
+                            "Manifest Scanned": 1
+                        },
+                        "top_cities": {
+                            "Bangalore": 38,
+                            "Bengaluru": 1,
+                            "Doddaballapura": 1,
+                            "Dharwad": 1,
+                            "Hiriyur": 1,
+                            "Hassan": 1,
+                            "Tumakuru": 1,
+                            "Mysore": 1,
+                            "BENGALURU": 1,
+                            "Belgaum": 1
+                        },
+                        "top_states": {
+                            "null": 22,
+                            "Karnataka": 25
+                        }
+                    }
+                },
+                "comparisons_to_baseline": {
+                    "telangana": {
+                        "order_count_diff": -49,
+                        "order_count_diff_pct": -74.24242424242425,
+                        "revenue_diff": -26306.012599999987,
+                        "revenue_diff_pct": -68.99274930246307,
+                        "avg_order_value_diff": 117.74299090909096,
+                        "avg_order_value_diff_pct": 20.38109094337866
+                    },
+                    "karnataka": {
+                        "order_count_diff": -19,
+                        "order_count_diff_pct": -28.78787878787879,
+                        "revenue_diff": -9012.662299999989,
+                        "revenue_diff_pct": -23.637499155294243,
+                        "avg_order_value_diff": 41.78235899419735,
+                        "avg_order_value_diff_pct": 7.232447994693173
+                    }
+                },
+                "overall_winners": {
+                    "by_volume": "maharashtra",
+                    "by_revenue": "maharashtra",
+                    "by_avg_value": "telangana"
+                }
+            },
+            "detailed_metrics": {
+                "maharashtra": {
+                    "count": 66,
+                    "total_revenue": 38128.66259999999,
+                    "avg_order_value": 577.707009090909,
+                    "payment_mode_distribution": {
+                        "COD": 37,
+                        "PrePaid": 29
+                    },
+                    "order_status_distribution": {
+                        "Shipped": 39,
+                        "Manifest Scanned": 4,
+                        "Open": 20,
+                        "Cancelled": 3
+                    },
+                    "top_cities": {
+                        "Mumbai": 19,
+                        "Raigad": 1,
+                        "thane": 1,
+                        "Akola": 3,
+                        "Bhiwandi": 17,
+                        "Pune": 4,
+                        "Baramati": 1,
+                        "Panvel": 1,
+                        "Kolhapur": 1,
+                        "Nagpur": 2,
+                        "Virar": 1,
+                        "Ratnagiri": 1,
+                        "Navi Mumbai": 2,
+                        "MUMBAI": 3,
+                        "Wagholi": 1,
+                        "Thane": 2,
+                        "Navi mumbai": 2,
+                        "Vasai": 1,
+                        "Roha": 1,
+                        "Sanaswadi": 1,
+                        "Malvan": 1
+                    },
+                    "top_states": {
+                        "Maharashtra": 66
+                    }
+                },
+                "telangana": {
+                    "count": 17,
+                    "total_revenue": 11822.65,
+                    "avg_order_value": 695.4499999999999,
+                    "payment_mode_distribution": {
+                        "PrePaid": 5,
+                        "COD": 12
+                    },
+                    "order_status_distribution": {
+                        "Open": 7,
+                        "Shipped": 8,
+                        "Manifest Scanned": 1,
+                        "Cancelled": 1
+                    },
+                    "top_cities": {
+                        "Hyderabad": 10,
+                        "Warangal": 1,
+                        "Rangareddy": 1,
+                        "Jogipet": 1,
+                        "MEDCHAL MALKAJGIRI": 1,
+                        "Khammam": 2,
+                        "Medchal": 1
+                    },
+                    "top_states": {
+                        "Telangana": 17
+                    }
+                },
+                "karnataka": {
+                    "count": 47,
+                    "total_revenue": 29116.0003,
+                    "avg_order_value": 619.4893680851063,
+                    "payment_mode_distribution": {
+                        "PrePaid": 24,
+                        "COD": 23
+                    },
+                    "order_status_distribution": {
+                        "Open": 25,
+                        "Shipped": 16,
+                        "Cancelled": 5,
+                        "Manifest Scanned": 1
+                    },
+                    "top_cities": {
+                        "Bangalore": 38,
+                        "Bengaluru": 1,
+                        "Doddaballapura": 1,
+                        "Dharwad": 1,
+                        "Hiriyur": 1,
+                        "Hassan": 1,
+                        "Tumakuru": 1,
+                        "Mysore": 1,
+                        "BENGALURU": 1,
+                        "Belgaum": 1
+                    },
+                    "top_states": {
+                        "null": 22,
+                        "Karnataka": 25
+                    }
+                }
+            },
+            "comparison_results": {
+                "comparison_type": "multi_group",
+                "comparison_mode": true,
+                "comparison_param": "state",
+                "num_groups": 3,
+                "groups": [
+                    "maharashtra",
+                    "telangana",
+                    "karnataka"
+                ],
+                "baseline": "maharashtra",
+                "group_summaries": {
+                    "maharashtra": {
+                        "order_count": 66,
+                        "total_revenue": 38128.66259999999,
+                        "avg_order_value": 577.707009090909,
+                        "payment_mode_distribution": {
+                            "COD": 37,
+                            "PrePaid": 29
+                        },
+                        "order_status_distribution": {
+                            "Shipped": 39,
+                            "Manifest Scanned": 4,
+                            "Open": 20,
+                            "Cancelled": 3
+                        },
+                        "top_cities": {
+                            "Mumbai": 19,
+                            "Raigad": 1,
+                            "thane": 1,
+                            "Akola": 3,
+                            "Bhiwandi": 17,
+                            "Pune": 4,
+                            "Baramati": 1,
+                            "Panvel": 1,
+                            "Kolhapur": 1,
+                            "Nagpur": 2,
+                            "Virar": 1,
+                            "Ratnagiri": 1,
+                            "Navi Mumbai": 2,
+                            "MUMBAI": 3,
+                            "Wagholi": 1,
+                            "Thane": 2,
+                            "Navi mumbai": 2,
+                            "Vasai": 1,
+                            "Roha": 1,
+                            "Sanaswadi": 1,
+                            "Malvan": 1
+                        },
+                        "top_states": {
+                            "Maharashtra": 66
+                        }
+                    },
+                    "telangana": {
+                        "order_count": 17,
+                        "total_revenue": 11822.65,
+                        "avg_order_value": 695.4499999999999,
+                        "payment_mode_distribution": {
+                            "PrePaid": 5,
+                            "COD": 12
+                        },
+                        "order_status_distribution": {
+                            "Open": 7,
+                            "Shipped": 8,
+                            "Manifest Scanned": 1,
+                            "Cancelled": 1
+                        },
+                        "top_cities": {
+                            "Hyderabad": 10,
+                            "Warangal": 1,
+                            "Rangareddy": 1,
+                            "Jogipet": 1,
+                            "MEDCHAL MALKAJGIRI": 1,
+                            "Khammam": 2,
+                            "Medchal": 1
+                        },
+                        "top_states": {
+                            "Telangana": 17
+                        }
+                    },
+                    "karnataka": {
+                        "order_count": 47,
+                        "total_revenue": 29116.0003,
+                        "avg_order_value": 619.4893680851063,
+                        "payment_mode_distribution": {
+                            "PrePaid": 24,
+                            "COD": 23
+                        },
+                        "order_status_distribution": {
+                            "Open": 25,
+                            "Shipped": 16,
+                            "Cancelled": 5,
+                            "Manifest Scanned": 1
+                        },
+                        "top_cities": {
+                            "Bangalore": 38,
+                            "Bengaluru": 1,
+                            "Doddaballapura": 1,
+                            "Dharwad": 1,
+                            "Hiriyur": 1,
+                            "Hassan": 1,
+                            "Tumakuru": 1,
+                            "Mysore": 1,
+                            "BENGALURU": 1,
+                            "Belgaum": 1
+                        },
+                        "top_states": {
+                            "null": 22,
+                            "Karnataka": 25
+                        }
+                    }
+                },
+                "comparisons_to_baseline": {
+                    "telangana": {
+                        "order_count_diff": -49,
+                        "order_count_diff_pct": -74.24242424242425,
+                        "revenue_diff": -26306.012599999987,
+                        "revenue_diff_pct": -68.99274930246307,
+                        "avg_order_value_diff": 117.74299090909096,
+                        "avg_order_value_diff_pct": 20.38109094337866
+                    },
+                    "karnataka": {
+                        "order_count_diff": -19,
+                        "order_count_diff_pct": -28.78787878787879,
+                        "revenue_diff": -9012.662299999989,
+                        "revenue_diff_pct": -23.637499155294243,
+                        "avg_order_value_diff": 41.78235899419735,
+                        "avg_order_value_diff_pct": 7.232447994693173
+                    }
+                },
+                "overall_winners": {
+                    "by_volume": "maharashtra",
+                    "by_revenue": "maharashtra",
+                    "by_avg_value": "telangana"
+                }
+            },
+            "comparison_groups": [
+                {
+                    "group_id": "maharashtra",
+                    "filters": {
+                        "state": "Maharashtra"
+                    }
+                },
+                {
+                    "group_id": "telangana",
+                    "filters": {
+                        "state": "Telangana"
+                    }
+                },
+                {
+                    "group_id": "karnataka",
+                    "filters": {
+                        "state": "Karnataka"
+                    }
+                }
+            ]
+        },
+        "error": null,
+        "metrics": {
+            "success": true,
+            "total_orders_analyzed": 2043,
+            "analysis_timestamp": "2026-02-28T17:08:55.554476",
+            "metrics": {
+                "volume_metrics": {
+                    "total_orders": 2043,
+                    "total_skus_sold": 16439,
+                    "net_skus_sold": 16875,
+                    "unique_skus_ordered": 1564,
+                    "state_wise_order_count": {
+                        "Maharashtra": 446,
+                        "Telangana": 185,
+                        "Uttar Pradesh": 169,
+                        "Gujarat": 155,
+                        "Karnataka": 136,
+                        "Delhi": 121,
+                        "Andhra Pradesh": 99,
+                        "Rajasthan": 97,
+                        "Assam": 78,
+                        "Tamil Nadu": 78,
+                        "Madhya Pradesh": 70,
+                        "Bihar": 64,
+                        "Haryana": 64,
+                        "West Bengal": 56,
+                        "Odisha": 43,
+                        "Punjab": 31,
+                        "Chhattisgarh": 27,
+                        "Arunachal Pradesh": 17,
+                        "Jharkhand": 16,
+                        "Uttarakhand": 14,
+                        "Mizoram": 14,
+                        "Kerala": 13,
+                        "Manipur": 11,
+                        "Meghalaya": 9,
+                        "Nagaland": 7,
+                        "Goa": 5,
+                        "Chandigarh": 4,
+                        "Himachal Pradesh": 3,
+                        "Tripura": 3,
+                        "Dadra & Nagar Haveli and Daman & Diu": 2,
+                        "Jammu & Kashmir": 2,
+                        "Sikkim": 2,
+                        "Daman and Diu": 1,
+                        "Andaman & Nicobar Islands": 1
+                    }
+                },
+                "revenue_metrics": {
+                    "gross_revenue": 1381830.1135,
+                    "gross_margin": -498940.8865,
+                    "aov": 676.3730364659814,
+                    "asp": 339.59943229294663
+                },
+                "payment_metrics": {
+                    "cod_vs_prepaid": {
+                        "cod_orders": 1360,
+                        "prepaid_orders": 683,
+                        "cod_percentage": 66.5687714145864,
+                        "prepaid_percentage": 33.431228585413606
+                    },
+                    "payment_mode_breakdown": {
+                        "COD": 1360,
+                        "PrePaid": 681,
+                        "Online": 2
+                    }
+                },
+                "cancellation_metrics": {
+                    "rto_rate": 20.802741067058246,
+                    "cancellation_rate": 8.418991678903573,
+                    "cancelled_orders": 172,
+                    "rto_orders": 425,
+                    "highest_state_rto": "Maharashtra"
+                },
+                "time_based_metrics": {
+                    "day_wise_frequency": {
+                        "2026-02-01": 328,
+                        "2026-02-02": 328,
+                        "2026-02-03": 328,
+                        "2026-02-04": 276,
+                        "2026-02-05": 256,
+                        "2026-02-06": 276,
+                        "2026-02-07": 251
+                    },
+                    "moving_average_7d": {
+                        "2026-02-01": 328,
+                        "2026-02-02": 328,
+                        "2026-02-03": 328,
+                        "2026-02-04": 315,
+                        "2026-02-05": 303.2,
+                        "2026-02-06": 298.6666666666667,
+                        "2026-02-07": 291.85714285714283
+                    },
+                    "avg_inventory_assignment_time_hours": 2.939534356909137,
+                    "avg_qc_time_hours": -0.8761663163794312,
+                    "avg_order_processing_time_hours": 2.063368040529706
+                },
+                "geographic_metrics": {
+                    "state_wise_order_count": {
+                        "Maharashtra": 446,
+                        "Telangana": 185,
+                        "Uttar Pradesh": 169,
+                        "Gujarat": 155,
+                        "Karnataka": 136,
+                        "Delhi": 121,
+                        "Andhra Pradesh": 99,
+                        "Rajasthan": 97,
+                        "Assam": 78,
+                        "Tamil Nadu": 78,
+                        "Madhya Pradesh": 70,
+                        "Bihar": 64,
+                        "Haryana": 64,
+                        "West Bengal": 56,
+                        "Odisha": 43,
+                        "Punjab": 31,
+                        "Chhattisgarh": 27,
+                        "Arunachal Pradesh": 17,
+                        "Jharkhand": 16,
+                        "Uttarakhand": 14,
+                        "Mizoram": 14,
+                        "Kerala": 13,
+                        "Manipur": 11,
+                        "Meghalaya": 9,
+                        "Nagaland": 7,
+                        "Goa": 5,
+                        "Chandigarh": 4,
+                        "Himachal Pradesh": 3,
+                        "Tripura": 3,
+                        "Dadra & Nagar Haveli and Daman & Diu": 2,
+                        "Jammu & Kashmir": 2,
+                        "Sikkim": 2,
+                        "Daman and Diu": 1,
+                        "Andaman & Nicobar Islands": 1
+                    },
+                    "revenue_by_state": {
+                        "Andaman & Nicobar Islands": 754,
+                        "Andhra Pradesh": 73083.7302,
+                        "Arunachal Pradesh": 11620.08,
+                        "Assam": 55812.6096,
+                        "Bihar": 47691.6899,
+                        "Chandigarh": 2505.1,
+                        "Chhattisgarh": 17961.64,
+                        "Dadra & Nagar Haveli and Daman & Diu": 1374,
+                        "Daman and Diu": 1049,
+                        "Delhi": 80287.5321,
+                        "Goa": 3383,
+                        "Gujarat": 115675.9503,
+                        "Haryana": 43281.4201,
+                        "Himachal Pradesh": 1658,
+                        "Jammu & Kashmir": 1357,
+                        "Jharkhand": 14054.1,
+                        "Karnataka": 90680.27,
+                        "Kerala": 10022.05,
+                        "Madhya Pradesh": 42888.9698,
+                        "Maharashtra": 245126.5004,
+                        "Manipur": 7193.2,
+                        "Meghalaya": 6470,
+                        "Mizoram": 9018.1004,
+                        "Nagaland": 4949.1,
+                        "Odisha": 32058.15,
+                        "Punjab": 22994.21,
+                        "Rajasthan": 74813.9098,
+                        "Sikkim": 1597,
+                        "Tamil Nadu": 58796.2403,
+                        "Telangana": 131413.7404,
+                        "Tripura": 3370,
+                        "Uttar Pradesh": 116465.9503,
+                        "Uttarakhand": 9227.14,
+                        "West Bengal": 43196.7299
+                    },
+                    "cancellation_by_state": {
+                        "Andaman & Nicobar Islands": 0,
+                        "Andhra Pradesh": 14.14141414141414,
+                        "Arunachal Pradesh": 5.88235294117647,
+                        "Assam": 3.8461538461538463,
+                        "Bihar": 6.25,
+                        "Chandigarh": 0,
+                        "Chhattisgarh": 7.4074074074074066,
+                        "Dadra & Nagar Haveli and Daman & Diu": 0,
+                        "Daman and Diu": 0,
+                        "Delhi": 4.132231404958678,
+                        "Goa": 0,
+                        "Gujarat": 12.258064516129032,
+                        "Haryana": 6.25,
+                        "Himachal Pradesh": 0,
+                        "Jammu & Kashmir": 0,
+                        "Jharkhand": 6.25,
+                        "Karnataka": 11.76470588235294,
+                        "Kerala": 7.6923076923076925,
+                        "Madhya Pradesh": 8.571428571428571,
+                        "Maharashtra": 6.950672645739911,
+                        "Manipur": 0,
+                        "Meghalaya": 11.11111111111111,
+                        "Mizoram": 0,
+                        "Nagaland": 14.285714285714285,
+                        "Odisha": 13.953488372093023,
+                        "Punjab": 3.225806451612903,
+                        "Rajasthan": 7.216494845360824,
+                        "Sikkim": 50,
+                        "Tamil Nadu": 11.538461538461538,
+                        "Telangana": 7.027027027027027,
+                        "Tripura": 0,
+                        "Uttar Pradesh": 10.059171597633137,
+                        "Uttarakhand": 7.142857142857142,
+                        "West Bengal": 14.285714285714285
+                    }
+                },
+                "product_metrics": {
+                    "top_skus_by_quantity": {
+                        "11300-710-7": 216,
+                        "10410-230-9": 212,
+                        "10410-230-8": 211,
+                        "10410-230-7": 207,
+                        "10410-235-9": 206,
+                        "10410-235-8": 206,
+                        "10410-235-7": 186,
+                        "22000-165-5": 154,
+                        "22000-165-6": 154,
+                        "11300-705-7": 153
+                    },
+                    "top_skus_by_revenue": {
+                        "10400-435-8": 22120.02,
+                        "10700-400-8": 19992.79,
+                        "10400-400-8": 18192.54,
+                        "10700-400-9": 17418.14,
+                        "10400-405-9": 14319.69,
+                        "12000-100-5": 14235.25,
+                        "10400-435-7": 13637.98,
+                        "10400-400-10": 13569.3,
+                        "10400-435-10": 12993.03,
+                        "10700-400-10": 12574.16
+                    },
+                    "top_products_by_quantity": {
+                        "GRACE": 1651,
+                        "10410-230_MI TRUE_White_Men": 846,
+                        "WISP": 809,
+                        "PURE": 782,
+                        "10410-235_MI TRUE_Navy Blue_Men": 778,
+                        "11300-705_PLUSH_Sea & Green_Women": 445,
+                        "11300-710_PLUSH_Beige_Women": 424,
+                        "CHUPSTER": 379,
+                        "10700-400_Edge_Blue & Grey_Men": 371,
+                        "DOT FUSION": 345
+                    }
+                }
+            }
+        }
+    },
+    "isLoading": false,
+    "isSuccess": true,
+    "isError": false
+}

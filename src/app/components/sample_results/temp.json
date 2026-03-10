@@ -1,0 +1,230 @@
+{
+    "success": true,
+    "query": "calculate the net loss occurred from returned products yesterday.",
+    "reasoning_mode": "react",
+    "plan": {
+        "plan_type": "reasoning_enhanced",
+        "reasoning_strategy": "The query requires a multi‑stage analytical pipeline: first retrieve raw order data for the relevant date, then isolate returned products, compute the monetary loss per return, aggregate those losses into a net loss figure, and finally translate the numeric result into a clear business insight. Each step depends on the output of the previous one, and verification at each stage ensures logical consistency before proceeding.",
+        "steps": [
+            {
+                "id": "step1",
+                "tool": "get_all_orders_recent",
+                "params": {
+                    "date_range": {
+                        "start": "yesterday",
+                        "end": "yesterday"
+                    }
+                },
+                "save_as": "orders_raw",
+                "depends_on": [],
+                "reasoning_purpose": "Establish the base dataset containing all orders placed yesterday, which is necessary to isolate returned items and compute loss.",
+                "expected_insight": "A raw table of orders with fields such as order_id, product_id, return_status, original_price, refunded_amount, and order_date.",
+                "verification_criteria": "The returned dataset must contain at least one record and include the required fields for subsequent filtering and metric calculation.",
+                "confidence_tracking": true,
+                "error_handling": {
+                    "retry_strategy": "standard",
+                    "fallback_approach": "continue with available data"
+                }
+            },
+            {
+                "id": "step2",
+                "tool": "apply_filters",
+                "params": {
+                    "filters": [
+                        {
+                            "field": "return_status",
+                            "operator": "equals",
+                            "value": "returned"
+                        },
+                        {
+                            "field": "order_date",
+                            "operator": "equals",
+                            "value": "yesterday"
+                        }
+                    ]
+                },
+                "save_as": "returned_orders",
+                "depends_on": [
+                    "orders_raw"
+                ],
+                "reasoning_purpose": "Narrow the dataset to only those orders that were returned on the target date, isolating the relevant subset for loss calculation.",
+                "expected_insight": "A filtered table of returned orders that can be directly used to compute monetary loss.",
+                "verification_criteria": "All records in returned_orders must have return_status = 'returned' and order_date = yesterday; row count should match expectations based on step1.",
+                "confidence_tracking": true,
+                "error_handling": {
+                    "retry_strategy": "standard",
+                    "fallback_approach": "continue with available data"
+                }
+            },
+            {
+                "id": "step3",
+                "tool": "calculate_metrics",
+                "params": {
+                    "metric_definition": {
+                        "name": "net_loss",
+                        "expression": "original_price - refunded_amount"
+                    },
+                    "aggregation": "sum"
+                },
+                "save_as": "loss_values",
+                "depends_on": [
+                    "returned_orders"
+                ],
+                "reasoning_purpose": "Quantify the monetary loss associated with each returned product and aggregate these into a total net loss figure.",
+                "expected_insight": "A single numeric value representing the total net loss from returned products yesterday.",
+                "verification_criteria": "The computed loss must be a non‑negative number and the operation should complete without errors; the result should be stored under the key 'net_loss'.",
+                "confidence_tracking": true,
+                "error_handling": {
+                    "retry_strategy": "standard",
+                    "fallback_approach": "continue with available data"
+                }
+            },
+            {
+                "id": "step4",
+                "tool": "group_and_aggregate",
+                "params": {
+                    "group_by": [],
+                    "aggregations": {
+                        "total_net_loss": "sum"
+                    }
+                },
+                "save_as": "net_loss_total",
+                "depends_on": [
+                    "loss_values"
+                ],
+                "reasoning_purpose": "Produce a final aggregated loss figure that can be directly reported as the answer to the query.",
+                "expected_insight": "The final net loss amount (e.g., $12,345.67) for returned products yesterday.",
+                "verification_criteria": "The output must match the aggregated loss from step3; a sanity check that the value is reasonable given the number of returned items.",
+                "confidence_tracking": true,
+                "error_handling": {
+                    "retry_strategy": "standard",
+                    "fallback_approach": "continue with available data"
+                }
+            },
+            {
+                "id": "step5",
+                "tool": "generate_insights",
+                "params": {
+                    "input": "net_loss_total",
+                    "context": "net loss from returned products yesterday"
+                },
+                "save_as": "final_insight",
+                "depends_on": [
+                    "net_loss_total"
+                ],
+                "reasoning_purpose": "Translate the numeric result into a concise, business‑oriented statement that answers the original query.",
+                "expected_insight": "A human‑readable insight such as \"The net loss from returned products yesterday was $12,345.67, indicating a 5% increase compared to the previous day.\"",
+                "verification_criteria": "The generated text must correctly reference the numeric value from step4 and be grammatically coherent; it should not introduce new numbers or misstate the metric.",
+                "confidence_tracking": true,
+                "error_handling": {
+                    "retry_strategy": "standard",
+                    "fallback_approach": "continue with available data"
+                }
+            }
+        ],
+        "verification_plan": [
+            {
+                "step_id": "step1",
+                "verification_method": "Inspect schema and row count of orders_raw; confirm presence of required fields.",
+                "confidence_indicators": [
+                    "row_count > 0",
+                    "has_field('return_status')",
+                    "has_field('original_price')",
+                    "has_field('refunded_amount')",
+                    "has_field('order_date')"
+                ]
+            },
+            {
+                "step_id": "step2",
+                "verification_method": "Validate that all records in returned_orders meet the filter criteria.",
+                "confidence_indicators": [
+                    "all(return_status == 'returned')",
+                    "all(order_date == 'yesterday')"
+                ]
+            },
+            {
+                "step_id": "step3",
+                "verification_method": "Check that loss_values is a single numeric entry and that the expression executed without errors.",
+                "confidence_indicators": [
+                    "is_numeric(loss_values)",
+                    "loss_values >= 0"
+                ]
+            },
+            {
+                "step_id": "step4",
+                "verification_method": "Confirm that net_loss_total equals the sum of loss_values and is a non‑negative number.",
+                "confidence_indicators": [
+                    "net_loss_total == sum(loss_values)",
+                    "net_loss_total >= 0"
+                ]
+            },
+            {
+                "step_id": "step5",
+                "verification_method": "Ensure the generated insight references the exact numeric value from step4 and is syntactically correct.",
+                "confidence_indicators": [
+                    "insight contains str(net_loss_total)",
+                    "no extraneous numeric values"
+                ]
+            }
+        ],
+        "synthesis_strategy": "Combine the verified numeric result from step4 with the contextual narrative produced in step5 to form the final answer. The numeric loss figure provides the quantitative answer, while the generated insight wraps it in a clear, business‑focused statement that directly addresses the user's request.",
+        "expected_output_format": "A concise paragraph that states the net loss amount and optionally adds a brief interpretation, e.g., \"The net loss from returned products yesterday was $12,345.67.\"",
+        "confidence_estimation": "High (≈92%). The pipeline uses deterministic tools, each step is explicitly verified, and the final insight is generated from a validated numeric result, leaving only minor ambiguity in natural‑language phrasing, which is mitigated by the verification criteria.",
+        "reasoning_checkpoints": [
+            {
+                "after_step": "step2",
+                "checkpoint_type": "data_validation",
+                "questions": [
+                    "Do we have sufficient data to proceed?",
+                    "Is the data quality acceptable?",
+                    "Are there any obvious data anomalies?"
+                ]
+            },
+            {
+                "after_step": "step4",
+                "checkpoint_type": "analysis_validation",
+                "questions": [
+                    "Do the results align with expectations?",
+                    "Are there any surprising findings that need investigation?",
+                    "Is the analysis comprehensive enough?"
+                ]
+            }
+        ],
+        "meta_reasoning_questions": [
+            "Are we gathering the right information to answer the query?",
+            "Do our intermediate results make logical sense?",
+            "Are we missing any important perspectives?",
+            "How confident are we in our analysis so far?"
+        ]
+    },
+    "reasoning_metadata": {
+        "complexity_analysis": {
+            "requires_reasoning": true,
+            "complexity_score": 5,
+            "reasoning_type": "analytical",
+            "key_challenges": [
+                "identifying returned products",
+                "defining net loss metric",
+                "filtering records for yesterday",
+                "aggregating loss values"
+            ],
+            "recommended_approach": "cot",
+            "reasoning_justification": "The query involves multiple sequential steps (filtering, metric calculation, aggregation) that require structured reasoning rather than a single lookup, making chain-of-thought the appropriate strategy."
+        },
+        "planned_reasoning_mode": "react",
+        "plan_type": "reasoning_enhanced"
+    },
+    "complexity_analysis": {
+        "requires_reasoning": true,
+        "complexity_score": 5,
+        "reasoning_type": "analytical",
+        "key_challenges": [
+            "identifying returned products",
+            "defining net loss metric",
+            "filtering records for yesterday",
+            "aggregating loss values"
+        ],
+        "recommended_approach": "cot",
+        "reasoning_justification": "The query involves multiple sequential steps (filtering, metric calculation, aggregation) that require structured reasoning rather than a single lookup, making chain-of-thought the appropriate strategy."
+    }
+}

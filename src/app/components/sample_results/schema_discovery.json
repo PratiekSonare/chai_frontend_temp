@@ -1,0 +1,58 @@
+{
+    "state": "success",
+    "context": {
+        "query": "compare orders from prepaid and cod from yesterday.",
+        "data": {
+            "success": true,
+            "query_type": "schema_discovery",
+            "request_id": "83edd6e7",
+            "summarized_query": "Available payment methods in orders",
+            "data": {
+                "entity": "orders",
+                "field": "payment_mode",
+                "field_info": {
+                    "type": "string",
+                    "description": "Payment method used",
+                    "allowed_values": [
+                        "PrePaid",
+                        "COD"
+                    ],
+                    "example": "PrePaid",
+                    "filterable": true,
+                    "categorical": true
+                }
+            },
+            "plan": {
+                "query_type": "schema_discovery",
+                "steps": [
+                    {
+                        "id": "step1",
+                        "tool": "get_schema_info",
+                        "params": {
+                            "entity": "orders",
+                            "field": "payment_mode"
+                        },
+                        "depends_on": [],
+                        "save_as": "schema_info"
+                    }
+                ],
+                "manipulation": {
+                    "required": false,
+                    "type": null
+                },
+                "base_params": {},
+                "tool": "get_schema_info"
+            }
+        },
+        "error": null,
+        "metrics": {
+            "success": true,
+            "total_orders_analyzed": 2043,
+            "analysis_timestamp": "2026-02-28T17:08:55.554476",
+            "metrics": {}
+        }
+    },
+    "isLoading": false,
+    "isSuccess": true,
+    "isError": false
+}
