@@ -1,4 +1,4 @@
-export default function Searchbar({ searchbarRef, placeholder, inputValue, setInputValue, onSearch, isError }) {
+export default function Searchbar({ searchbarRef, placeholder, inputValue, setInputValue, onSearch, isError, isSuccess }) {
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       onSearch(inputValue);
@@ -6,12 +6,12 @@ export default function Searchbar({ searchbarRef, placeholder, inputValue, setIn
   };
 
   return (
-    <div ref={searchbarRef} className="flex flex-col items-center" style={{width: "75%"}}>
+    <div ref={searchbarRef} className="flex flex-col items-center" style={{ width: "75%" }}>
       <div className="relative searchCard example-2 w-full">
         <div className="inner border border-blue-300 h-20">
           <div className='p-2 flex flex-row items-center justify-center h-full'>
             <svg className='w-8 ml-2' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fillRule="evenodd" clipRule="evenodd" d="M10 5C7.23858 5 5 7.23858 5 10C5 12.7614 7.23858 15 10 15C11.381 15 12.6296 14.4415 13.5355 13.5355C14.4415 12.6296 15 11.381 15 10C15 7.23858 12.7614 5 10 5ZM3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10C17 11.5719 16.481 13.0239 15.6063 14.1921L20.7071 19.2929C21.0976 19.6834 21.0976 20.3166 20.7071 20.7071C20.3166 21.0976 19.6834 21.0976 19.2929 20.7071L14.1921 15.6063C13.0239 16.481 11.5719 17 10 17C6.13401 17 3 13.866 3 10Z" fill="#001FB0"></path> </g></svg>
-            <input
+            <inputss
               className="flex-10/12 focus:outline-none !ml-3 poppins !text-lg transition-all duration-300"
               placeholder={placeholder}
               value={inputValue}
@@ -35,6 +35,14 @@ export default function Searchbar({ searchbarRef, placeholder, inputValue, setIn
             </button>
           </div>
         </div>
+
+        {isSuccess && (
+          <QueryDetails
+            inputQuery={searchState.context?.query}
+            summarizedQuery={responseData?.summarized_query || responseData?.query_summary}
+            logs={logs}
+          />
+        )}
       </div>
       <span className="absolute -top-5 text-xs py-1 px-4 bg-[#001FB0] text-white rounded-t-xl oswald">SEARCH</span>
     </div>

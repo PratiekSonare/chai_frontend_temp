@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import OrderDataCard from '../OrderDataCard';
 import './DataTableComponent.css';
 
@@ -11,9 +11,35 @@ export default function DataTableComponent({ data, summarized_query }) {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [clickPosition, setClickPosition] = useState(null);
 
+  // Refs for cleanup
+  const timeoutRef = useRef(null);
+  const tableInstanceRef = useRef(null);
+  const isInitializedRef = useRef(false);
+
+  // Create stable reference for data to prevent unnecessary re-initializations
+  const memoizedData = useMemo(() => data, [
+    data?.query_type,
+    data?.data?.length,
+    JSON.stringify(data?.data)
+  ]);
+
   // Initialize DataTables when data is available
   useEffect(() => {
-    if (data && data.query_type === "standard" && data.data && data.data.length > 0) {
+    // Clear any existing timeout
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+
+    if (memoizedData && memoizedData.query_type === "standard" && memoizedData.data && memoizedData.data.length > 0) {
+      // Check if DataTable is already initialized with the same data
+      if (isInitializedRef.current && tableInstanceRef.current) {
+        console.log('DataTable already initialized, skipping...');
+        return;
+      }
+
+      console.log('Initializing DataTable component...');
+
       const initDataTable = () => {
         try {
           // Use globally loaded jQuery and DataTables from CDN
@@ -23,16 +49,25 @@ export default function DataTableComponent({ data, summarized_query }) {
             return;
           }
 
-          // Wait for DOM to be ready
-          setTimeout(() => {
+          // Store timeout reference for cleanup
+          timeoutRef.current = setTimeout(() => {
             // Destroy existing DataTable if it exists
-            if ($.fn.DataTable.isDataTable('#dataTable')) {
-              $('#dataTable').DataTable().destroy();
-              $('#dataTable').empty();
+            if (tableInstanceRef.current) {
+              try {
+                tableInstanceRef.current.destroy();
+                tableInstanceRef.current = null;
+              } catch (e) {
+                console.warn('Error destroying existing DataTable:', e);
+              }
             }
 
+            if ($.fn.DataTable.isDataTable('#dataTable')) {
+              $('#dataTable').DataTable().destroy();
+            }
+            $('#dataTable').empty();
+
             // Get column names from data with orthogonal data support
-            const columns = Object.keys(data.data[0]).map((key, index) => {
+            const columns = Object.keys(memoizedData.data[0]).map((key, index) => {
 
               return {
                 title: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
@@ -79,7 +114,7 @@ export default function DataTableComponent({ data, summarized_query }) {
 
             // Initialize DataTable with enhanced features
             const table = $('#dataTable').DataTable({
-              data: data.data,
+              data: memoizedData.data,
               columns: columns,
               responsive: true,
               processing: true,
@@ -108,9 +143,13 @@ export default function DataTableComponent({ data, summarized_query }) {
 
               initComplete: function () {
                 console.log('DataTable initialized successfully');
+                isInitializedRef.current = true;
 
-                // Add click handler for nested data buttons
-                $(document).on('click', '.nested-data-btn', function (e) {
+                // Remove any existing handlers to prevent duplicates
+                $(document).off('click.datatable');
+
+                // Add click handler for nested data buttons with namespace
+                $(document).on('click.datatable', '.nested-data-btn', function (e) {
                   e.preventDefault();
                   const encodedData = $(this).data('encoded');
                   const title = $(this).data('title');
@@ -118,8 +157,8 @@ export default function DataTableComponent({ data, summarized_query }) {
                   handleOpenModal(decodedData, title);
                 });
 
-                // Add click handler for table rows to select order
-                $(document).on('click', 'tbody tr', function (e) {
+                // Add click handler for table rows to select order with namespace
+                $(document).on('click.datatable', 'tbody tr', function (e) {
                   const rowData = table.row(this).data();
                   setSelectedOrder(rowData);
                   setClickPosition({
@@ -130,30 +169,53 @@ export default function DataTableComponent({ data, summarized_query }) {
               }
             });
 
-            // Store table instance for toggle function
+            // Store table instance for cleanup
+            tableInstanceRef.current = table;
             window.dataTableInstance = table;
+            timeoutRef.current = null; // Clear timeout reference as it's completed
 
           }, 100);
         } catch (error) {
           console.error('Error initializing DataTable:', error);
+          timeoutRef.current = null;
         }
       };
 
       initDataTable();
+    } else {
+      console.log('Skipping DataTable initialization - invalid data or not standard query type');
     }
 
     return () => {
-      // Cleanup
+      // Clear timeout if component unmounts
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+
+      // Cleanup DataTable
       try {
+        if (tableInstanceRef.current) {
+          tableInstanceRef.current.destroy();
+          tableInstanceRef.current = null;
+        }
+
         const $ = window.$;
         if ($ && $.fn.DataTable && $.fn.DataTable.isDataTable('#dataTable')) {
           $('#dataTable').DataTable().destroy();
         }
+
+        // Remove event handlers with namespace
+        if ($) {
+          $(document).off('click.datatable');
+        }
+
+        isInitializedRef.current = false;
       } catch (e) {
-        // Silent cleanup
+        console.warn('Error during cleanup:', e);
       }
     };
-  }, [data]);
+  }, [memoizedData]); // Use memoized data instead of data
 
   // Function to render cell data
   const renderCellData = (data) => {

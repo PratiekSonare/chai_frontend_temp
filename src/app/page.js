@@ -22,9 +22,13 @@ import Comparison from './components/output/comparison/Comparison';
 import MetricAnalysis from './components/output/metric_analysis/MetricAnalysis';
 import SchemaDiscovery from './components/output/schema_discovery/SchemaDiscovery';
 
-import standardState from './components/sample_results/metric_analysis_response.json';
+// import standardState from './components/sample_results/schema_discovery.json';
+import QueryDetails from './components/QueryDetails';
 
 gsap.registerPlugin(ScrollTrigger);
+
+
+// const [searchState, setSearchState] = useState(standardState);
 
 export default function Home() {
 
@@ -37,40 +41,8 @@ export default function Home() {
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [status, setStatus] = useState("development");
   const [inputValue, setInputValue] = useState('');
-  // const [searchState, sendSearch] = useMachine(searchMachine);
-  const [searchState, setSearchState] = useState(standardState);
+  const [searchState, sendSearch] = useMachine(searchMachine);
   const chartInstancesRef = useRef({});
-
-  // Create a sendSearch function that mimics XState machine behavior for debugging
-  const sendSearch = useCallback((action) => {
-    console.log('Debug sendSearch action:', action);
-
-    // Handle different action types for debugging
-    switch (action.type) {
-      case 'SEARCH':
-        setSearchState(prev => ({ ...prev, state: 'loading', context: { ...prev.context, query: action.query } }));
-        // For debugging, immediately set to success state
-        setTimeout(() => {
-          setSearchState(standardState);
-        }, 1000);
-        break;
-      case 'SET_METRICS':
-        setSearchState(prev => ({ ...prev, context: { ...prev.context, metrics: action.metrics } }));
-        break;
-      case 'CANCEL':
-        setSearchState(prev => ({ ...prev, state: 'idle' }));
-        break;
-      case 'RETRY':
-        setSearchState(prev => ({ ...prev, state: 'loading' }));
-        setTimeout(() => setSearchState(standardState), 1000);
-        break;
-      case 'RESET':
-        setSearchState({ state: 'idle', context: {}, isLoading: false, isSuccess: false, isError: false });
-        break;
-      default:
-        console.log('Unknown action type:', action.type);
-    }
-  }, []);
 
   const [metricsLoading, setMetricsLoading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -84,32 +56,35 @@ export default function Home() {
   const [viewLogs, setViewLogs] = useState(true); // Enable logs by default
   const eventSourceRef = useRef(null);
 
-  // Extract search state data
-  // const isLoading = searchState.matches('loading');
-  // const isSuccess = searchState.matches('success');
-  // const isError = searchState.matches('failure');
+  const isLoading = searchState.matches('loading');
+  const isSuccess = searchState.matches('success');
+  const isError = searchState.matches('failure');
 
-  const isLoading = searchState.state === 'loading' || searchState.isLoading;
-  const isSuccess = searchState.state === 'success' || searchState.isSuccess;
-  const isError = searchState.state === 'failure' || searchState.isError;
-
-  const searchData = searchState.context?.data;
+  // Extract the main response data
+  const responseData = searchState.context?.data;
   const searchError = searchState.context?.error;
-  const searchType = searchData?.query_type;
-  const finalMetrics = searchState.context?.metrics || searchState.context?.data;
-  const comparisonFilter = isSuccess && searchType === "comparison" && searchData?.comparison_data?.comparison_param;
-  const comparisonType = isSuccess && searchType === "comparison" && searchData?.comparison_data?.comparison_type;
-  const detailedMetrics = isSuccess && searchType === "comparison" && searchData?.detailed_metrics;
-  const metric_analysis = isSuccess && searchType === "metric_analysis" && searchData?.analysis;
-  const metric_calculated = isSuccess && searchType === "metric_analysis" && searchData?.metrics;
-  const field_info = isSuccess && searchType === "schema_discovery" && searchData?.data?.field_info; //object with param details
+  const searchType = responseData?.query_type;
 
+  // Get the actual data based on the new nested structure
+  const searchData = responseData?.data?.data || responseData?.data; // Handle both old and new formats
+  const finalMetrics = searchState.context?.metrics || responseData;
 
+  // Comparison query specific data
+  const comparisonFilter = isSuccess && searchType === "comparison" && responseData?.comparison_data?.comparison_param;
+  const comparisonType = isSuccess && searchType === "comparison" && responseData?.comparison_data?.comparison_type;
+  const detailedMetrics = isSuccess && searchType === "comparison" && responseData?.detailed_metrics;
+
+  // Metric analysis query specific data
+  const metric_analysis = isSuccess && searchType === "metric_analysis" && responseData?.analysis;
+  const metric_calculated = isSuccess && searchType === "metric_analysis" && responseData?.metrics;
+
+  // Schema discovery query specific data
+  const field_info = isSuccess && searchType === "schema_discovery" && responseData?.data?.field_info;
+  const field = isSuccess && searchType === "schema_discovery" && responseData?.data?.field;
 
   // Debug logging for state changes and scroll to results
   useEffect(() => {
     console.log('Search state changed:', {
-      state: searchState.state,
       context: searchState.context,
       isLoading,
       isSuccess,
@@ -122,30 +97,29 @@ export default function Home() {
     }
   }, [searchState.state, isLoading, isSuccess, isError]);
 
+  useEffect(() => {
+    console.log("STATE:", searchState.context);
+  }, [searchState]);
+
   // Calculate metrics when search data is available for standard queries
   useEffect(() => {
     const calculateMetrics = async () => {
-      if (isSuccess && searchData && searchData.data && searchData.data.length > 0 && searchData.query_type === "standard") {
+      if (isSuccess && searchData && Array.isArray(searchData) && searchData.length > 0 && searchType === "standard") {
         setMetricsLoading(true);
         try {
-          const response = await fetch('http://localhost:5000/orders/metrics', {
+          const response = await fetch('http://13.126.136.209:5000/orders/metrics', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              orders: searchData.data
+              orders: searchData
             })
           });
 
-          // console.log("metric response: ", response);
-
           if (response.ok) {
             const metrics = await response.json();
-
-            // Add metrics to searchState.context.metrics
             sendSearch({ type: 'SET_METRICS', metrics });
-            console.log('Metrics calculated:', metrics);
           } else {
             console.error('Failed to calculate metrics:', response.statusText);
           }
@@ -154,11 +128,20 @@ export default function Home() {
         } finally {
           setMetricsLoading(false);
         }
+      } else {
+        console.log('❌ CONDITIONS NOT MET - API call skipped');
+        console.log('Debug conditions:', {
+          isSuccess,
+          hasSearchData: !!searchData,
+          isArray: Array.isArray(searchData),
+          hasLength: searchData?.length > 0,
+          searchType
+        });
       }
     };
 
     calculateMetrics();
-  }, [isSuccess, searchData]);
+  }, [isSuccess, searchData, sendSearch]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -204,43 +187,43 @@ export default function Home() {
     };
   }, []);
 
-  // // Establish SSE connection on component mount
-  // useEffect(() => {
-  //   console.log('Establishing SSE connection...');
-  //   const eventSource = new EventSource('http://localhost:5000/sse/logs');
-  //   eventSourceRef.current = eventSource;
+  // Establish SSE connection on component mount
+  useEffect(() => {
+    console.log('Establishing SSE connection...');
+    const eventSource = new EventSource('http://13.126.136.209:5000/sse/logs');
+    eventSourceRef.current = eventSource;
 
-  //   eventSource.onopen = () => {
-  //     setIsSSEConnected(true);
-  //     console.log('SSE connected');
-  //   };
+    eventSource.onopen = () => {
+      setIsSSEConnected(true);
+      console.log('SSE connected');
+    };
 
-  //   eventSource.onmessage = (event) => {
-  //     try {
-  //       const logData = JSON.parse(event.data);
-  //       // Always collect logs when viewLogs is enabled
-  //       if (viewLogs) {
-  //         setLogs(prevLogs => {
-  //           const newLogs = [...prevLogs, logData];
-  //           return newLogs.slice(-20); // Keep last 20 logs
-  //         });
-  //       }
-  //     } catch (error) {
-  //       console.error('Error parsing SSE log data:', error);
-  //     }
-  //   };
+    eventSource.onmessage = (event) => {
+      try {
+        const logData = JSON.parse(event.data);
+        // Always collect logs when viewLogs is enabled
+        if (viewLogs) {
+          setLogs(prevLogs => {
+            const newLogs = [...prevLogs, logData];
+            return newLogs.slice(-20); // Keep last 20 logs
+          });
+        }
+      } catch (error) {
+        console.error('Error parsing SSE log data:', error);
+      }
+    };
 
-  //   eventSource.onerror = (error) => {
-  //     console.error('SSE error:', error);
-  //     setIsSSEConnected(false);
-  //   };
+    eventSource.onerror = (error) => {
+      console.error('SSE error:', error);
+      setIsSSEConnected(false);
+    };
 
-  //   return () => {
-  //     if (eventSource) {
-  //       eventSource.close();
-  //     }
-  //   };
-  // }, []); // Empty dependency array - establish connection once
+    return () => {
+      if (eventSource) {
+        eventSource.close();
+      }
+    };
+  }, []); // Empty dependency array - establish connection once
 
   // Clear logs when viewLogs is turned off
   useEffect(() => {
@@ -392,7 +375,7 @@ export default function Home() {
         >
           ↻
         </Button>
-  
+
         <Button
           variant='outline'
           className="rounded-full! active:scale-80 scale-100 transition-all duration-75 ease-in"
@@ -431,6 +414,7 @@ export default function Home() {
             setInputValue={setInputValue}
             onSearch={handleSearch}
             isError={isError}
+            isSuccess={isSuccess}
           />
 
           <div className='my-2'></div>
@@ -445,7 +429,7 @@ export default function Home() {
 
 
         {/* Search Results Section with State Management */}
-        <div ref={searchResultsRef} className="w-full max-w-full h-screen flex justify-center items-center mx-auto px-4">
+        <div ref={searchResultsRef} className="w-full max-w-full h-screen flex flex-col justify-center items-center mx-auto px-4">
           {isLoading && (
             <LoadingComponent
               onCancel={handleCancel}
@@ -466,22 +450,45 @@ export default function Home() {
           )}
 
           {isSuccess && searchType === "standard" && (
-            <Standard isSuccess={isSuccess} searchData={searchData} finalMetrics={finalMetrics} metricsLoading={metricsLoading} refreshKey={refreshKey} />
+            <Standard
+              isSuccess={isSuccess}
+              searchData={searchData}
+              finalMetrics={finalMetrics}
+              metricsLoading={metricsLoading}
+              refreshKey={refreshKey}
+              summarizedQuery={responseData?.summarized_query || responseData?.query_summary}
+              responseData={responseData}
+            />
           )}
 
           {isSuccess && searchType === "comparison" && (
-            <Comparison createPaymentChart={createPaymentChart} isSuccess={isSuccess} searchData={searchData} searchType={searchType} comparisonType={comparisonType} searchFilter={comparisonFilter} detailedMetrics={detailedMetrics} refreshKey={refreshKey} />
+            <Comparison
+              createPaymentChart={createPaymentChart}
+              isSuccess={isSuccess}
+              searchData={responseData}
+              searchType={searchType}
+              comparisonType={comparisonType}
+              searchFilter={comparisonFilter}
+              detailedMetrics={detailedMetrics}
+              refreshKey={refreshKey}
+            />
           )}
 
           {isSuccess && searchType === "metric_analysis" && (
-            <MetricAnalysis metric_analysis={metric_analysis} metric_calculated={metric_calculated} />
+            <MetricAnalysis
+              metric_analysis={metric_analysis}
+              metric_calculated={metric_calculated}
+            />
           )}
 
           {isSuccess && searchType === "schema_discovery" && (
-            <SchemaDiscovery metric_analysis={metric_analysis} metric_calculated={metric_calculated} />
+            <SchemaDiscovery
+              field={field}
+              field_info={field_info}
+            />
           )}
 
-          {isSuccess && searchData && searchData.length === 0 && (
+          {isSuccess && searchType === "standard" && Array.isArray(searchData) && searchData.length === 0 && (
             <div className="text-center py-12">
               <p className="text-gray-500">No results found for your search.</p>
               <button

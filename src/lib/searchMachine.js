@@ -27,7 +27,7 @@ export const searchMachine = createMachine({
       invoke: {
         id: 'searchService',
         src: fromPromise(async ({ input }) => {
-          const response = await axios.post('http://localhost:5000/query', { 
+          const response = await axios.post('http://13.126.136.209:5000/query', { 
             query: input.query 
           });
           return response.data;

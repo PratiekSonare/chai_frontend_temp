@@ -13,6 +13,11 @@ import { cn } from '@/lib/utils';
 
 export default function NewMetricCarouselComp({ searchData, isSuccess, cN = 'bg-[#001FB0]' }) {
     const [defaultWinner, setDefaultWinner] = useState('one');
+    const [isOpen, setIsOpen] = useState(false);
+    
+    const toggleCard = () => {
+        setIsOpen(!isOpen);
+    }
 
     // Get winners from the data
     const winnerByVolume = searchData?.comparison_data?.overall_winners?.by_volume || '';
@@ -80,9 +85,17 @@ export default function NewMetricCarouselComp({ searchData, isSuccess, cN = 'bg-
             <CarouselContent className="h-full!">
                 {/* Winner By */}
                 <CarouselItem className="basis-1/2">
-                    <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-blue-200 w-full h-fit!">
-                        <div className={cn('flex flex-row items-center justify-between rounded-t-xl h-fit cursor-pointer', cN)}>
+                    <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-blue-200 w-full h-fit!" onClick={() => setIsOpen(false)}>
+                        <div onClick={(e) => { e.stopPropagation(); toggleCard(); }} className={cn('flex flex-row items-center justify-between rounded-t-xl h-fit cursor-pointer', cN)}>
                             <span className="block text-md py-2 px-4 text-white rounded-t-xl oswald">WINNER BY</span>
+                            {isOpen && (
+                                <div className={cn(`${cN} absolute top-10 left-0 right-0 bottom-0 z-50 grid grid-cols-2 grid-rows-2 rounded-b-xl gap-3 justify-center items-center p-4`)}>
+                                    <div className='flex flex-col gap-0!'>
+                                        <span className='poppins text-sm font-extrabold text-white'>Comparison Winners</span>
+                                        <span className='poppins text-xs italic text-gray-300'>Compare different groups by volume, revenue, and average order value to identify top performers</span>
+                                    </div>
+                                </div>
+                            )}
                             <svg className="h-4 px-4 transition-transform duration-200 ease-in" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
                                 <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
@@ -167,9 +180,17 @@ export default function NewMetricCarouselComp({ searchData, isSuccess, cN = 'bg-
 
                 {/* Order Count Comparison */}
                 <CarouselItem className="basis-1/2">
-                    <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-orange-200 w-full h-fit!">
-                        <div className={cn('flex flex-row items-center justify-between rounded-t-xl h-fit cursor-pointer', 'bg-orange-600')}>
+                    <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-orange-200 w-full h-fit!" onClick={() => setIsOpen(false)}>
+                        <div onClick={(e) => { e.stopPropagation(); toggleCard(); }} className={cn('flex flex-row items-center justify-between rounded-t-xl h-fit cursor-pointer', 'bg-orange-600')}>
                             <span className="block text-md py-2 px-4 text-white rounded-t-xl oswald">ORDER COUNT</span>
+                            {isOpen && (
+                                <div className={cn(`bg-orange-600 absolute top-10 left-0 right-0 bottom-0 z-50 grid grid-cols-2 grid-rows-2 rounded-b-xl gap-3 justify-center items-center p-4`)}>
+                                    <div className='flex flex-col gap-0!'>
+                                        <span className='poppins text-sm font-extrabold text-white'>Order Volume Comparison</span>
+                                        <span className='poppins text-xs italic text-gray-300'>Compare total number of orders across different groups to identify volume leaders</span>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         <div className="flex flex-row justify-between w-full oswald">
@@ -206,9 +227,17 @@ export default function NewMetricCarouselComp({ searchData, isSuccess, cN = 'bg-
 
                 {/* Revenue Comparison */}
                 <CarouselItem className="basis-1/2">
-                    <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-green-200 w-full h-fit!">
-                        <div className={cn('flex flex-row items-center justify-between rounded-t-xl h-fit cursor-pointer', 'bg-green-600')}>
+                    <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-green-200 w-full h-fit!" onClick={() => setIsOpen(false)}>
+                        <div onClick={(e) => { e.stopPropagation(); toggleCard(); }} className={cn('flex flex-row items-center justify-between rounded-t-xl h-fit cursor-pointer', 'bg-green-600')}>
                             <span className="block text-md py-2 px-4 text-white rounded-t-xl oswald">TOTAL REVENUE</span>
+                            {isOpen && (
+                                <div className={cn(`bg-green-600 absolute top-10 left-0 right-0 bottom-0 z-50 grid grid-cols-2 grid-rows-2 rounded-b-xl gap-3 justify-center items-center p-4`)}>
+                                    <div className='flex flex-col gap-0!'>
+                                        <span className='poppins text-sm font-extrabold text-white'>Revenue Comparison</span>
+                                        <span className='poppins text-xs italic text-gray-300'>Compare total revenue generated across different groups to identify top revenue drivers</span>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         <div className="flex flex-row justify-between w-full oswald">
@@ -245,9 +274,17 @@ export default function NewMetricCarouselComp({ searchData, isSuccess, cN = 'bg-
 
                 {/* AOV Comparison */}
                 <CarouselItem className="basis-1/2">
-                    <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-purple-200 w-full h-fit!">
-                        <div className={cn('flex flex-row items-center justify-between rounded-t-xl h-fit cursor-pointer', 'bg-purple-600')}>
+                    <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-purple-200 w-full h-fit!" onClick={() => setIsOpen(false)}>
+                        <div onClick={(e) => { e.stopPropagation(); toggleCard(); }} className={cn('flex flex-row items-center justify-between rounded-t-xl h-fit cursor-pointer', 'bg-purple-600')}>
                             <span className="block text-md py-2 px-4 text-white rounded-t-xl oswald">AVERAGE ORDER VALUE</span>
+                            {isOpen && (
+                                <div className={cn(`bg-purple-600 absolute top-10 left-0 right-0 bottom-0 z-50 grid grid-cols-2 grid-rows-2 rounded-b-xl gap-3 justify-center items-center p-4`)}>
+                                    <div className='flex flex-col gap-0!'>
+                                        <span className='poppins text-sm font-extrabold text-white'>AOV Comparison</span>
+                                        <span className='poppins text-xs italic text-gray-300'>Compare average order values across groups to identify higher-value customer segments</span>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         <div className="flex flex-row justify-between w-full oswald">

@@ -29,8 +29,6 @@ export default function MetricCarousel({ metrics, searchData, isSuccess }) {
     const geographic = metrics?.metrics.geographic_metrics;
     const cancellation = metrics?.metrics.cancellation_metrics;
 
-
-
     // Function to handle state clicks
     const handleStateClick = async (stateName) => {
         if (!searchData?.data) return;
@@ -40,7 +38,7 @@ export default function MetricCarousel({ metrics, searchData, isSuccess }) {
         setPincodeData(null);
 
         try {
-            const response = await fetch('http://localhost:5000/geography/chart/pincode', {
+            const response = await fetch('http://13.126.136.209:5000/geography/chart/pincode', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

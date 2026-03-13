@@ -1,8 +1,9 @@
-import { useRef, useCallback, useEffect } from 'react';
+import { useRef, useCallback, useEffect, useState } from 'react';
 import StateMapPlotter from '@/components/StateMapPlotter';
 import Autoplay from "embla-carousel-autoplay"
 import Chart from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { cn } from '@/lib/utils';
 import {
     Carousel,
     CarouselContent,
@@ -12,6 +13,11 @@ import {
 } from "@/components/ui/carousel"
 
 export default function NewComparisonCarousel({ mapData, searchData, createPaymentChart, groups }) {
+    const [isOpen, setIsOpen] = useState(false);
+    
+    const toggleCard = () => {
+        setIsOpen(!isOpen);
+    }
     const chartInstancesRef = useRef({});
 
     // Clean up charts on unmount
@@ -42,8 +48,17 @@ export default function NewComparisonCarousel({ mapData, searchData, createPayme
             <CarouselContent className="h-fit!">
                 {/* Map View */}
                 <CarouselItem className="basis-full">
-                    <div className='relative flex items-center justify-center w-full h-full rounded-xl border-4 border-[#0024af]'>
-                        <span className='absolute top-0 right-0 rounded-bl-xl px-3 py-2 bg-[#0024af] oswald text-white'>MAP</span>
+                    <div className='relative flex items-center justify-center w-full h-full rounded-xl border-4 border-[#0024af]' onClick={() => setIsOpen(false)}>
+                        <div onClick={(e) => { e.stopPropagation(); toggleCard(); }} className='absolute top-0 right-0 rounded-bl-xl px-3 py-2 bg-[#0024af] oswald text-white cursor-pointer z-10'>MAP
+                            {isOpen && (
+                                <div className={cn(`bg-[#0024af] absolute top-10 right-0 left-[-200px] bottom-[-200px] z-50 grid grid-cols-1 rounded-b-xl gap-3 justify-center items-center p-4`)}>
+                                    <div className='flex flex-col gap-0!'>
+                                        <span className='poppins text-sm font-extrabold text-white'>Multi-Group Map</span>
+                                        <span className='poppins text-xs italic text-gray-300'>Geographic comparison view showing performance across multiple groups and regions</span>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                         <div className='absolute top-0 left-0 p-2'>
                             {groups.map((group, index) => {
                                 const colors = ['#283593', '#1E88E5', '#42A5F5', '#64B5F6', '#90CAF9'];
@@ -74,9 +89,17 @@ export default function NewComparisonCarousel({ mapData, searchData, createPayme
                 {/* Individual Group Metrics */}
                 {Object.entries(detailedMetrics).map(([groupName, metrics], index) => (
                     <CarouselItem key={groupName} className="basis-1/2">
-                        <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-green-200 w-full h-fit!">
-                            <div className='flex flex-row items-center justify-between bg-[#001FB0] rounded-t-xl h-fit cursor-pointer'>
+                        <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-green-200 w-full h-fit!" onClick={() => setIsOpen(false)}>
+                            <div onClick={(e) => { e.stopPropagation(); toggleCard(); }} className='flex flex-row items-center justify-between bg-[#001FB0] rounded-t-xl h-fit cursor-pointer'>
                                 <span className="block text-md py-2 px-4 text-white rounded-t-xl oswald">{groupName.toUpperCase()} METRICS</span>
+                                {isOpen && (
+                                    <div className={cn(`bg-[#001FB0] absolute top-10 left-0 right-0 bottom-0 z-50 grid grid-cols-2 grid-rows-2 rounded-b-xl gap-3 justify-center items-center p-4`)}>
+                                        <div className='flex flex-col gap-0!'>
+                                            <span className='poppins text-sm font-extrabold text-white'>Group Metrics</span>
+                                            <span className='poppins text-xs italic text-gray-300'>Comprehensive metrics for {groupName} including orders, revenue, AOV, payment distribution, and top performing cities</span>
+                                        </div>
+                                    </div>
+                                )}
                                 <svg className={`h-4 px-4 transition-transform duration-200 ease-in`} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
                                     <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>

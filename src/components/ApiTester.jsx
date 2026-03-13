@@ -15,7 +15,7 @@ export default function ApiTester() {
     setRequestId(null)
     
     try {
-      const res = await fetch('http://localhost:5000/query', {
+      const res = await fetch('http://13.126.136.209:5000/query', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ export default function ApiTester() {
     setRequestId(null)
     
     try {
-      const res = await fetch('http://localhost:5000/plan', {
+      const res = await fetch('http://loca13.126.136.209lhost:5000/plan', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ export default function ApiTester() {
     if (!requestId) return
     
     try {
-      const res = await fetch(`http://localhost:5000/logs/${requestId}`)
+      const res = await fetch(`http://13.126.136.209:5000/logs/${requestId}`)
       const data = await res.json()
       console.log('Request logs:', data)
       alert(`Found ${data.total_logs} logs for request ${requestId}. Check console for details.`)

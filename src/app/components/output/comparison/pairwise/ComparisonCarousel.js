@@ -1,6 +1,8 @@
 
 import StateMapPlotter from '@/components/StateMapPlotter';
 import Autoplay from "embla-carousel-autoplay"
+import { useState } from 'react';
+import { cn } from '@/lib/utils';
 import {
     Carousel,
     CarouselContent,
@@ -10,6 +12,11 @@ import {
 } from "@/components/ui/carousel"
 
 export default function ComparisonCarousel({ mapData, searchData, groups, createPaymentChart }) {
+    const [isOpen, setIsOpen] = useState(false);
+    
+    const toggleCard = () => {
+        setIsOpen(!isOpen);
+    }
     return (
         <Carousel
             opts={{
@@ -27,8 +34,17 @@ export default function ComparisonCarousel({ mapData, searchData, groups, create
             <CarouselContent className="h-fit!">
 
                 <CarouselItem className="basis-full">
-                    <div className='relative flex items-center justify-center w-full h-full rounded-xl border-4 border-[#0024af]'>
-                        <span className='absolute top-0 right-0 rounded-bl-xl px-3 py-2 bg-[#0024af] oswald text-white'>MAP</span>
+                    <div className='relative flex items-center justify-center w-full h-full rounded-xl border-4 border-[#0024af]' onClick={() => setIsOpen(false)}>
+                        <div onClick={(e) => { e.stopPropagation(); toggleCard(); }} className='absolute top-0 right-0 rounded-bl-xl px-3 py-2 bg-[#0024af] oswald text-white cursor-pointer z-10'>MAP
+                            {isOpen && (
+                                <div className={cn(`bg-[#0024af] absolute top-10 right-0 left-[-200px] bottom-[-200px] z-50 grid grid-cols-1 rounded-b-xl gap-3 justify-center items-center p-4`)}>
+                                    <div className='flex flex-col gap-0!'>
+                                        <span className='poppins text-sm font-extrabold text-white'>Geographic Map</span>
+                                        <span className='poppins text-xs italic text-gray-300'>Visual representation of data comparison across different geographic regions</span>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                         <div className='absolute top-0 left-0 p-2'>
                             {groups.map((group, index) => {
                                 const colors = ['#283593', '#1E88E5'];
@@ -60,9 +76,17 @@ export default function ComparisonCarousel({ mapData, searchData, groups, create
                 {searchData?.detailed_metrics && Object.entries(searchData.detailed_metrics).map(([stateName, metrics], index) => (
                     <CarouselItem key={stateName} className="basis-1/2">
 
-                        <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-green-200 w-full h-fit!">
-                            <div className='flex flex-row items-center justify-between bg-[#001FB0] rounded-t-xl h-fit cursor-pointer'>
+                        <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-green-200 w-full h-fit!" onClick={() => setIsOpen(false)}>
+                            <div onClick={(e) => { e.stopPropagation(); toggleCard(); }} className='flex flex-row items-center justify-between bg-[#001FB0] rounded-t-xl h-fit cursor-pointer'>
                                 <span className="block text-md py-2 px-4 text-white rounded-t-xl oswald">{stateName.toUpperCase()} METRICS</span>
+                                {isOpen && (
+                                    <div className={cn(`bg-[#001FB0] absolute top-10 left-0 right-0 bottom-0 z-50 grid grid-cols-2 grid-rows-2 rounded-b-xl gap-3 justify-center items-center p-4`)}>
+                                        <div className='flex flex-col gap-0!'>
+                                            <span className='poppins text-sm font-extrabold text-white'>State Metrics</span>
+                                            <span className='poppins text-xs italic text-gray-300'>Detailed metrics breakdown showing orders, revenue, AOV, payment modes, and geographic distribution for {stateName}</span>
+                                        </div>
+                                    </div>
+                                )}
                                 <svg className={`h-4 px-4 transition-transform duration-200 ease-in`} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M19 5L12.7071 11.2929C12.3166 11.6834 11.6834 11.6834 11.2929 11.2929L5 5" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M19 13L12.7071 19.2929C12.3166 19.6834 11.6834 19.6834 11.2929 19.2929L5 13" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
                             </div>
 

@@ -1,15 +1,20 @@
 
 import MetricCarouselOrder from './MetricCarouselOrder';
 import DataTableComponent from '../../table/DataTableComponent';
+import { useCallback } from 'react';
 
-export default function Standard({isSuccess, searchData, finalMetrics, metricsLoading, refreshKey}) {
+export default function Standard({isSuccess, searchData, finalMetrics, metricsLoading, refreshKey, summarizedQuery, responseData}) {
     
     const summarized_query = useCallback(() => {
-        if (isSuccess && searchData) {
-          return searchData.summarized_query || '';
-        }
-        return '';
-      }, [isSuccess, searchData]);
+        return summarizedQuery || '';
+    }, [summarizedQuery]);
+
+    // Prepare data in the format that DataTableComponent expects
+    const tableData = {
+        query_type: "standard",
+        data: searchData || [],
+        summarized_query: summarizedQuery
+    };
 
     return (
         <div className="w-full h-screen px-5 -my-20!">
@@ -20,7 +25,7 @@ export default function Standard({isSuccess, searchData, finalMetrics, metricsLo
 
             <DataTableComponent
                 key={`datatable-${refreshKey}`}
-                data={searchData}
+                data={tableData}
                 summarized_query={summarized_query()}
             />
         </div>

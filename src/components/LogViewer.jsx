@@ -25,7 +25,7 @@ export default function LogViewer() {
     }
 
     // Create new WebSocket connection
-    const ws = new WebSocket('ws://localhost:5000/ws/logs')
+    const ws = new WebSocket('ws://13.126.136.209:5000/ws/logs')
     wsRef.current = ws
 
     ws.onopen = (event) => {
@@ -207,8 +207,8 @@ export default function LogViewer() {
       </Card>
 
       <div className="text-sm text-gray-600">
-        <p><strong>WebSocket URL:</strong> ws://localhost:5000/ws/logs</p>
-        <p><strong>HTTP Logs API:</strong> GET http://localhost:5000/logs/&lt;request_id&gt;</p>
+        <p><strong>WebSocket URL:</strong> ws://13.126.136.209:5000/ws/logs</p>
+        <p><strong>HTTP Logs API:</strong> GET http://13.126.136.209:5000/logs/&lt;request_id&gt;</p>
       </div>
     </div>
   )
