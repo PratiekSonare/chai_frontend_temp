@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { apiUrl } from '@/lib/api';
 
 const OrderCountChart = ({ searchData, isSuccess }) => {
     const [chartData, setChartData] = useState(null);
@@ -19,7 +20,7 @@ const OrderCountChart = ({ searchData, isSuccess }) => {
             if (isSuccess && Array.isArray(searchData) && searchData.length > 0) {
                 setChartLoading(true);
                 try {
-                    const response = await fetch('http://65.1.108.118:5000/orders/chart/count', {
+                    const response = await fetch(apiUrl('/orders/chart/count'), {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

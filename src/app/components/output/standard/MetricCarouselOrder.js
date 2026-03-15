@@ -15,6 +15,7 @@ import PaymentRadial from "../../charts/paymentRadial";
 import CancellationBarChart from "../../charts/cancellationBar";
 import ProductImage from "../../charts/productImage";
 import StatePincode from "../../charts/statePincode";
+import { apiUrl } from '@/lib/api';
 
 export default function MetricCarousel({ metrics, searchData, isSuccess }) {
     const [selectedState, setSelectedState] = useState(null);
@@ -38,7 +39,7 @@ export default function MetricCarousel({ metrics, searchData, isSuccess }) {
         setPincodeData(null);
 
         try {
-            const response = await fetch('http://65.1.108.118:5000/geography/chart/pincode', {
+            const response = await fetch(apiUrl('/geography/chart/pincode'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

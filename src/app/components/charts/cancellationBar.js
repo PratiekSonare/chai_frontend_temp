@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { apiUrl } from '@/lib/api';
 
 const CancellationBarChart = ({ searchData, isSuccess }) => {
     const [chartData, setChartData] = useState(null);
@@ -17,7 +18,7 @@ const CancellationBarChart = ({ searchData, isSuccess }) => {
             if (isSuccess && Array.isArray(searchData) && searchData.length > 0) {
                 setChartLoading(true);
                 try {
-                    const response = await fetch('http://65.1.108.118:5000/cancellation/chart/bar', {
+                    const response = await fetch(apiUrl('/cancellation/chart/bar'), {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

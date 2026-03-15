@@ -21,6 +21,7 @@ import Comparison from './components/output/comparison/Comparison';
 import MetricAnalysis from './components/output/metric_analysis/MetricAnalysis';
 import SchemaDiscovery from './components/output/schema_discovery/SchemaDiscovery';
 import QueryDetails from './components/QueryDetails';
+import { apiUrl } from '@/lib/api';
 
 import gsap from 'gsap';
 gsap.registerPlugin(ScrollTrigger);
@@ -29,6 +30,8 @@ gsap.registerPlugin(ScrollTrigger);
 // const [searchState, setSearchState] = useState(standardState);
 
 export default function Home() {
+
+  
 
   const placeholder_list = [
     "Compare orders between Maharashtra and Telangana from the past 3 days.",
@@ -95,9 +98,9 @@ export default function Home() {
     }
   }, [searchState.state, isLoading, isSuccess, isError]);
 
-  useEffect(() => {
-    console.log("STATE:", searchState.context);
-  }, [searchState]);
+  // useEffect(() => {
+  //   console.log("STATE:", searchState.context);
+  // }, [searchState]);
 
   useEffect(() => {
     logSinceRef.current = 0;
@@ -113,7 +116,7 @@ export default function Home() {
 
     const pollLogs = async () => {
       try {
-        const response = await fetch(`http://65.1.108.118:5000/query/logs/${requestId}?since=${since}`);
+        const response = await fetch(apiUrl(`/query/logs/${requestId}?since=${since}`));
         if (!response.ok) {
           return;
         }
@@ -153,7 +156,7 @@ export default function Home() {
       if (isSuccess && searchData && searchData.length > 0 && searchType === "standard") {
         setMetricsLoading(true);
         try {
-          const response = await fetch('http://65.1.108.118:5000/orders/metrics', {
+          const response = await fetch(apiUrl('/orders/metrics'), {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

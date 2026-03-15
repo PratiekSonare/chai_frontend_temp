@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { apiUrl } from '@/lib/api';
 
 const PaymentRadialChart = ({ searchData, isSuccess }) => {
     const [chartData, setChartData] = useState(null);
@@ -19,7 +20,7 @@ const PaymentRadialChart = ({ searchData, isSuccess }) => {
             if (isSuccess && Array.isArray(searchData) && searchData.length > 0) {
                 setChartLoading(true);
                 try {
-                    const response = await fetch('http://65.1.108.118:5000/payment/chart/radial', {
+                    const response = await fetch(apiUrl('/payment/chart/radial'), {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

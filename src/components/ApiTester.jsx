@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { apiUrl } from '@/lib/api'
 
 export default function ApiTester() {
   const [query, setQuery] = useState('')
@@ -13,7 +14,7 @@ export default function ApiTester() {
     setResponse(null)
     
     try {
-      const res = await fetch('http://65.1.108.118:5000/query', {
+      const res = await fetch(apiUrl('/query'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -35,7 +36,7 @@ export default function ApiTester() {
     setResponse(null)
     
     try {
-      const res = await fetch('http://65.1.108.118:5000/plan', {
+      const res = await fetch(apiUrl('/plan'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

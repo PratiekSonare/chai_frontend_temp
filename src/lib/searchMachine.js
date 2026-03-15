@@ -1,5 +1,6 @@
 import { createMachine, assign, fromPromise } from 'xstate';
 import axios from 'axios';
+import { apiUrl } from './api';
 
 const generateRequestId = () => {
   const ts = Date.now().toString(36);
@@ -39,7 +40,7 @@ export const searchMachine = createMachine({
       invoke: {
         id: 'searchService',
         src: fromPromise(async ({ input }) => {
-          const response = await axios.post('http://65.1.108.118:5000/query', { 
+          const response = await axios.post(apiUrl('/query'), {
             query: input.query 
           }, {
             headers: {
