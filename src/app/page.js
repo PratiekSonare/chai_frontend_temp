@@ -113,7 +113,7 @@ export default function Home() {
 
     const pollLogs = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/query/logs/${requestId}?since=${since}`);
+        const response = await fetch(`http://65.1.108.118:5000/query/logs/${requestId}?since=${since}`);
         if (!response.ok) {
           return;
         }
@@ -153,7 +153,7 @@ export default function Home() {
       if (isSuccess && searchData && searchData.length > 0 && searchType === "standard") {
         setMetricsLoading(true);
         try {
-          const response = await fetch('http://localhost:5000/orders/metrics', {
+          const response = await fetch('http://65.1.108.118:5000/orders/metrics', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

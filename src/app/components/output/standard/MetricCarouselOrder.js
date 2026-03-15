@@ -38,7 +38,7 @@ export default function MetricCarousel({ metrics, searchData, isSuccess }) {
         setPincodeData(null);
 
         try {
-            const response = await fetch('http://localhost:5000/geography/chart/pincode', {
+            const response = await fetch('http://65.1.108.118:5000/geography/chart/pincode', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

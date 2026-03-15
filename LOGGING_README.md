@@ -12,7 +12,7 @@ I've added WebSocket-based real-time log streaming to your FastAPI backend with 
    - Stores request-specific logs for retrieval
 
 2. **New Endpoints**:
-   - `ws://localhost:5000/ws/logs` - WebSocket for real-time log streaming
+   - `ws://65.1.108.118:5000/ws/logs` - WebSocket for real-time log streaming
    - `GET /logs/{request_id}` - HTTP endpoint to get logs for specific requests
 
 3. **Enhanced API Logging**:
@@ -41,7 +41,7 @@ import LogViewer from '@/components/LogViewer'
 
 ### JavaScript WebSocket Connection
 ```javascript
-const ws = new WebSocket('ws://localhost:5000/ws/logs');
+const ws = new WebSocket('ws://65.1.108.118:5000/ws/logs');
 
 ws.onmessage = (event) => {
   const logData = JSON.parse(event.data);
@@ -52,7 +52,7 @@ ws.onmessage = (event) => {
 ### API Request with Logging
 ```javascript
 // Make a request and track its logs
-const response = await fetch('http://localhost:5000/query', {
+const response = await fetch('http://65.1.108.118:5000/query', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ query: 'Show orders from last 5 days' })
@@ -62,7 +62,7 @@ const result = await response.json();
 const requestId = result.request_id;
 
 // Get specific logs for this request
-const logsResponse = await fetch(`http://localhost:5000/logs/${requestId}`);
+const logsResponse = await fetch(`http://65.1.108.118:5000/logs/${requestId}`);
 const logs = await logsResponse.json();
 ```
 
@@ -82,7 +82,7 @@ npm install socket.io-client
 ### 2. Server-Sent Events (SSE)
 ```javascript
 // Simpler one-way communication
-const eventSource = new EventSource('http://localhost:5000/logs/stream');
+const eventSource = new EventSource('http://65.1.108.118:5000/logs/stream');
 eventSource.onmessage = (event) => {
   const logData = JSON.parse(event.data);
   console.log(logData);

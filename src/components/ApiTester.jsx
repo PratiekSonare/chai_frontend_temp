@@ -13,7 +13,7 @@ export default function ApiTester() {
     setResponse(null)
     
     try {
-      const res = await fetch('http://localhost:5000/query', {
+      const res = await fetch('http://65.1.108.118:5000/query', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -35,7 +35,7 @@ export default function ApiTester() {
     setResponse(null)
     
     try {
-      const res = await fetch('http://localhost:5000/plan', {
+      const res = await fetch('http://65.1.108.118:5000/plan', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

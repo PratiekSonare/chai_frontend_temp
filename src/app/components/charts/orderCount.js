@@ -19,7 +19,7 @@ const OrderCountChart = ({ searchData, isSuccess }) => {
             if (isSuccess && Array.isArray(searchData) && searchData.length > 0) {
                 setChartLoading(true);
                 try {
-                    const response = await fetch('http://localhost:5000/orders/chart/count', {
+                    const response = await fetch('http://65.1.108.118:5000/orders/chart/count', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
