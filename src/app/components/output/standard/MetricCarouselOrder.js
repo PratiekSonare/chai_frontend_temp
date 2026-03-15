@@ -21,30 +21,30 @@ export default function MetricCarousel({ metrics, searchData, isSuccess }) {
     const [pincodeData, setPincodeData] = useState(null);
     const [pincodeLoading, setPincodeLoading] = useState(false);
 
-    const volume = metrics?.metrics.volume_metrics;
-    const time_based = metrics?.metrics.time_based_metrics;
-    const revenue = metrics?.metrics.revenue_metrics;
-    const product = metrics?.metrics.product_metrics;
-    const payment = metrics?.metrics.payment_metrics;
-    const geographic = metrics?.metrics.geographic_metrics;
-    const cancellation = metrics?.metrics.cancellation_metrics;
+    const volume = metrics?.metrics?.volume_metrics;
+    const time_based = metrics?.metrics?.time_based_metrics;
+    const revenue = metrics?.metrics?.revenue_metrics;
+    const product = metrics?.metrics?.product_metrics;
+    const payment = metrics?.metrics?.payment_metrics;
+    const geographic = metrics?.metrics?.geographic_metrics;
+    const cancellation = metrics?.metrics?.cancellation_metrics;
 
     // Function to handle state clicks
     const handleStateClick = async (stateName) => {
-        if (!searchData?.data) return;
+        if (!searchData) return;
         
         setSelectedState(stateName);
         setPincodeLoading(true);
         setPincodeData(null);
 
         try {
-            const response = await fetch('http://13.126.136.209:5000/geography/chart/pincode', {
+            const response = await fetch('http://localhost:5000/geography/chart/pincode', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    orders: searchData.data,
+                    orders: searchData,
                     state: stateName
                 })
             });

@@ -1,133 +1,44 @@
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
+import { custom_logs as logs } from './custom_logs';
 
-// Enhanced Loading component with real-time log streaming
-export const LoadingComponent = ({ 
-  onCancel, 
-  requestId, 
-  logs, 
-  isConnected, 
-  viewLogs, 
-  setViewLogs,
-  showLogs = false 
+export const LoadingComponent = ({
+  onCancel,
+  requestId,
+  logs: liveLogs = [],
+  currentStep,
+  nextStep,
+  showLogs = true
 }) => {
-  const logsEndRef = useRef(null)
 
-  const scrollToBottom = () => {
-    logsEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
-
-  useEffect(() => {
-    scrollToBottom()
-  }, [logs])
-
+  const sourceLogs = liveLogs.length > 0 ? liveLogs : logs;
+  const visibleLogs = sourceLogs.slice(-8);
   const formatTimestamp = (timestamp) => {
-    try {
-      const date = new Date(timestamp)
-      return date.toLocaleTimeString('en-US', {
-        hour12: false,
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-      })
-    } catch (error) {
-      return timestamp
-    }
-  }
-
-  const getLogIcon = (step, level) => {
-    if (level === 'ERROR') return '❌'
-    switch (step) {
-      case 'REQUEST_START': return '🚀'
-      case 'REQUEST_END': return '✅'
-      default: return '📝'
-    }
-  }
+    if (!timestamp) return '';
+    const date = new Date(timestamp);
+    if (Number.isNaN(date.getTime())) return timestamp;
+    return date.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
+  };
 
   return (
-    <div id='loading' className="relative flex flex-col items-center justify-center py-6 w-full max-w-4xl h-1/2 bg-blue-100 rounded-xl border-2 border-dashed border-blue-700">
+    <div id='loading' className="relative my-5 flex flex-col items-center justify-center py-6 px-6 w-full max-w-4xl h-1/2 bg-blue-100 rounded-xl border-2 border-dashed border-blue-700">
       {/* Loading Animation */}
       <div className="flex flex-col items-center mb-6">
-
-        {/* show logs when toggle is enabled */}
-        {!viewLogs ? (
-          <div className='flex flex-col gap-2 items-center justify-center'>
-            <div className="flex items-center space-x-2 mb-3">
-              <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce"></div>
-              <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-              <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-            </div>
-            <p className="text-2xl text-gray-700 font-bold poppins">Searching data...</p>
+        <div className='flex flex-col gap-1 items-center justify-center'>
+          <div className="flex items-center space-x-2 mb-3">
+            <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce"></div>
+            <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+            <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
           </div>
-        ) : (
-          <div className="h-full w-full">
-            <p className='text-center mt-4'>Logs</p>
-            <div className="p-3">
-              {logs.length === 0 ? (
-                <div className="text-xs text-gray-500 text-center py-8">
-                  {isConnected ? 'Waiting for logs...' : 'Connecting...'}
-                </div>
-              ) : (
-                <div className="space-y-1 h-42 overflow-y-scroll">
-                  {logs.map((log, index) => (
-                    <div
-                      key={index}
-                      className={`text-xs p-2 rounded ${log.level === 'ERROR' ? 'bg-red-100 text-red-800' :
-                        log.step === 'REQUEST_START' ? 'bg-green-100 text-green-800' :
-                          log.step === 'REQUEST_END' ? 'bg-blue-100 text-blue-800' :
-                            'bg-white text-gray-700'
-                        }`}
-                    >
-                      <div className="flex items-start space-x-2">
-                        <span className="text-sm flex-shrink-0">{getLogIcon(log.step, log.level)}</span>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center space-x-2 mb-1">
-                            <span className="text-gray-500 font-mono">{formatTimestamp(log.timestamp)}</span>
-                            {log.level && (
-                              <span className={`px-1 rounded font-medium ${log.level === 'ERROR' ? 'bg-red-200 text-red-800' :
-                                'bg-gray-200 text-gray-600'
-                                }`}>
-                                {log.level}
-                              </span>
-                            )}
-                          </div>
-                          <div className="font-medium break-words">{log.message}</div>
-                          {log.details && (
-                            <div className="text-gray-600 mt-1 break-words">{log.details}</div>
-                          )}
-                          {log.step && (
-                            <div className="text-blue-600 mt-1">Step: {log.step}</div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                  <div ref={logsEndRef} />
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* View Logs Toggle */}
-        {(
-          <div className="absolute top-2 right-5 flex items-center space-x-2! mt-3">
-            <Switch
-              id="view-logs-toggle"
-              checked={viewLogs}
-              onCheckedChange={setViewLogs}
-              className="data-[state=checked]:bg-blue-400 data-[state=unchecked]:border-blue-300 border-2 rounded-lg!"
-            />
-            <Label
-              htmlFor="view-logs-toggle"
-              className="text-sm text-gray-700 font-medium cursor-pointer"
-            >
-              View Logs
-            </Label>
-          </div>
-        )}
+          <p className="text-2xl text-gray-700 font-bold poppins">{currentStep || 'Planning execution...'}</p>
+        </div>
 
         {requestId && (
           <p className="text-xs text-blue-700 mt-1">
@@ -135,6 +46,26 @@ export const LoadingComponent = ({
           </p>
         )}
       </div>
+
+      {showLogs && (
+        <div className="w-full max-w-2xl bg-white/70 border border-blue-200 mb-10 rounded-xl">
+          <div className="text-xs poppins font-bold border-b text-blue-900 bg-blue-200 p-2 rounded-t-xl!"><span >Logs</span></div>
+          <div className="max-h-28 overflow-y-auto space-y-1 p-2">
+            {visibleLogs.length === 0 && (
+              <p className="text-xs text-blue-700">Waiting for backend logs...</p>
+            )}
+            {visibleLogs.map((log) => (
+              <div key={log.sequence || `${log.timestamp}-${log.step_key}`} className={`${log.status === "COMPLETE" ? "text-green-700" : "text-blue-700"} poppins flex items-end justify-between text-xs text-blue-900`}>
+                <div className='flex flex-row gap-2'>
+                  <span className="truncate pr-2 text-gray-400!">{formatTimestamp(log.timestamp)}</span>
+                  <span className="text-left">{log.summary || log.step_key}</span>
+                </div>                
+                <span>{log.status || 'INFO'}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Cancel Button */}
       {onCancel && (

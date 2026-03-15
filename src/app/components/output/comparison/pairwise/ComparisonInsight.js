@@ -8,7 +8,7 @@ export default function ComparisonInsight({ groups, insights }) {
     return (
         <div className='z-50 flex flex-col w-1/2 h-full gap-4'>
             <div className="pointer-events-auto select-none relative rounded-xl border-4 border-[#001FB0] w-full h-fit!" onClick={() => setIsOpen(false)}>
-                <div className='flex flex-row items-center justify-between bg-[#001FB0] rounded-t-xl h-fit cursor-pointer'>
+                <div className='flex flex-row items-center justify-between bg-[#001FB0] h-fit cursor-pointer'>
                     <span className="block text-md py-2 px-4 text-white rounded-t-xl oswald">GROUPS</span>
                     <svg className={`h-4 px-4 transition-transform duration-200 ease-in`} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M19 5L12.7071 11.2929C12.3166 11.6834 11.6834 11.6834 11.2929 11.2929L5 5" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M19 13L12.7071 19.2929C12.3166 19.6834 11.6834 19.6834 11.2929 19.2929L5 13" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
                 </div>

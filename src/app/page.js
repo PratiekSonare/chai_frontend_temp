@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useMachine } from '@xstate/react';
-import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import Down from './components/down';
@@ -21,10 +20,9 @@ import Standard from './components/output/standard/Standard';
 import Comparison from './components/output/comparison/Comparison';
 import MetricAnalysis from './components/output/metric_analysis/MetricAnalysis';
 import SchemaDiscovery from './components/output/schema_discovery/SchemaDiscovery';
-
-// import standardState from './components/sample_results/schema_discovery.json';
 import QueryDetails from './components/QueryDetails';
 
+import gsap from 'gsap';
 gsap.registerPlugin(ScrollTrigger);
 
 
@@ -49,38 +47,38 @@ export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
   const searchbarRef = useRef(null);
   const searchResultsRef = useRef(null);
-
-  // SSE connection state
-  const [logs, setLogs] = useState([]);
-  const [isSSEConnected, setIsSSEConnected] = useState(false);
-  const [viewLogs, setViewLogs] = useState(true); // Enable logs by default
-  const eventSourceRef = useRef(null);
+  const logSinceRef = useRef(0);
 
   const isLoading = searchState.matches('loading');
   const isSuccess = searchState.matches('success');
   const isError = searchState.matches('failure');
-
-  // Extract the main response data
-  const responseData = searchState.context?.data;
   const searchError = searchState.context?.error;
-  const searchType = responseData?.query_type;
+  const requestId = searchState.context?.requestId;
+  const workflowLogs = searchState.context?.logs || [];
 
   // Get the actual data based on the new nested structure
-  const searchData = responseData?.data?.data || responseData?.data; // Handle both old and new formats
-  const finalMetrics = searchState.context?.metrics || responseData;
+  const searchData = searchState?.context.data?.data?.data;
+  const finalMetrics = searchState?.context.metrics;
+  const searchType = searchState?.context.data?.query_type;
+  const summarizedQuery = searchState?.context.data?.summarized_query;
 
   // Comparison query specific data
-  const comparisonFilter = isSuccess && searchType === "comparison" && responseData?.comparison_data?.comparison_param;
-  const comparisonType = isSuccess && searchType === "comparison" && responseData?.comparison_data?.comparison_type;
-  const detailedMetrics = isSuccess && searchType === "comparison" && responseData?.detailed_metrics;
+  const comparisonFilter = isSuccess && searchType === "comparison" && searchState?.context.data?.comparison_data?.comparison_param;
+  const comparisonType = isSuccess && searchType === "comparison" && searchState?.context.data?.comparison_data?.comparison_type;
+  const detailedMetrics = isSuccess && searchType === "comparison" && searchState?.context.data?.detailed_metrics;
 
   // Metric analysis query specific data
-  const metric_analysis = isSuccess && searchType === "metric_analysis" && responseData?.analysis;
-  const metric_calculated = isSuccess && searchType === "metric_analysis" && responseData?.metrics;
+  const metric_analysis = isSuccess && searchType === "metric_analysis" && searchState?.context.data?.analysis;
+  const metric_calculated = isSuccess && searchType === "metric_analysis" && searchState?.context.data?.metrics;
 
   // Schema discovery query specific data
-  const field_info = isSuccess && searchType === "schema_discovery" && responseData?.data?.field_info;
-  const field = isSuccess && searchType === "schema_discovery" && responseData?.data?.field;
+  const field_info = isSuccess && searchType === "schema_discovery" && searchState?.context.data?.data?.field_info;
+  const field = isSuccess && searchType === "schema_discovery" && searchState?.context.data?.data?.field;
+
+  const latestLog = workflowLogs.length ? workflowLogs[workflowLogs.length - 1] : null;
+
+  const currentStep = latestLog?.summary || 'Planning execution...';
+  const nextStep = latestLog?.status === 'PENDING' ? latestLog?.summary : null;
 
   // Debug logging for state changes and scroll to results
   useEffect(() => {
@@ -101,13 +99,61 @@ export default function Home() {
     console.log("STATE:", searchState.context);
   }, [searchState]);
 
+  useEffect(() => {
+    logSinceRef.current = 0;
+  }, [requestId]);
+
+  useEffect(() => {
+    if (!isLoading || !requestId) {
+      return;
+    }
+
+    let active = true;
+    let since = Number(logSinceRef.current || 0);
+
+    const pollLogs = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/query/logs/${requestId}?since=${since}`);
+        if (!response.ok) {
+          return;
+        }
+
+        const payload = await response.json();
+        const logs = Array.isArray(payload?.logs) ? payload.logs : [];
+
+        if (logs.length) {
+          sendSearch({ type: 'APPEND_LOGS', logs });
+        }
+
+        const nextSequence = Number(payload?.next_sequence || since);
+        since = Math.max(since, nextSequence);
+        logSinceRef.current = since;
+      } catch (error) {
+        console.error('Log polling failed:', error);
+      }
+    };
+
+    pollLogs();
+    const timer = setInterval(() => {
+      if (!active) {
+        return;
+      }
+      pollLogs();
+    }, 300);
+
+    return () => {
+      active = false;
+      clearInterval(timer);
+    };
+  }, [isLoading, requestId, sendSearch]);
+
   // Calculate metrics when search data is available for standard queries
   useEffect(() => {
     const calculateMetrics = async () => {
-      if (isSuccess && searchData && Array.isArray(searchData) && searchData.length > 0 && searchType === "standard") {
+      if (isSuccess && searchData && searchData.length > 0 && searchType === "standard") {
         setMetricsLoading(true);
         try {
-          const response = await fetch('http://13.126.136.209:5000/orders/metrics', {
+          const response = await fetch('http://localhost:5000/orders/metrics', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -127,16 +173,11 @@ export default function Home() {
           console.error('Error calculating metrics:', error);
         } finally {
           setMetricsLoading(false);
+          console.log("succ state: ", searchState.context);
         }
       } else {
         console.log('❌ CONDITIONS NOT MET - API call skipped');
-        console.log('Debug conditions:', {
-          isSuccess,
-          hasSearchData: !!searchData,
-          isArray: Array.isArray(searchData),
-          hasLength: searchData?.length > 0,
-          searchType
-        });
+        console.log("failed state: ", searchState.context);
       }
     };
 
@@ -187,66 +228,17 @@ export default function Home() {
     };
   }, []);
 
-  // Establish SSE connection on component mount
-  useEffect(() => {
-    console.log('Establishing SSE connection...');
-    const eventSource = new EventSource('http://13.126.136.209:5000/sse/logs');
-    eventSourceRef.current = eventSource;
-
-    eventSource.onopen = () => {
-      setIsSSEConnected(true);
-      console.log('SSE connected');
-    };
-
-    eventSource.onmessage = (event) => {
-      try {
-        const logData = JSON.parse(event.data);
-        // Always collect logs when viewLogs is enabled
-        if (viewLogs) {
-          setLogs(prevLogs => {
-            const newLogs = [...prevLogs, logData];
-            return newLogs.slice(-20); // Keep last 20 logs
-          });
-        }
-      } catch (error) {
-        console.error('Error parsing SSE log data:', error);
-      }
-    };
-
-    eventSource.onerror = (error) => {
-      console.error('SSE error:', error);
-      setIsSSEConnected(false);
-    };
-
-    return () => {
-      if (eventSource) {
-        eventSource.close();
-      }
-    };
-  }, []); // Empty dependency array - establish connection once
-
-  // Clear logs when viewLogs is turned off
-  useEffect(() => {
-    if (!viewLogs) {
-      setLogs([]);
-    }
-  }, [viewLogs]);
-
-  // Update logs display when viewLogs changes
-  useEffect(() => {
-    if (viewLogs && logs.length === 0) {
-      // If turning on logs and we have no logs, we might want to fetch recent logs
-      // For now, just ensure the connection is active
-      console.log('View logs enabled, SSE should be receiving logs');
-    }
-  }, [viewLogs, logs.length]);
-
   const handleSearch = useCallback((inputValue) => {
+    if (isLoading) {
+      return;
+    }
+
     if (inputValue.trim()) {
       console.log('Search initiated with:', inputValue);
       sendSearch({ type: 'SEARCH', query: inputValue.trim() });
     }
-  }, [sendSearch]);
+  }, [isLoading, sendSearch]);
+
 
   const handleCancel = useCallback(() => {
     console.log('Search cancelled');
@@ -414,7 +406,18 @@ export default function Home() {
             setInputValue={setInputValue}
             onSearch={handleSearch}
             isError={isError}
+            isLoading={isLoading}
             isSuccess={isSuccess}
+            QueryDetails={
+              <QueryDetails
+                requestId={requestId}
+                inputQuery={searchState.context?.query || 'query'}
+                summarizedQuery={summarizedQuery || 'summarized_query'}
+                logs={workflowLogs}
+                isError={isError}
+                searchError={searchError}
+              />
+            }
           />
 
           <div className='my-2'></div>
@@ -433,11 +436,10 @@ export default function Home() {
           {isLoading && (
             <LoadingComponent
               onCancel={handleCancel}
-              requestId={searchState.context.query}
-              logs={logs}
-              isConnected={isSSEConnected}
-              viewLogs={viewLogs}
-              setViewLogs={setViewLogs}
+              requestId={requestId}
+              logs={workflowLogs}
+              currentStep={currentStep}
+              nextStep={nextStep}
             />
           )}
 
@@ -456,8 +458,7 @@ export default function Home() {
               finalMetrics={finalMetrics}
               metricsLoading={metricsLoading}
               refreshKey={refreshKey}
-              summarizedQuery={responseData?.summarized_query || responseData?.query_summary}
-              responseData={responseData}
+              summarizedQuery={summarizedQuery}
             />
           )}
 
@@ -465,7 +466,7 @@ export default function Home() {
             <Comparison
               createPaymentChart={createPaymentChart}
               isSuccess={isSuccess}
-              searchData={responseData}
+              searchData={searchState?.context.data}
               searchType={searchType}
               comparisonType={comparisonType}
               searchFilter={comparisonFilter}
@@ -481,12 +482,12 @@ export default function Home() {
             />
           )}
 
-          {isSuccess && searchType === "schema_discovery" && (
+          {/* {isSuccess && searchType === "schema_discovery" && (
             <SchemaDiscovery
               field={field}
               field_info={field_info}
             />
-          )}
+          )} */}
 
           {isSuccess && searchType === "standard" && Array.isArray(searchData) && searchData.length === 0 && (
             <div className="text-center py-12">
@@ -503,24 +504,9 @@ export default function Home() {
           {!isLoading && !isSuccess && !isError && (
             <>
               <EmptyStateComponent />
-              {/* <LoadingComponent onCancel={handleCancel} />
-              <ErrorComponent
-                error={searchError}
-                onRetry={handleRetry}
-                onReset={handleReset}
-              /> */}
             </>
           )}
         </div>
-
-        {/* <OrderCountChart searchData={searchData} isSuccess={isSuccess} /> */}
-
-        {/* GSAP Line Graph Example */}
-        {/* <div className='flex justify-center items-center w-full my-20'>
-          <LineGraph />
-        </div> */}
-
-        <div className=''></div>
       </div >
     </div >
   );

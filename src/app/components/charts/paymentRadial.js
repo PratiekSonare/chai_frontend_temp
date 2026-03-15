@@ -16,16 +16,16 @@ const PaymentRadialChart = ({ searchData, isSuccess }) => {
     // Fetch chart data when search data is available (with debouncing)
     useEffect(() => {
         const fetchChartData = async () => {
-            if (isSuccess && searchData && searchData.data && searchData.data.length > 0 && searchData.query_type === "standard") {
+            if (isSuccess && Array.isArray(searchData) && searchData.length > 0) {
                 setChartLoading(true);
                 try {
-                    const response = await fetch('http://13.126.136.209:5000/payment/chart/radial', {
+                    const response = await fetch('http://localhost:5000/payment/chart/radial', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            orders: searchData.data
+                            orders: searchData
                         })
                     });
 

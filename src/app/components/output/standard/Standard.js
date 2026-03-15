@@ -1,15 +1,13 @@
-
 import MetricCarouselOrder from './MetricCarouselOrder';
 import DataTableComponent from '../../table/DataTableComponent';
 import { useCallback } from 'react';
 
-export default function Standard({isSuccess, searchData, finalMetrics, metricsLoading, refreshKey, summarizedQuery, responseData}) {
+export default function Standard({isSuccess, searchData, finalMetrics, metricsLoading, refreshKey, summarizedQuery}) {
     
     const summarized_query = useCallback(() => {
         return summarizedQuery || '';
     }, [summarizedQuery]);
 
-    // Prepare data in the format that DataTableComponent expects
     const tableData = {
         query_type: "standard",
         data: searchData || [],
