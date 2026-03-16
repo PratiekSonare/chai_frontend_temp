@@ -142,7 +142,7 @@ export default function Home() {
         return;
       }
       pollLogs();
-    }, 300);
+    }, 1000);
 
     return () => {
       active = false;
