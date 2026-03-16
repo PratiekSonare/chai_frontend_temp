@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { select } from 'd3-selection';
 import { geoMercator, geoPath } from 'd3-geo';
+import type { Feature, FeatureCollection, Geometry } from 'geojson';
 
 export interface StateData {
   name: string;
@@ -27,22 +28,13 @@ export interface StateMapPlotterProps {
   legend?: string; // Custom legend text for tooltips
 }
 
-interface GeoJSONFeature {
-  type: string;
-  properties: {
-    name: string;
-    [key: string]: any;
-  };
-  geometry: {
-    type: string;
-    coordinates: any[];
-  };
+interface StateFeatureProperties {
+  name: string;
+  [key: string]: unknown;
 }
 
-interface GeoJSONData {
-  type: string;
-  features: GeoJSONFeature[];
-}
+type GeoJSONFeature = Feature<Geometry, StateFeatureProperties>;
+type GeoJSONData = FeatureCollection<Geometry, StateFeatureProperties>;
 
 const StateMapPlotter: React.FC<StateMapPlotterProps> = ({
   width = 800,
@@ -69,7 +61,7 @@ const StateMapPlotter: React.FC<StateMapPlotterProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   // Create a map for quick state data lookup
-  const stateDataMap = new Map(data.map(item => [item.name, item]));
+  const stateDataMap = useMemo(() => new Map(data.map(item => [item.name, item])), [data]);
 
   // Load GeoJSON data
   useEffect(() => {
@@ -135,7 +127,7 @@ const StateMapPlotter: React.FC<StateMapPlotterProps> = ({
       .data(filteredFeatures)
       .enter()
       .append("path")
-      .attr("d", path)
+      .attr("d", (d) => path(d) || "")
       .attr("stroke", strokeColor)
       .attr("stroke-width", strokeWidth)
       .attr("fill", (d) => {
@@ -227,7 +219,7 @@ const StateMapPlotter: React.FC<StateMapPlotterProps> = ({
         }
       });
 
-  }, [geoData, data, width, height, strokeColor, strokeWidth, hoverStrokeColor, hoverStrokeWidth, defaultFillColor, onStateClick, onStateHover, tooltipFormatter, statesToShow, autoFitToStates]);
+  }, [geoData, stateDataMap, width, height, strokeColor, strokeWidth, hoverStrokeColor, hoverStrokeWidth, defaultFillColor, onStateClick, onStateHover, tooltipFormatter, statesToShow, autoFitToStates, legend]);
 
   if (isLoading) {
     return (
