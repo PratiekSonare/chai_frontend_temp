@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useMachine } from '@xstate/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
+import Sidebar from './components/sidebar/Sidebar';
 import Down from './components/down';
 import Development from './components/development';
 import Active from './components/active';
@@ -47,6 +48,7 @@ export default function Home() {
 
   const [metricsLoading, setMetricsLoading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [sidebarHovered, setSidebarHovered] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const searchbarRef = useRef(null);
   const searchResultsRef = useRef(null);
@@ -214,11 +216,10 @@ export default function Home() {
         onUpdate: (self) => {
           const progress = self.progress;
           gsap.to(searchbarRef.current, {
-            width: progress > 0 ? "93%" : "75%",
+            width: progress > 0 ? "85%" : "75%",
             position: progress > 0 ? "fixed" : "relative",
             top: progress > 0 ? "30px" : "auto",
-            left: progress > 0 ? "7%" : "auto",
-            zIndex: progress > 0 ? 1000 : "auto",
+            left: progress > 0 ? "calc(50% - 42.5%)" : "auto",
             duration: 0.05,
             ease: "circ.in",
           });
@@ -360,7 +361,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="relative overflow-x-hidden min-h-screen bg-zinc-50 font-sans">
+    <div className="relative overflow-x-hidden min-h-screen bg-zinc-100 font-sans">
 
       <div className='flex flex-row gap-2 z-50! fixed bottom-5 right-5'>
         <Button
@@ -381,12 +382,10 @@ export default function Home() {
       </div>
 
       {/* sidebar */}
-      <div className="fixed left-0 top-0 w-[5.56%] h-screen flex flex-col items-start bg-[#001fb0]">
-        <img className="" src="./chupps_logo.png" alt="grid" />
-      </div>
+      <Sidebar onHoverChange={setSidebarHovered} />
 
       {/* main content */}
-      <div className="relative ml-[5.56%] flex flex-col items-center overflow-y-scroll">
+      <div className={`relative ${sidebarHovered ? 'ml-[3.56%]' : 'ml-[3%]'} transition-[margin] duration-100 ease-in flex flex-col items-center overflow-y-scroll`}>
 
         <Header />
 
@@ -485,12 +484,12 @@ export default function Home() {
             />
           )}
 
-          {/* {isSuccess && searchType === "schema_discovery" && (
+          {isSuccess && searchType === "schema_discovery" && (
             <SchemaDiscovery
               field={field}
               field_info={field_info}
             />
-          )} */}
+          )}
 
           {isSuccess && searchType === "standard" && Array.isArray(searchData) && searchData.length === 0 && (
             <div className="text-center py-12">

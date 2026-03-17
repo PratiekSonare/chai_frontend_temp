@@ -1,8 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
 import React, { useEffect, useState } from 'react';
-import { custom_logs as logs } from './custom_logs';
 
 export const LoadingComponent = ({
   onCancel,
@@ -13,7 +10,7 @@ export const LoadingComponent = ({
   showLogs = true
 }) => {
 
-  const sourceLogs = liveLogs.length > 0 ? liveLogs : logs;
+  const sourceLogs = liveLogs;
   const visibleLogs = sourceLogs.slice(-8);
   const formatTimestamp = (timestamp) => {
     if (!timestamp) return '';
