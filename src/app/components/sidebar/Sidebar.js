@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 
-export default function Sidebar({ onHoverChange }) {
+export default function Sidebar({ onHoverChange, currentPage = null }) {
     const [hoveredIndex, setHoveredIndex] = useState(null);
     const ITEM_HEIGHT = 96;
 
@@ -11,49 +11,56 @@ export default function Sidebar({ onHoverChange }) {
             "text": "ORDERS",
             "content_title": "Orders",
             "desc": "Find all order related metrics with real-time order updates from Shopify, Flipkart, Myntra, etc. here!",
-            "subtitle": "Fetch and compare orders across all channels." 
+            "subtitle": "Fetch and compare orders across all channels."
         },
         {
             "svg": <svg className="w-8 h-8 translate-y-3 group-hover:translate-y-0 transition-transform duration-200 ease-in" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15.5777 3.38197L17.5777 4.43152C19.7294 5.56066 20.8052 6.12523 21.4026 7.13974C22 8.15425 22 9.41667 22 11.9415V12.0585C22 14.5833 22 15.8458 21.4026 16.8603C20.8052 17.8748 19.7294 18.4393 17.5777 19.5685L15.5777 20.618C13.8221 21.5393 12.9443 22 12 22C11.0557 22 10.1779 21.5393 8.42229 20.618L6.42229 19.5685C4.27063 18.4393 3.19479 17.8748 2.5974 16.8603C2 15.8458 2 14.5833 2 12.0585V11.9415C2 9.41667 2 8.15425 2.5974 7.13974C3.19479 6.12523 4.27063 5.56066 6.42229 4.43152L8.42229 3.38197C10.1779 2.46066 11.0557 2 12 2C12.9443 2 13.8221 2.46066 15.5777 3.38197Z" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"></path> <path d="M21 7.5L17 9.5M12 12L3 7.5M12 12V21.5M12 12C12 12 14.7426 10.6287 16.5 9.75C16.6953 9.65237 17 9.5 17 9.5M17 9.5V13M17 9.5L7.5 4.5" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"></path> </g></svg>,
             "text": "INVENTORY",
             "content_title": "Inventory",
             "desc": "Fetch latest inventory and assortment, analyze and compare historical inventory to map trends!",
-            "subtitle": "Real-time inventory across different channels." 
+            "subtitle": "Real-time inventory across different channels."
+        },
+        {
+            "svg": <svg className="w-8 h-8 translate-y-3 group-hover:translate-y-0 transition-transform duration-200 ease-in" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M17.4142 10.4142C18 9.82843 18 8.88562 18 7C18 5.11438 18 4.17157 17.4142 3.58579M17.4142 10.4142C16.8284 11 15.8856 11 14 11H10C8.11438 11 7.17157 11 6.58579 10.4142M17.4142 10.4142C17.4142 10.4142 17.4142 10.4142 17.4142 10.4142ZM17.4142 3.58579C16.8284 3 15.8856 3 14 3L10 3C8.11438 3 7.17157 3 6.58579 3.58579M17.4142 3.58579C17.4142 3.58579 17.4142 3.58579 17.4142 3.58579ZM6.58579 3.58579C6 4.17157 6 5.11438 6 7C6 8.88562 6 9.82843 6.58579 10.4142M6.58579 3.58579C6.58579 3.58579 6.58579 3.58579 6.58579 3.58579ZM6.58579 10.4142C6.58579 10.4142 6.58579 10.4142 6.58579 10.4142Z" stroke="#fff" strokeWidth="1.5"></path> <path d="M13 7C13 7.55228 12.5523 8 12 8C11.4477 8 11 7.55228 11 7C11 6.44772 11.4477 6 12 6C12.5523 6 13 6.44772 13 7Z" stroke="#fff" strokeWidth="1.5"></path> <path d="M18 6C16.3431 6 15 4.65685 15 3" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"></path> <path d="M18 8C16.3431 8 15 9.34315 15 11" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"></path> <path d="M6 6C7.65685 6 9 4.65685 9 3" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"></path> <path d="M6 8C7.65685 8 9 9.34315 9 11" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"></path> <path d="M5 20.3884H7.25993C8.27079 20.3884 9.29253 20.4937 10.2763 20.6964C12.0166 21.0549 13.8488 21.0983 15.6069 20.8138C16.4738 20.6734 17.326 20.4589 18.0975 20.0865C18.7939 19.7504 19.6469 19.2766 20.2199 18.7459C20.7921 18.216 21.388 17.3487 21.8109 16.6707C22.1736 16.0894 21.9982 15.3762 21.4245 14.943C20.7873 14.4619 19.8417 14.462 19.2046 14.9433L17.3974 16.3084C16.697 16.8375 15.932 17.3245 15.0206 17.4699C14.911 17.4874 14.7962 17.5033 14.6764 17.5172M14.6764 17.5172C14.6403 17.5214 14.6038 17.5254 14.5668 17.5292M14.6764 17.5172C14.8222 17.486 14.9669 17.396 15.1028 17.2775C15.746 16.7161 15.7866 15.77 15.2285 15.1431C15.0991 14.9977 14.9475 14.8764 14.7791 14.7759C11.9817 13.1074 7.62942 14.3782 5 16.2429M14.6764 17.5172C14.6399 17.525 14.6033 17.5292 14.5668 17.5292M14.5668 17.5292C14.0434 17.5829 13.4312 17.5968 12.7518 17.5326" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"></path> <rect x="2" y="14" width="3" height="8" rx="1.5" stroke="#fff" strokeWidth="1.5"></rect> </g></svg>,
+            "text": "PROFITABILITY",
+            "content_title": "Cost Sheet & Margins",
+            "desc": "Edit, control and manage profitability and vendor cost sheets.",
+            "subtitle": "Manage profitability data for each SKU, by each distributor."
         },
         {
             "svg": <svg className="w-8 h-8 translate-y-3 group-hover:translate-y-0 transition-transform duration-200 ease-in" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M22 10.5V12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2H13.5" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"></path> <path d="M7 14H16" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"></path> <path d="M7 17.5H13" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"></path> <path d="M22 2L17 6.99998M17 1.99998L22 6.99996" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"></path> </g></svg>,
             "text": "RTO",
             "content_title": "Return / Cancellation",
             "desc": "Discover factors for return / cancellation; target audience and geography with highest RTO.",
-            "subtitle": "Measure return & cancellation trends." 
+            "subtitle": "Measure return & cancellation trends."
         },
         {
             "svg": <svg className="w-8 h-8 translate-y-3 group-hover:translate-y-0 transition-transform duration-200 ease-in" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <circle cx="9" cy="9" r="2" stroke="#fff" strokeWidth="1.5"></circle> <path d="M13 15C13 16.1046 13 17 9 17C5 17 5 16.1046 5 15C5 13.8954 6.79086 13 9 13C11.2091 13 13 13.8954 13 15Z" stroke="#fff" strokeWidth="1.5"></path> <path d="M2 12C2 8.22876 2 6.34315 3.17157 5.17157C4.34315 4 6.22876 4 10 4H14C17.7712 4 19.6569 4 20.8284 5.17157C22 6.34315 22 8.22876 22 12C22 15.7712 22 17.6569 20.8284 18.8284C19.6569 20 17.7712 20 14 20H10C6.22876 20 4.34315 20 3.17157 18.8284C2 17.6569 2 15.7712 2 12Z" stroke="#fff" strokeWidth="1.5"></path> <path d="M19 12H15" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"></path> <path d="M19 9H14" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"></path> <path d="M19 15H16" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"></path> </g></svg>,
             "text": "DISTRIBUTORS",
             "content_title": "Distributors",
             "desc": "(OFFLINE SALES) Analyze distributor-wise performance, trends and compare performance",
-            "subtitle": "Keep your distributors happy." 
+            "subtitle": "Keep your distributors happy."
         },
         {
             "svg": <svg className="w-8 h-8 translate-y-3 group-hover:translate-y-0 transition-transform duration-200 ease-in" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M4 6V19C4 20.6569 5.34315 22 7 22H17C18.6569 22 20 20.6569 20 19V9C20 7.34315 18.6569 6 17 6H4ZM4 6V5" stroke="#fff" strokeWidth="1.5"></path> <path d="M18 6.00002V6.75002H18.75V6.00002H18ZM15.7172 2.32614L15.6111 1.58368L15.7172 2.32614ZM4.91959 3.86865L4.81353 3.12619H4.81353L4.91959 3.86865ZM5.07107 6.75002H18V5.25002H5.07107V6.75002ZM18.75 6.00002V4.30604H17.25V6.00002H18.75ZM15.6111 1.58368L4.81353 3.12619L5.02566 4.61111L15.8232 3.0686L15.6111 1.58368ZM4.81353 3.12619C3.91638 3.25435 3.25 4.0227 3.25 4.92895H4.75C4.75 4.76917 4.86749 4.63371 5.02566 4.61111L4.81353 3.12619ZM18.75 4.30604C18.75 2.63253 17.2678 1.34701 15.6111 1.58368L15.8232 3.0686C16.5763 2.96103 17.25 3.54535 17.25 4.30604H18.75ZM5.07107 5.25002C4.89375 5.25002 4.75 5.10627 4.75 4.92895H3.25C3.25 5.9347 4.06532 6.75002 5.07107 6.75002V5.25002Z" fill="#fff"></path> <path d="M8 12H16" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"></path> <path d="M8 15.5H13.5" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"></path> </g></svg>,
             "text": "CATALOGUE",
             "content_title": "Catalogue",
             "desc": "Explore all available SKUs, compare historical sales performance among different SKUs.",
-            "subtitle": "Repository of all Chupps SKUs." 
+            "subtitle": "Repository of all Chupps SKUs."
         },
         {
             "svg": <svg className="w-8 h-8 translate-y-3 group-hover:translate-y-0 transition-transform duration-200 ease-in" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M5.31171 10.7615C8.23007 5.58716 9.68925 3 12 3C14.3107 3 15.7699 5.58716 18.6883 10.7615L19.0519 11.4063C21.4771 15.7061 22.6897 17.856 21.5937 19.428C20.4978 21 17.7864 21 12.3637 21H11.6363C6.21356 21 3.50217 21 2.40626 19.428C1.31034 17.856 2.52291 15.7061 4.94805 11.4063L5.31171 10.7615Z" stroke="#fff" strokeWidth="1.5"></path> <path d="M12 8V13" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"></path> <circle cx="12" cy="16" r="1" fill="#fff"></circle> </g></svg>,
             "text": "RISK",
             "content_title": "ORDER RISK ESTIMATION",
             "desc": "Fetch risk scores of real-time orders for address & order intention verification.",
-            "subtitle": "How risky is this order?" 
+            "subtitle": "How risky is this order?"
         },
         {
             "svg": <svg className="w-8 h-8 translate-y-3 group-hover:translate-y-0 transition-transform duration-200 ease-in" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M22 7L14.6203 14.3347C13.6227 15.3263 13.1238 15.822 12.5051 15.822C11.8864 15.8219 11.3876 15.326 10.3902 14.3342L10.1509 14.0962C9.15254 13.1035 8.65338 12.6071 8.03422 12.6074C7.41506 12.6076 6.91626 13.1043 5.91867 14.0977L2 18M22 7V12.5458M22 7H16.4179" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>,
             "text": "FORECAST",
             "content_title": "Forecast Analytics",
             "desc": "Fetch mid-range, short-range forecasts for orders and inventory / assortments.",
-            "subtitle": "Forecast demand and supply, with ease." 
+            "subtitle": "Forecast demand and supply, with ease."
         }
     ]
 
@@ -63,7 +70,10 @@ export default function Sidebar({ onHoverChange }) {
                 onMouseEnter={() => onHoverChange?.(true)}
                 onMouseLeave={() => onHoverChange?.(false)}
             >
-                <div className='flex-1'><img className="" src="./chupps_logo.png" alt="grid" /></div>
+                <div className='flex-1 overflow-hidden'>
+                    <img className="group-hover:translate-y-0 -translate-y-96 transition-transform duration-300 ease-in" src="./chupps_logo.png" alt="grid" />
+                    {/* <svg className="w-8 h-8 mx-auto group-hover:-translate-x-52 translate-x-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M7 12L14 12M14 12L11 15M14 12L11 9" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M17 16L17 8" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"></path> <path d="M2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12Z" stroke="#fff" strokeWidth="1.5"></path> </g></svg>                 */}
+                </div>
                 <div className="relative flex flex-col" onMouseLeave={() => setHoveredIndex(null)}>
                     <div
                         className="absolute inset-x-0 h-24 bg-[#001a8e] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] pointer-events-none"
@@ -75,8 +85,9 @@ export default function Sidebar({ onHoverChange }) {
                     {buttonMap.map(({ svg, text }, idx) => (
                         <button
                             key={idx}
+                            onClick={() => currentPage(text)}
                             onMouseEnter={() => setHoveredIndex(idx)}
-                            className={`${idx === 0 ? "group-hover:border-y-2" : idx === buttonMap.length - 1 ? "group-hover:border-b-0" : "group-hover:border-b-2"} relative z-10 flex flex-col items-center justify-center gap-2 group-hover:border-[#001a8e]/80 h-24 transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]`}
+                            className={`${idx === 0 ? "group-hover:border-y-2" : idx === buttonMap.length - 1 ? "group-hover:border-b-0" : "group-hover:border-b-2"} relative z-10 flex flex-col items-center justify-center gap-2 group-hover:border-[#001a8e]/80 h-24 transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] opacity-80 hover:opacity-100`}
                         >
                             {svg}
                             <span className="-translate-x-100 group-hover:translate-x-0 transition-transform duration-200 ease-in text-xs tracking-wide oswald font-bold">{text}</span>
@@ -86,7 +97,7 @@ export default function Sidebar({ onHoverChange }) {
                         <div
                             className="w-96 h-96 absolute left-full bottom-0 z-300 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
                             style={{
-                                transform: `translateY(-${(buttonMap.length - hoveredIndex - 1) * ITEM_HEIGHT / 2}px)`,
+                                transform: `translateY(-${(buttonMap.length - hoveredIndex - 1) * ITEM_HEIGHT * 3 / 5}px)`,
                             }}
                         >
                             <div className="h-full w-full bg-[#001a8e] border-l-0 border-2 border-[#001a8e]/80 rounded-r-xl">

@@ -24,6 +24,8 @@ import SchemaDiscovery from './components/output/schema_discovery/SchemaDiscover
 import QueryDetails from './components/QueryDetails';
 import { apiUrl } from '@/lib/api';
 
+import OrdersPage from './orders/page'
+
 import gsap from 'gsap';
 gsap.registerPlugin(ScrollTrigger);
 
@@ -32,7 +34,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
 
-  
+
 
   const placeholder_list = [
     "Compare orders between Maharashtra and Telangana from the past 3 days.",
@@ -85,6 +87,36 @@ export default function Home() {
   const currentStep = latestLog?.summary || 'Planning execution...';
   const nextStep = latestLog?.status === 'PENDING' ? latestLog?.summary : null;
 
+  const notifyCancel = useCallback((activeRequestId, reason = 'client_cancelled', preferBeacon = false) => {
+    if (!activeRequestId) {
+      return;
+    }
+
+    const cancelUrl = apiUrl(`/query/${activeRequestId}/cancel`);
+    const payload = JSON.stringify({ reason });
+
+    if (preferBeacon && typeof navigator !== 'undefined' && typeof navigator.sendBeacon === 'function') {
+      const sent = navigator.sendBeacon(
+        cancelUrl,
+        new Blob([payload], { type: 'application/json' })
+      );
+      if (sent) {
+        return;
+      }
+    }
+
+    fetch(cancelUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: payload,
+      keepalive: true
+    }).catch((error) => {
+      console.error('Failed to send cancellation request:', error);
+    });
+  }, []);
+
   // Debug logging for state changes and scroll to results
   useEffect(() => {
     console.log('Search state changed:', {
@@ -114,11 +146,14 @@ export default function Home() {
     }
 
     let active = true;
+    const pollController = new AbortController();
     let since = Number(logSinceRef.current || 0);
 
     const pollLogs = async () => {
       try {
-        const response = await fetch(apiUrl(`/query/logs/${requestId}?since=${since}`));
+        const response = await fetch(apiUrl(`/query/logs/${requestId}?since=${since}`), {
+          signal: pollController.signal
+        });
         if (!response.ok) {
           return;
         }
@@ -134,6 +169,9 @@ export default function Home() {
         since = Math.max(since, nextSequence);
         logSinceRef.current = since;
       } catch (error) {
+        if (error?.name === 'AbortError') {
+          return;
+        }
         console.error('Log polling failed:', error);
       }
     };
@@ -148,12 +186,34 @@ export default function Home() {
 
     return () => {
       active = false;
+      pollController.abort();
       clearInterval(timer);
     };
   }, [isLoading, requestId, sendSearch]);
 
+  useEffect(() => {
+    if (!isLoading || !requestId) {
+      return;
+    }
+
+    const onPageExit = () => {
+      notifyCancel(requestId, 'page_unload', true);
+    };
+
+    window.addEventListener('pagehide', onPageExit);
+    window.addEventListener('beforeunload', onPageExit);
+
+    return () => {
+      window.removeEventListener('pagehide', onPageExit);
+      window.removeEventListener('beforeunload', onPageExit);
+    };
+  }, [isLoading, requestId, notifyCancel]);
+
   // Calculate metrics when search data is available for standard queries
   useEffect(() => {
+    const metricsController = new AbortController();
+    let disposed = false;
+
     const calculateMetrics = async () => {
       if (isSuccess && searchData && searchData.length > 0 && searchType === "standard") {
         setMetricsLoading(true);
@@ -163,6 +223,7 @@ export default function Home() {
             headers: {
               'Content-Type': 'application/json',
             },
+            signal: metricsController.signal,
             body: JSON.stringify({
               orders: searchData
             })
@@ -175,10 +236,15 @@ export default function Home() {
             console.error('Failed to calculate metrics:', response.statusText);
           }
         } catch (error) {
+          if (error?.name === 'AbortError') {
+            return;
+          }
           console.error('Error calculating metrics:', error);
         } finally {
-          setMetricsLoading(false);
-          console.log("succ state: ", searchState.context);
+          if (!disposed) {
+            setMetricsLoading(false);
+            console.log("succ state: ", searchState.context);
+          }
         }
       } else {
         console.log('❌ CONDITIONS NOT MET - API call skipped');
@@ -187,7 +253,12 @@ export default function Home() {
     };
 
     calculateMetrics();
-  }, [isSuccess, searchData, sendSearch]);
+
+    return () => {
+      disposed = true;
+      metricsController.abort();
+    };
+  }, [isSuccess, searchData, searchType, sendSearch]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -246,8 +317,9 @@ export default function Home() {
 
   const handleCancel = useCallback(() => {
     console.log('Search cancelled');
+    notifyCancel(requestId, 'manual_cancel');
     sendSearch({ type: 'CANCEL' });
-  }, [sendSearch]);
+  }, [notifyCancel, requestId, sendSearch]);
 
   const handleRetry = useCallback(() => {
     sendSearch({ type: 'RETRY' });
@@ -360,8 +432,10 @@ export default function Home() {
     };
   }, []);
 
+  const [curPage, setCurPage] = useState(null);
+
   return (
-    <div className="relative overflow-x-hidden min-h-screen bg-zinc-100 font-sans">
+    <div className="relative overflow-x-hidden min-h-screen bg-zinc-50  font-sans">
 
       <div className='flex flex-row gap-2 z-50! fixed bottom-5 right-5'>
         <Button
@@ -382,7 +456,7 @@ export default function Home() {
       </div>
 
       {/* sidebar */}
-      <Sidebar onHoverChange={setSidebarHovered} />
+      <Sidebar onHoverChange={setSidebarHovered} currentPage={setCurPage} />
 
       {/* main content */}
       <div className={`relative ${sidebarHovered ? 'ml-[3.56%]' : 'ml-[3%]'} transition-[margin] duration-100 ease-in flex flex-col items-center overflow-y-scroll`}>
@@ -432,83 +506,89 @@ export default function Home() {
 
         </div>
 
+        {curPage === null && (
+          <div ref={searchResultsRef} className="w-full max-w-full h-screen flex flex-col justify-center items-center mx-auto px-4">
+            
+            {isLoading && (
+              <LoadingComponent
+                onCancel={handleCancel}
+                requestId={requestId}
+                logs={workflowLogs}
+                currentStep={currentStep}
+                nextStep={nextStep}
+              />
+            )}
 
-        {/* Search Results Section with State Management */}
-        <div ref={searchResultsRef} className="w-full max-w-full h-screen flex flex-col justify-center items-center mx-auto px-4">
-          {isLoading && (
-            <LoadingComponent
-              onCancel={handleCancel}
-              requestId={requestId}
-              logs={workflowLogs}
-              currentStep={currentStep}
-              nextStep={nextStep}
-            />
-          )}
+            {isError && (
+              <ErrorComponent
+                error={searchError}
+                onRetry={handleRetry}
+                onReset={handleReset}
+              />
+            )}
 
-          {isError && (
-            <ErrorComponent
-              error={searchError}
-              onRetry={handleRetry}
-              onReset={handleReset}
-            />
-          )}
+            {isSuccess && searchType === "standard" && (
+              <Standard
+                isSuccess={isSuccess}
+                searchData={searchData}
+                finalMetrics={finalMetrics}
+                metricsLoading={metricsLoading}
+                refreshKey={refreshKey}
+                summarizedQuery={summarizedQuery}
+              />
+            )}
 
-          {isSuccess && searchType === "standard" && (
-            <Standard
-              isSuccess={isSuccess}
-              searchData={searchData}
-              finalMetrics={finalMetrics}
-              metricsLoading={metricsLoading}
-              refreshKey={refreshKey}
-              summarizedQuery={summarizedQuery}
-            />
-          )}
+            {isSuccess && searchType === "comparison" && (
+              <Comparison
+                createPaymentChart={createPaymentChart}
+                isSuccess={isSuccess}
+                searchData={searchState?.context.data}
+                searchType={searchType}
+                comparisonType={comparisonType}
+                searchFilter={comparisonFilter}
+                detailedMetrics={detailedMetrics}
+                refreshKey={refreshKey}
+              />
+            )}
 
-          {isSuccess && searchType === "comparison" && (
-            <Comparison
-              createPaymentChart={createPaymentChart}
-              isSuccess={isSuccess}
-              searchData={searchState?.context.data}
-              searchType={searchType}
-              comparisonType={comparisonType}
-              searchFilter={comparisonFilter}
-              detailedMetrics={detailedMetrics}
-              refreshKey={refreshKey}
-            />
-          )}
+            {isSuccess && searchType === "metric_analysis" && (
+              <MetricAnalysis
+                metric_analysis={metric_analysis}
+                metric_calculated={metric_calculated}
+              />
+            )}
 
-          {isSuccess && searchType === "metric_analysis" && (
-            <MetricAnalysis
-              metric_analysis={metric_analysis}
-              metric_calculated={metric_calculated}
-            />
-          )}
+            {isSuccess && searchType === "schema_discovery" && (
+              <SchemaDiscovery
+                field={field}
+                field_info={field_info}
+              />
+            )}
 
-          {isSuccess && searchType === "schema_discovery" && (
-            <SchemaDiscovery
-              field={field}
-              field_info={field_info}
-            />
-          )}
+            {isSuccess && searchType === "standard" && Array.isArray(searchData) && searchData.length === 0 && (
+              <div className="text-center py-12">
+                <p className="text-gray-500">No results found for your search.</p>
+                <button
+                  onClick={handleReset}
+                  className="mt-4 text-blue-600 hover:text-blue-800 font-medium"
+                >
+                  Try a different search
+                </button>
+              </div>
+            )}
 
-          {isSuccess && searchType === "standard" && Array.isArray(searchData) && searchData.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-gray-500">No results found for your search.</p>
-              <button
-                onClick={handleReset}
-                className="mt-4 text-blue-600 hover:text-blue-800 font-medium"
-              >
-                Try a different search
-              </button>
-            </div>
-          )}
+            {!isLoading && !isSuccess && !isError && (
+              <>
+                <EmptyStateComponent />
+              </>
+            )}
+          </div>
+        )}
 
-          {!isLoading && !isSuccess && !isError && (
-            <>
-              <EmptyStateComponent />
-            </>
-          )}
-        </div>
+        {curPage === "ORDERS" && (
+          <OrdersPage />
+        )}
+
       </div >
     </div >
   );

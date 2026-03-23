@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button"
 export default function header() {
     return (
         <div className='absolute opacity-60 hover:opacity-100 transition-all duration-100 ease-in top-5 right-2 flex flex-col text-center text-gray-500 items-center gap-4'>
-            <img className="w-30 transition-all duration-100 ease-in" src="./chai_logo_sub.png" alt="grid" />
+            {/* <img className="w-30 transition-all duration-100 ease-in" src="./chai_logo_sub.png" alt="grid" /> */}
             <div className='flex flex-col gap-2'>
                 <Drawer direction="right">
                     <DrawerTrigger asChild>
@@ -39,14 +39,9 @@ export default function header() {
                             <p>[21-02-2026] Handle orders pagination from EasyECom API</p>
                             <p>[24-02-2026] UI: Develop query based displaying layout (ORDERS complete)</p>
                             <p>[26-02-2026] Backend: Chart.js based charting, Orders Metric Grids complete</p>
-                            <p className="italic text-blue-600">[Coming Soon...] Add 6 months of orders in a temp DB for faster query!</p>
-                            <p className="italic text-blue-600">[Coming Soon...] Create DB for profitability data</p>
-                            <p className="italic text-blue-600">[Coming Soon...] Deploy for testing</p>
-                            <p className="italic text-blue-600">[Coming Soon...] Add distinction b/w sku-size & just sku!</p>
-                            <p className="italic text-blue-600">[Coming Soon...] Make LLM calls efficient, add redis caching + pinecone vector DB for tool call fetching</p>
-                            <p className="italic text-blue-600">[Coming Soon...] Backend: achieve filtering+comparison on rest of the data sources </p>
-                            <p className="italic text-blue-600">[Coming Soon...] Backend: metrics tool calls (mean, median, etc...) + forecasting + ml methods support</p>
-                            <p className="italic text-blue-600">[Coming Soon...] Frontend: display layouts for different query types</p>
+                            <p>[17-03-2026] Add 6 months of orders in a temp DB for faster query!</p>
+                            <p>[17-03-2026] Create DB for profitability data</p>
+                            <p className="italic text-blue-600">[Coming Soon...] Complete orders section with ml methods + charts</p>
                         </div>
                         <DrawerFooter>
                             <DrawerClose asChild>

@@ -101,7 +101,7 @@ export default function MetricAnalysis({ metric_analysis, metric_calculated }) {
     const metricsArray = metrics ? Object.entries(metrics) : [];
 
     return (
-        <div className="w-full grid grid-cols-3 grid-rows-3 gap-4">
+        <div className="max-w-7xl grid grid-cols-3 grid-rows-3 gap-4">
             <div className="col-start-1 col-span-2 row-span-full">
                 <div className="pointer-events-auto select-none relative border rounded-xl w-full h-fit!" onClick={() => setIsOpen(false)}>
                     <div onClick={(e) => { e.stopPropagation(); toggleCard(); }} className='flex flex-row items-center justify-between bg-[#001FB0] rounded-t-xl h-fit cursor-pointer'>

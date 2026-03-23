@@ -78,18 +78,10 @@ export default function Searchbar({ searchbarRef, placeholder, inputValue, setIn
             </button>
           </div>
         </div>
-
-        {/* {isSuccess && (
-          <QueryDetails
-            inputQuery={searchState.context?.query}
-            summarizedQuery={responseData?.summarized_query || responseData?.query_summary}
-            logs={logs}
-          />
-        )} */}
       </div>
 
       {(isSuccess || isError) &&
-        (<div ref={queryDetailsRef} className="w-1/2 -z-10">
+        (<div ref={queryDetailsRef} className="w-1/2 z-101!">
           {QueryDetails}
         </div>)
       }

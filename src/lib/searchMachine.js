@@ -2,6 +2,41 @@ import { createMachine, assign, fromPromise } from 'xstate';
 import axios from 'axios';
 import { apiUrl } from './api';
 
+let activeQueryController = null;
+
+const abortActiveQuery = () => {
+  if (!activeQueryController) {
+    return;
+  }
+
+  try {
+    activeQueryController.abort();
+  } catch (error) {
+    console.error('Failed to abort active query:', error);
+  } finally {
+    activeQueryController = null;
+  }
+};
+
+export const cancelQueryOnServer = async (requestId, reason = 'client_cancelled') => {
+  if (!requestId) {
+    return;
+  }
+
+  try {
+    await fetch(apiUrl(`/query/${requestId}/cancel`), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ reason }),
+      keepalive: true
+    });
+  } catch (error) {
+    console.error('Failed to notify server cancellation:', error);
+  }
+};
+
 const generateRequestId = () => {
   const ts = Date.now().toString(36);
   const rand = Math.random().toString(36).slice(2, 8);
@@ -40,14 +75,26 @@ export const searchMachine = createMachine({
       invoke: {
         id: 'searchService',
         src: fromPromise(async ({ input }) => {
-          const response = await axios.post(apiUrl('/query'), {
-            query: input.query 
-          }, {
-            headers: {
-              'X-Request-ID': input.requestId
+          abortActiveQuery();
+          const controller = new AbortController();
+          activeQueryController = controller;
+
+          try {
+            const response = await axios.post(apiUrl('/query'), {
+              query: input.query 
+            }, {
+              headers: {
+                'X-Request-ID': input.requestId
+              },
+              signal: controller.signal
+            });
+
+            return response.data;
+          } finally {
+            if (activeQueryController === controller) {
+              activeQueryController = null;
             }
-          });
-          return response.data;
+          }
         }),
         input: ({ context }) => ({ query: context.query, requestId: context.requestId }),
         onDone: {
@@ -86,11 +133,14 @@ export const searchMachine = createMachine({
       on: {
         CANCEL: {
           target: 'idle',
-          actions: assign({
-            logs: () => [],
-            lastLogSequence: () => 0,
-            requestId: () => null
-          })
+          actions: [
+            () => abortActiveQuery(),
+            assign({
+              logs: () => [],
+              lastLogSequence: () => 0,
+              requestId: () => null
+            })
+          ]
         },
         APPEND_LOGS: {
           actions: assign({
@@ -119,13 +169,16 @@ export const searchMachine = createMachine({
       on: {
         SEARCH: {
           target: 'loading',
-          actions: assign({
-            query: ({ event }) => event.query,
-            error: null,
-            requestId: () => generateRequestId(),
-            logs: () => [],
-            lastLogSequence: () => 0
-          })
+          actions: [
+            () => abortActiveQuery(),
+            assign({
+              query: ({ event }) => event.query,
+              error: null,
+              requestId: () => generateRequestId(),
+              logs: () => [],
+              lastLogSequence: () => 0
+            })
+          ]
         },
         SET_METRICS: {
           actions: assign({
@@ -168,13 +221,16 @@ export const searchMachine = createMachine({
       on: {
         SEARCH: {
           target: 'loading',
-          actions: assign({
-            query: ({ event }) => event.query,
-            error: null,
-            requestId: () => generateRequestId(),
-            logs: () => [],
-            lastLogSequence: () => 0
-          })
+          actions: [
+            () => abortActiveQuery(),
+            assign({
+              query: ({ event }) => event.query,
+              error: null,
+              requestId: () => generateRequestId(),
+              logs: () => [],
+              lastLogSequence: () => 0
+            })
+          ]
         },
         RETRY: 'loading',
         APPEND_LOGS: {
