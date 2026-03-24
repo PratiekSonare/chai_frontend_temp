@@ -432,8 +432,6 @@ export default function Home() {
     };
   }, []);
 
-  const [curPage, setCurPage] = useState(null);
-
   return (
     <div className="relative overflow-x-hidden min-h-screen bg-zinc-50  font-sans">
 
@@ -456,7 +454,7 @@ export default function Home() {
       </div>
 
       {/* sidebar */}
-      <Sidebar onHoverChange={setSidebarHovered} currentPage={setCurPage} />
+      <Sidebar onHoverChange={setSidebarHovered} />
 
       {/* main content */}
       <div className={`relative ${sidebarHovered ? 'ml-[3.56%]' : 'ml-[3%]'} transition-[margin] duration-100 ease-in flex flex-col items-center overflow-y-scroll`}>
@@ -506,88 +504,82 @@ export default function Home() {
 
         </div>
 
-        {curPage === null && (
-          <div ref={searchResultsRef} className="w-full max-w-full h-screen flex flex-col justify-center items-center mx-auto px-4">
-            
-            {isLoading && (
-              <LoadingComponent
-                onCancel={handleCancel}
-                requestId={requestId}
-                logs={workflowLogs}
-                currentStep={currentStep}
-                nextStep={nextStep}
-              />
-            )}
+        <div ref={searchResultsRef} className="w-full max-w-full h-screen flex flex-col justify-center items-center mx-auto px-4">
 
-            {isError && (
-              <ErrorComponent
-                error={searchError}
-                onRetry={handleRetry}
-                onReset={handleReset}
-              />
-            )}
+          {isLoading && (
+            <LoadingComponent
+              onCancel={handleCancel}
+              requestId={requestId}
+              logs={workflowLogs}
+              currentStep={currentStep}
+              nextStep={nextStep}
+            />
+          )}
 
-            {isSuccess && searchType === "standard" && (
-              <Standard
-                isSuccess={isSuccess}
-                searchData={searchData}
-                finalMetrics={finalMetrics}
-                metricsLoading={metricsLoading}
-                refreshKey={refreshKey}
-                summarizedQuery={summarizedQuery}
-              />
-            )}
+          {isError && (
+            <ErrorComponent
+              error={searchError}
+              onRetry={handleRetry}
+              onReset={handleReset}
+            />
+          )}
 
-            {isSuccess && searchType === "comparison" && (
-              <Comparison
-                createPaymentChart={createPaymentChart}
-                isSuccess={isSuccess}
-                searchData={searchState?.context.data}
-                searchType={searchType}
-                comparisonType={comparisonType}
-                searchFilter={comparisonFilter}
-                detailedMetrics={detailedMetrics}
-                refreshKey={refreshKey}
-              />
-            )}
+          {isSuccess && searchType === "standard" && (
+            <Standard
+              isSuccess={isSuccess}
+              searchData={searchData}
+              finalMetrics={finalMetrics}
+              metricsLoading={metricsLoading}
+              refreshKey={refreshKey}
+              summarizedQuery={summarizedQuery}
+            />
+          )}
 
-            {isSuccess && searchType === "metric_analysis" && (
-              <MetricAnalysis
-                metric_analysis={metric_analysis}
-                metric_calculated={metric_calculated}
-              />
-            )}
+          {isSuccess && searchType === "comparison" && (
+            <Comparison
+              createPaymentChart={createPaymentChart}
+              isSuccess={isSuccess}
+              searchData={searchState?.context.data}
+              searchType={searchType}
+              comparisonType={comparisonType}
+              searchFilter={comparisonFilter}
+              detailedMetrics={detailedMetrics}
+              refreshKey={refreshKey}
+            />
+          )}
 
-            {isSuccess && searchType === "schema_discovery" && (
-              <SchemaDiscovery
-                field={field}
-                field_info={field_info}
-              />
-            )}
+          {isSuccess && searchType === "metric_analysis" && (
+            <MetricAnalysis
+              metric_analysis={metric_analysis}
+              metric_calculated={metric_calculated}
+            />
+          )}
 
-            {isSuccess && searchType === "standard" && Array.isArray(searchData) && searchData.length === 0 && (
-              <div className="text-center py-12">
-                <p className="text-gray-500">No results found for your search.</p>
-                <button
-                  onClick={handleReset}
-                  className="mt-4 text-blue-600 hover:text-blue-800 font-medium"
-                >
-                  Try a different search
-                </button>
-              </div>
-            )}
+          {isSuccess && searchType === "schema_discovery" && (
+            <SchemaDiscovery
+              field={field}
+              field_info={field_info}
+            />
+          )}
 
-            {!isLoading && !isSuccess && !isError && (
-              <>
-                <EmptyStateComponent />
-              </>
-            )}
-          </div>
-        )}
+          {isSuccess && searchType === "standard" && Array.isArray(searchData) && searchData.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-gray-500">No results found for your search.</p>
+              <button
+                onClick={handleReset}
+                className="mt-4 text-blue-600 hover:text-blue-800 font-medium"
+              >
+                Try a different search
+              </button>
+            </div>
+          )}
 
-        {curPage === "ORDERS" && (
-          <OrdersPage />
-        )}
+          {!isLoading && !isSuccess && !isError && (
+            <>
+              <EmptyStateComponent />
+            </>
+          )}
+        </div>
 
       </div >
     </div >
