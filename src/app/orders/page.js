@@ -42,8 +42,12 @@ export default function Order() {
 
             {/* aboslute */}
             <Header />
-            <div className={`relative ${sidebarHovered ? 'ml-[3.56%]' : 'ml-[3%]'} transition-[margin] duration-100 ease-in h-screen w-full shrink-0 flex items-center justify-center snap-start`}><MetricCard /></div>
-            <div className={`relative ${sidebarHovered ? 'ml-[3.56%]' : 'ml-[3%]'} transition-[margin] duration-100 ease-in h-screen w-full shrink-0 flex items-center justify-center snap-start`}><ComparisonCard /></div>
+            <div className={`relative ${sidebarHovered ? 'ml-[3.56%]' : 'ml-[3%]'} transition-[margin] duration-100 ease-in h-screen w-full shrink-0 flex items-center justify-center snap-start`}>
+                <MetricCard />
+            </div>
+            <div className={`relative ${sidebarHovered ? 'ml-[3.56%]' : 'ml-[3%]'} transition-[margin] duration-100 ease-in h-screen w-full shrink-0 flex items-center justify-center snap-start`}>
+                <ComparisonCard />
+            </div>
         </div >
     );
 }

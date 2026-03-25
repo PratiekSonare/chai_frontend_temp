@@ -32,7 +32,7 @@ export default function MetricCard() {
     };
 
     const [startDate, setStartDate] = useState("2025-09-01");
-    const [endDate, setEndDate] = useState("2026-02-28");
+    const [endDate, setEndDate] = useState("2026-03-24");
     const [kpiData, setKpiData] = useState({});
     const [loading, setLoading] = useState(false);
     const [namesLoading, setNamesLoading] = useState(false);
@@ -93,15 +93,15 @@ export default function MetricCard() {
     };
 
     const kpiConfig = {
-        totalOrders: { title: "Total Orders", color: "blue-700" },
-        unitsSold: { title: "Units Sold", color: "indigo-700" },
-        grossRevenue: { title: "Gross Revenue", color: "green-700", currency: true },
-        aov: { title: "AOV", color: "violet-700", currency: true },
-        uniqueSkus: { title: "Unique SKUs", color: "cyan-700" },
-        cancellationRate: { title: "Cancellation Rate", color: "rose-700", percent: true },
-        returnRate: { title: "Return Rate", color: "orange-700", percent: true },
-        codShare: { title: "COD Share", color: "emerald-700", percent: true },
-        deliveredRate: { title: "Delivered Rate", color: "teal-700", percent: true }
+        totalOrders: { title: "Total Orders",   color: "text-blue-700" },
+        unitsSold: { title: "Units Sold",       color: "text-indigo-700" },
+        grossRevenue: { title: "Gross Revenue", color: "text-green-700", currency: true },
+        aov: { title: "AOV", color: "text-violet-700", currency: true },
+        uniqueSkus: { title: "Unique SKUs", color: "text-cyan-700" },
+        cancellationRate: { title: "Cancellation Rate", color: "text-rose-700", percent: true },
+        returnRate: { title: "Return Rate", color: "text-orange-700", percent: true },
+        codShare: { title: "COD Share", color: "text-emerald-700", percent: true },
+        deliveredRate: { title: "Delivered Rate", color: "text-teal-700", percent: true }
     };
 
     const formatMetricValue = (value, options = {}) => {
@@ -136,11 +136,10 @@ export default function MetricCard() {
     const fetchKPI = useCallback(async (filters = {}, dateRange = {}) => {
         setLoading(true);
         try {
-            const resolvedStartDate = "2025-09-01";
-            const resolvedEndDate = "2026-02-28";
+            const resolvedStartDate = startDate;
+            const resolvedEndDate = endDate;
 
             const payload = {
-                table_name: "history-orders-dev",
                 start_date: `${resolvedStartDate} 00:00:00`,
                 end_date: `${resolvedEndDate} 23:59:59`,
                 filters,
@@ -251,7 +250,7 @@ export default function MetricCard() {
                 </button>
             </div>
 
-            <div className="max-h-24 overflow-y-auto pr-1 space-y-1">
+            <div className="max-h-24 overflow-y-scroll pr-1 space-y-1">
                 {options.length === 0 ? (
                     <span className="text-xs text-white/70">No options</span>
                 ) : (
@@ -351,7 +350,7 @@ export default function MetricCard() {
                                         />
 
                                         <span className="oswald uppercase tracking-wider text-[#001a8e] text-xl self-start justify-self-start">{config.title}</span>
-                                        <span className={`text-${config.color} p-2 text-3xl font-bold self-end justify-self-end`}>
+                                        <span className={`${config.color} p-2 text-3xl font-bold self-end justify-self-end`}>
                                             {formatMetricValue(value, config)}
                                         </span>
                                     </div>
