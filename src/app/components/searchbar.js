@@ -80,11 +80,11 @@ export default function Searchbar({ searchbarRef, placeholder, inputValue, setIn
         </div>
       </div>
 
-      {(isSuccess || isError) &&
+      {/* {(isSuccess || isError) &&
         (<div ref={queryDetailsRef} className="w-1/2 z-101!">
           {QueryDetails}
         </div>)
-      }
+      } */}
 
       <span className="absolute -top-5 text-xs py-1 px-4 bg-[#001FB0] text-white rounded-t-xl oswald">SEARCH</span>
     </div>

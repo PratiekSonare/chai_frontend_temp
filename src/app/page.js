@@ -13,7 +13,16 @@ import QuickLinks from './components/quickLinks';
 import Header from './components/header';
 import { searchMachine } from '../lib/searchMachine';
 import { LoadingComponent, ErrorComponent, EmptyStateComponent } from './components/StateComponents';
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+
 import Chart from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
@@ -444,24 +453,30 @@ export default function Home() {
           ↻
         </Button>
 
-        <Button
-          variant='outline'
-          className="rounded-full! active:scale-80 scale-100 transition-all duration-75 ease-in"
-          onClick={handleRefreshComponents}
-        >
-          ⎙
-        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline" className="rounded-full! active:scale-80 scale-100 transition-all duration-75 ease-in">
+              ⎙
+            </Button>
+          </DialogTrigger>
+          
+          <DialogContent showCloseButton={false}>
+            <DialogHeader>
+              <QueryDetails />
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* sidebar */}
       <Sidebar onHoverChange={setSidebarHovered} />
 
       {/* main content */}
-      <div className={`relative ${sidebarHovered ? 'ml-[3.56%]' : 'ml-[3%]'} transition-[margin] duration-100 ease-in flex flex-col items-center overflow-y-scroll`}>
+      <div className={`relative h-screen ${sidebarHovered ? 'ml-[3.56%]' : 'ml-[3%]'} transition-[margin] duration-100 ease-in flex flex-col items-center overflow-y-auto snap-y snap-mandatory scroll-smooth`}>
 
         <Header />
 
-        <div className='flex flex-col justify-center items-center h-screen w-full'>
+        <div className='flex flex-col justify-center items-center min-h-screen w-full snap-start shrink-0'>
 
           {status === "active" ? <Active /> : status === "development" ? <Development /> : <Down />}
 
@@ -504,7 +519,7 @@ export default function Home() {
 
         </div>
 
-        <div ref={searchResultsRef} className="w-full max-w-full h-screen flex flex-col justify-center items-center mx-auto px-4">
+        <div ref={searchResultsRef} className="snap-start w-full max-w-full min-h-screen flex flex-col justify-center items-center mx-auto px-4 shrink-0">
 
           {isLoading && (
             <LoadingComponent
