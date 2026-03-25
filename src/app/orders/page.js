@@ -1,6 +1,8 @@
 "use client";
 import MetricCard from './MetricCard';
 import ComparisonCard from './ComparisonCard';
+import DayComparisonCard from './DayComparisonCard';
+
 import Sidebar from '../components/sidebar/Sidebar';
 import { Button } from '@/components/ui/button';
 import Header from '../components/header';
@@ -45,9 +47,19 @@ export default function Order() {
             <div className={`relative ${sidebarHovered ? 'ml-[3.56%]' : 'ml-[3%]'} transition-[margin] duration-100 ease-in h-screen w-full shrink-0 flex items-center justify-center snap-start`}>
                 <MetricCard />
             </div>
+
+            <img src='./chupps_life.png' className='mx-auto w-1/12 animate-bounce' />
+
             <div className={`relative ${sidebarHovered ? 'ml-[3.56%]' : 'ml-[3%]'} transition-[margin] duration-100 ease-in h-screen w-full shrink-0 flex items-center justify-center snap-start`}>
                 <ComparisonCard />
             </div>
+
+            <img src='./chupps_life.png' className='mx-auto w-1/12 animate-bounce' />
+
+            <div className={`relative ${sidebarHovered ? 'ml-[3.56%]' : 'ml-[3%]'} transition-[margin] duration-100 ease-in h-screen w-full shrink-0 flex items-center justify-center snap-start`}>
+                <DayComparisonCard />
+            </div>
+
         </div >
     );
 }

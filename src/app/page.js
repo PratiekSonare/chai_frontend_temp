@@ -459,7 +459,7 @@ export default function Home() {
               ⎙
             </Button>
           </DialogTrigger>
-          
+
           <DialogContent showCloseButton={false}>
             <DialogHeader>
               <QueryDetails />
@@ -514,10 +514,10 @@ export default function Home() {
           <QuickLinks />
 
           <div className='my-12'></div>
-
-          <img src='./divider.png' className='w-1/6' />
-
         </div>
+
+        <img src='./chupps_life.png' className='w-1/12 animate-bounce' />
+
 
         <div ref={searchResultsRef} className="snap-start w-full max-w-full min-h-screen flex flex-col justify-center items-center mx-auto px-4 shrink-0">
 

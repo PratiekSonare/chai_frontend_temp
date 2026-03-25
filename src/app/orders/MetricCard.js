@@ -93,8 +93,8 @@ export default function MetricCard() {
     };
 
     const kpiConfig = {
-        totalOrders: { title: "Total Orders",   color: "text-blue-700" },
-        unitsSold: { title: "Units Sold",       color: "text-indigo-700" },
+        totalOrders: { title: "Total Orders", color: "text-blue-700" },
+        unitsSold: { title: "Units Sold", color: "text-indigo-700" },
         grossRevenue: { title: "Gross Revenue", color: "text-green-700", currency: true },
         aov: { title: "AOV", color: "text-violet-700", currency: true },
         uniqueSkus: { title: "Unique SKUs", color: "text-cyan-700" },
@@ -176,6 +176,29 @@ export default function MetricCard() {
     const handleApplyFilters = () => {
         fetchKPI(buildFilters(), { startDate, endDate });
     };
+
+    // Add keyboard shortcut: Ctrl + Enter (or Cmd + Enter on Mac)
+    const handleKeyDown = (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            e.preventDefault();        // Prevent default behavior (like new line in inputs)
+            if (selectedMarketplaces.length > 0 ||
+                selectedCouriers.length > 0 ||
+                selectedWarehouses.length > 0 ||
+                selectedBillingStates.length > 0) {
+                handleApplyFilters();
+            }
+        }
+    };
+
+    // Attach the event listener (usually in useEffect)
+    useEffect(() => {
+        window.addEventListener('keydown', handleKeyDown);
+
+        // Cleanup on unmount
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [startDate, endDate]);   // Add dependencies if they affect the filter
 
     useEffect(() => {
         const currentDate = formatDate(new Date());
@@ -278,11 +301,12 @@ export default function MetricCard() {
             </div>
 
             <div className="poppins w-[96%] h-3/4">
-                <div className="relative h-full bg-[#001a8e] rounded-l-xl!">
+                <div className="relative h-full bg-[#001a8e] rounded-xl!">
                     <div className="z-10 py-4 text-white h-full flex flex-col w-1/4 bg-[#001a8e] rounded-l-xl overflow-y-auto" dir="ltr">
                         <div className="flex flex-col" dir="ltr">
-                            <span className="oswald text-xl px-4">METRICS</span>
-                            <span className="oswald text-sm text-gray-400 border-b border-white px-4 pb-4">Instant metrics for performance comparison</span>
+                            <span className="oswald text-lg px-4">FILTERS</span>
+                            <span className="oswald text-sm text-gray-400 px-4 pb-4">Apply filters using <Kbd data-icon="inline-end" className="font-mono translate-x-0.5 bg-blue-800 text-white">Ctrl + ⏎</Kbd></span>
+                            <div className="w-1/2 border-b border-white"></div>
                             <div className="flex flex-col gap-0 p-4">
                                 <div className="flex flex-row gap-2 items-center">
                                     <span className="poppins text-sm uppercase">Date Range</span>
@@ -338,7 +362,7 @@ export default function MetricCard() {
                                 return (
                                     <div
                                         key={key}
-                                        className={`relative group overflow-hidden ${idx % 3 === 0 ? "rounded-l-2xl" : "border-l-0"} ${(idx+1)%3 === 0 ? "rounded-r-2xl" : ""} ${idx < 3 ? "border-t" : ""} ${idx === 3 ? "" : ""} h-full w-full bg-zinc-50 border-l border-b border-r border-[#001a8e] pt-2 pl-2 flex flex-col justify-between`}
+                                        className={`relative group overflow-hidden ${idx % 3 === 0 ? "rounded-l-2xl" : "border-l-0"} ${(idx + 1) % 3 === 0 ? "rounded-r-2xl" : ""} ${idx < 3 ? "border-t" : ""} ${idx === 3 ? "" : ""} h-full w-full bg-zinc-50 border-l border-b border-r border-[#001a8e] pt-2 pl-2 flex flex-col justify-between`}
                                     >
                                         <KpiChartDialog
                                             metricKey={key}
@@ -367,16 +391,6 @@ export default function MetricCard() {
                             ) : null}
                         </div>
                     </div>
-
-                    <button
-                        onClick={handleApplyFilters}
-                        disabled={!isFilter || loading}
-                        className={`w-1/12 h-1/6 flex flex-col items-center justify-center absolute text-white rounded-l-xl bottom-0 left-0 transition-transform duration-200 ease-in -z-10 ${isFilter ? "bg-blue-600 -translate-x-24" : "bg-blue-400 cursor-not-allowed translate-x-0"}`}
-                    >
-                        <span>Apply</span>
-                        <span>Filter</span>
-                        <Kbd data-icon="inline-end" className="translate-x-0.5 bg-blue-800 text-white my-2 p-1">Ctrl + ⏎</Kbd>
-                    </button>
                 </div>
             </div>
         </div>
