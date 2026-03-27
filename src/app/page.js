@@ -30,6 +30,7 @@ import Standard from './components/output/standard/Standard';
 import Comparison from './components/output/comparison/Comparison';
 import MetricAnalysis from './components/output/metric_analysis/MetricAnalysis';
 import SchemaDiscovery from './components/output/schema_discovery/SchemaDiscovery';
+import CustomMetricGeneration from './components/output/custom_metric_generation/CustomMetricGeneration';
 import QueryDetails from './components/QueryDetails';
 import { apiUrl } from '@/lib/api';
 
@@ -84,8 +85,8 @@ export default function Home() {
   const detailedMetrics = isSuccess && searchType === "comparison" && searchState?.context.data?.detailed_metrics;
 
   // Metric analysis query specific data
-  const metric_analysis = isSuccess && searchType === "metric_analysis" && searchState?.context.data?.analysis;
-  const metric_calculated = isSuccess && searchType === "metric_analysis" && searchState?.context.data?.metrics;
+  const metric_analysis = isSuccess && (searchType === "metric_analysis" || searchType === "custom_metric_generation") && searchState?.context.data?.analysis;
+  const metric_calculated = isSuccess && (searchType === "metric_analysis" || searchType === "custom_metric_generation") && searchState?.context.data?.metrics;
 
   // Schema discovery query specific data
   const field_info = isSuccess && searchType === "schema_discovery" && searchState?.context.data?.data?.field_info;
@@ -574,6 +575,13 @@ export default function Home() {
             <SchemaDiscovery
               field={field}
               field_info={field_info}
+            />
+          )}
+
+          {isSuccess && searchType === "custom_metric_generation" && (
+            <CustomMetricGeneration
+              metric_analysis={metric_analysis}
+              metric_calculated={metric_calculated}
             />
           )}
 

@@ -79,7 +79,7 @@ export default function DayComparisonCard() {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    table_name: "history-orders-2503",
+                    table_name: "history-orders",
                     end_date: new Date().toISOString().slice(0, 10),
                     filters: {},
                 }),
