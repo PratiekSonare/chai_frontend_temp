@@ -5,7 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function Searchbar({ searchbarRef, placeholder, inputValue, setInputValue, onSearch, isError, isLoading, isSuccess, QueryDetails }) {
+export default function Searchbar({ searchbarRef, placeholder, inputValue, setInputValue, onSearch, isError, isLoading, isSuccess }) {
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       onSearch(inputValue);
@@ -60,6 +60,7 @@ export default function Searchbar({ searchbarRef, placeholder, inputValue, setIn
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyPress}
+              autoFocus
             />
             <button className={`${isError ? "animate-pulse" : "animate-none"} h-full flex flex-1/6 items-center justify-center text-white bg-[#0019B1] rounded-xl! scale-100 active:scale-95 transition-all duration-100`}
               onClick={() => onSearch(inputValue)}

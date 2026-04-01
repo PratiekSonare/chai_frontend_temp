@@ -39,8 +39,21 @@ import OrdersPage from './orders/page'
 import gsap from 'gsap';
 gsap.registerPlugin(ScrollTrigger);
 
-
 // const [searchState, setSearchState] = useState(standardState);
+
+import { DataGrid } from 'react-data-grid';
+
+
+const columns = [
+  { key: 'id', name: 'ID' },
+  { key: 'title', name: 'Title' }
+];
+
+const rows = [
+  { id: 0, title: 'Example' },
+  { id: 1, title: 'Demo' }
+];
+
 
 export default function Home() {
 
@@ -278,41 +291,6 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    // Animate searchbar on mount
-    if (searchbarRef.current) {
-      gsap.from(searchbarRef.current, {
-        y: 125,
-        opacity: 0,
-        duration: 1,
-        ease: "bounce"
-      });
-
-      // Scroll animation
-      ScrollTrigger.create({
-        trigger: searchbarRef.current,
-        start: "top 20%",
-        end: "top 10%",
-        scrub: 1,
-        onUpdate: (self) => {
-          const progress = self.progress;
-          gsap.to(searchbarRef.current, {
-            width: progress > 0 ? "85%" : "75%",
-            position: progress > 0 ? "fixed" : "relative",
-            top: progress > 0 ? "30px" : "auto",
-            left: progress > 0 ? "calc(50% - 42.5%)" : "auto",
-            duration: 0.05,
-            ease: "circ.in",
-          });
-        }
-      });
-    }
-
-    return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-    };
-  }, []);
-
   const handleSearch = useCallback((inputValue) => {
     if (isLoading) {
       return;
@@ -461,12 +439,14 @@ export default function Home() {
             </Button>
           </DialogTrigger>
 
-          <DialogContent showCloseButton={false}>
-            <DialogHeader>
+          <DialogContent className="p-0!" showCloseButton={false}>
+            <DialogTitle className="p-0!" />
+            <DialogHeader className="rounded-t-3xl!">
               <QueryDetails />
             </DialogHeader>
           </DialogContent>
         </Dialog>
+        
       </div>
 
       {/* sidebar */}
@@ -498,30 +478,19 @@ export default function Home() {
             isError={isError}
             isLoading={isLoading}
             isSuccess={isSuccess}
-            QueryDetails={
-              <QueryDetails
-                requestId={requestId}
-                inputQuery={searchState.context?.query || 'query'}
-                summarizedQuery={summarizedQuery || 'summarized_query'}
-                logs={workflowLogs}
-                isError={isError}
-                searchError={searchError}
-              />
-            }
           />
 
           <div className='my-2'></div>
 
           <QuickLinks />
 
-          <div className='my-12'></div>
         </div>
 
-        <img src='./chupps_life.png' className='w-1/12 animate-bounce' />
+        <img src='./chupps_life.png' className='w-1/12 animate-bounce mt-12 mb-24' />
 
 
         <div ref={searchResultsRef} className="snap-start w-full max-w-full min-h-screen flex flex-col justify-center items-center mx-auto px-4 shrink-0">
-
+          
           {isLoading && (
             <LoadingComponent
               onCancel={handleCancel}

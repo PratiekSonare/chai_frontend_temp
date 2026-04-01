@@ -1,14 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from "@/components/ui/collapsible"
-import { ChevronsUpDown } from "lucide-react";
 
-export default function QueryDetails({ requestId, inputQuery, summarizedQuery, logs, isError, searchError }) {
+export default function QueryDetails({ requestId, inputQuery, summarizedQuery, logs, isError, searchError, dataLessState }) {
     const SCROLL_CLOSE_THRESHOLD = 80;
     const safeLogs = Array.isArray(logs) ? logs : [];
     const [isOpen, setIsOpen] = useState(false);
@@ -35,8 +29,8 @@ export default function QueryDetails({ requestId, inputQuery, summarizedQuery, l
     }, []);
 
     return (
-            <div className="bg-blue-50 h-fit! rounded-b-2xl!">
-                <div className="w-full h-fit flex items-center justify-between px-4 py-2">
+            <div className="h-fit!">
+                <div className="w-fit! h-fit flex items-center justify-between px-4 py-2">
                     <span className="poppins font-bold text-md text-blue-700 align-bottom">Query Details</span>
                 </div>
                 <div className="w-full bg-blue-50 rounded-b-2xl! text-xs!">
@@ -111,6 +105,17 @@ export default function QueryDetails({ requestId, inputQuery, summarizedQuery, l
                                 ) : (
                                     <span>No logs available for this request yet</span>
                                 )}
+                            </div>
+                        </div>
+                        <div className="flex flex-col gap-1 w-1/2">
+                            <div className="flex flex-row items-center gap-2">
+                                <div className="w-1 h-1 bg-blue-600 rounded-full"></div>
+                                <span className="oswald text-bold text-blue-700">
+                                    FINAL STATE
+                                </span>
+                            </div>
+                            <div className={`${isError ? "max-h-42" : "max-h-32"} pl-3 border rounded-xl pt-3 text-xs text-blue-700 leading-relaxed overflow-y-auto pr-2`}>
+                                {/* {dataLessState.JSON} */}
                             </div>
                         </div>
                     </div>

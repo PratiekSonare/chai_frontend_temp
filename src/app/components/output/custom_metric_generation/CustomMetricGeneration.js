@@ -8,34 +8,6 @@ export default function CustomMetricGeneration({ metric_analysis, metric_calcula
     const toggleCard = () => {
         setIsOpen(!isOpen);
     }
-
-    const TOOL_TITLES = {
-        "get_all_orders": "All Orders",
-        "get_schema_info": "Data Schema",
-        "convert_to_df": "Data Conversion",
-        "get_aov": "Average Order Value",
-        "get_total_revenue": "Total Revenue",
-        "get_order_count": "Order Count",
-        "get_order_status_distribution": "Order Status Distribution",
-        "get_payment_mode_distribution": "Payment Mode Distribution",
-        "get_marketplace_distribution": "Marketplace Distribution",
-        "get_state_wise_distribution": "State-wise Distribution",
-        "get_city_wise_distribution": "City-wise Distribution",
-        "get_courier_distribution": "Courier Distribution",
-        "get_average_discount": "Average Discount",
-        "get_average_shipping_charge": "Average Shipping Charge",
-        "get_average_tax": "Average Tax",
-        "get_statistical_summary": "Statistical Summary",
-        "get_percentile": "Percentile",
-        "get_top_percentile": "Top Percentile",
-        "get_bottom_percentile": "Bottom Percentile",
-        "get_correlation_matrix": "Correlation Matrix",
-        "get_conversion_rate": "Conversion Rate",
-        "get_cod_vs_prepaid_metrics": "COD vs Prepaid Metrics",
-        "get_geographic_insights": "Geographic Insights",
-        "get_common_metrics": "Common Metrics",
-    }
-
     const CURRENCY_METRICS = [
         'get_total_revenue',
         'get_aov',

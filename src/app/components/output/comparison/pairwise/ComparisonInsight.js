@@ -1,9 +1,15 @@
 import { useState } from "react";
 import ReactMarkdown from 'react-markdown';
 
-export default function ComparisonInsight({ groups, insights }) {
+export default function ComparisonInsight({ groups, insights, searchData }) {
 
     const [isOpen, setIsOpen] = useState(false);
+    
+    // This component supports both order and profit comparisons
+    // Groups are passed as an array of strings or objects with name property
+    // For orders: groups are typically geographic (State, City names) or categories
+    // For profit: groups are typically style names or product categories
+    const dataSource = searchData?.comparison_data?.data_source || 'order';
 
     return (
         <div className='z-50 flex flex-col w-1/2 h-full gap-4'>

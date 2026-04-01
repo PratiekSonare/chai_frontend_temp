@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button"
 
 export default function header() {
     return (
-        <div className='absolute opacity-60 hover:opacity-100 transition-all duration-100 ease-in top-5 right-2 flex flex-col text-center text-gray-500 items-center gap-4'>
+        <div className='absolute top-5 right-2 opacity-60 hover:opacity-100 transition-all duration-100 ease-in  flex flex-col text-center text-gray-500 items-center gap-4'>
             {/* <img className="w-30 transition-all duration-100 ease-in" src="./chai_logo_sub.png" alt="grid" /> */}
             <div className='flex flex-col gap-2'>
                 <Drawer direction="right">
@@ -41,6 +41,7 @@ export default function header() {
                             <p>[26-02-2026] Backend: Chart.js based charting, Orders Metric Grids complete</p>
                             <p>[17-03-2026] Add 6 months of orders in a temp DB for faster query!</p>
                             <p>[17-03-2026] Create DB for profitability data</p>
+                            <p>[31-03-2026] Added vendor cost sheet as a data source</p>
                             <p className="italic text-blue-600">[Coming Soon...] Complete orders section with ml methods + charts</p>
                         </div>
                         <DrawerFooter>

@@ -15,7 +15,7 @@ export default function Standard({isSuccess, searchData, finalMetrics, metricsLo
     };
 
     return (
-        <div className="w-full h-screen px-5 -my-20!">
+        <div className="w-full h-screen p-5 -my-20!">
 
             {isSuccess && !metricsLoading && (
                 <MetricCarouselOrder key={`metrics-${refreshKey}`} metrics={finalMetrics} searchData={searchData} isSuccess={isSuccess} />

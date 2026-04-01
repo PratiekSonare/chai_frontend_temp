@@ -178,7 +178,7 @@ export default function Comparison({ isSuccess, searchData, searchType, searchFi
     const insights = isSuccess && searchType === "comparison" && searchData?.insights || "No insights generated.";
 
     return (
-        <div className="w-full h-screen px-5 space-y-2">
+        <div className="w-full h-screen p-5 space-y-2">
             {isSuccess && comparisonType === "pairwise" && (
                 <>
                     {/* winner by volume, revenue and aov */}
@@ -191,7 +191,7 @@ export default function Comparison({ isSuccess, searchData, searchType, searchFi
                             <ComparisonCarousel createPaymentChart={createPaymentChart} mapData={mapData} searchData={searchData} groups={groups} />
                         )}
 
-                        <ComparisonInsight groups={groups} insights={insights} />
+                        <ComparisonInsight groups={groups} insights={insights} searchData={searchData} />
                     </div>
                 </>
             )}

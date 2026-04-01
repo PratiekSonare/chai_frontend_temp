@@ -198,7 +198,7 @@ export default function MetricCard() {
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [startDate, endDate]);   // Add dependencies if they affect the filter
+    }, [startDate, endDate]);
 
     useEffect(() => {
         const currentDate = formatDate(new Date());
