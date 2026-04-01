@@ -37,7 +37,7 @@ export default function CustomMetricGeneration({ metric_analysis, metric_calcula
         const renderNestedObject = (obj, level = 0) => {
             return Object.entries(obj).map(([key, val]) => (
                 <div key={key} className={`${level === 0 ? 'mb-2' : 'mb-0'} ${level > 0 ? 'px-3 flex flex-row justify-between' : ''}`}>
-                    <div className={`w-full! uppercase font-semibold text-[#001FB0]! ${level === 0 ? 'border-b border-blue-200 pb-1 text-lg' : 'md'}`}>
+                    <div className={`!w-full uppercase font-semibold !text-[#001FB0] ${level === 0 ? 'border-b border-blue-200 pb-1 text-lg' : 'md'}`}>
                         {key.replace(/_/g, ' ')}
                     </div>
                     {val !== null && typeof val === 'object' ? (
@@ -95,7 +95,7 @@ export default function CustomMetricGeneration({ metric_analysis, metric_calcula
                                 li: ({ children }) => (
                                     <li className="relative border-b border-gray-200 py-4">
                                         <div className="flex items-start gap-3">
-                                            <div className="ml-5! w-2 h-2 bg-blue-600 border-2 border-blue-600 rounded-full mt-2 flex-shrink-0"></div>
+                                            <div className="!ml-5 w-2 h-2 bg-blue-600 border-2 border-blue-600 rounded-full mt-2 flex-shrink-0"></div>
                                             <div className="text-lg text-gray-700 leading-relaxed poppins">
                                                 <p>{children}</p>
                                             </div>
@@ -118,7 +118,7 @@ export default function CustomMetricGeneration({ metric_analysis, metric_calcula
 
             <div className="col-start-3 row-span-3">
                 <div className="pointer-events-auto select-none relative w-full rounded-xl text-[#001FB0]! border-4 border-[#001FB0] h-full" onClick={() => setIsOpen(false)}>
-                    <div onClick={(e) => { e.stopPropagation(); toggleCard(); }} className='border-b-4! border-[#001FB0]! flex flex-row items-center justify-between rounded-t-xl h-fit cursor-pointer'>
+                    <div onClick={(e) => { e.stopPropagation(); toggleCard(); }} className='!border-b-4 !border-[#001FB0] flex flex-row items-center justify-between rounded-t-xl h-fit cursor-pointer'>
                         <span className="block text-lg py-2 px-4 rounded-t-xl oswald uppercase">{customMetricLabel}</span>
                         {isOpen && (
                             <div className={cn(`bg-[#001FB0] absolute top-10 left-0 right-0 bottom-0 z-50 grid grid-cols-1 rounded-b-xl gap-3 justify-center items-center p-4`)}>

@@ -280,13 +280,13 @@ export default function Profit() {
     }
 
     return (
-        <div className="relative overflow-x-hidden h-screen bg-zinc-50 overflow-y-auto font-sans snap-y snap-mandatory scroll-smooth pointer-events-auto!">
+        <div className="relative overflow-x-hidden h-screen bg-zinc-50 overflow-y-auto font-sans snap-y snap-mandatory scroll-smooth !pointer-events-auto">
 
 
-            <div className='flex flex-row gap-2 z-50! fixed bottom-5 right-5'>
+            <div className='flex flex-row gap-2 !z-50 fixed bottom-5 right-5'>
                 <Button
                     variant='outline'
-                    className="rounded-full! active:scale-80 scale-100 transition-all duration-75 ease-in"
+                    className="!rounded-full active:scale-80 scale-100 transition-all duration-75 ease-in"
                     onClick={handleRefreshComponents}
                 >
                     ↻
@@ -294,7 +294,7 @@ export default function Profit() {
 
                 <Dialog>
                     <DialogTrigger asChild>
-                        <Button variant="outline" className="rounded-full! active:scale-80 scale-100 transition-all duration-75 ease-in">
+                        <Button variant="outline" className="!rounded-full active:scale-80 scale-100 transition-all duration-75 ease-in">
                             ⎙
                         </Button>
                     </DialogTrigger>
@@ -349,7 +349,7 @@ export default function Profit() {
                         rows={rowsVCS}
                         onRowsChange={handleRowsChangeVCS}
                         rowKeyGetter={(row) => row["Style Name"] ?? JSON.stringify(row)}
-                        className="rdg-light w-full rounded-lg shadow-sm h-1/2!"
+                        className="rdg-light w-full rounded-lg shadow-sm !h-1/2"
                         defaultColumnOptions={{
                             editable: true
                         }}
@@ -393,7 +393,7 @@ export default function Profit() {
                         rows={rowsPC}
                         onRowsChange={handleRowsChangePC}
                         rowKeyGetter={(row) => row["NO."] ?? JSON.stringify(row)}
-                        className="rdg-light w-full rounded-lg shadow-sm h-1/2!"
+                        className="rdg-light w-full rounded-lg shadow-sm !h-1/2"
                         defaultColumnOptions={{
                             editable: true
                         }}

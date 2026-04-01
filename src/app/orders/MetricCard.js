@@ -301,7 +301,7 @@ export default function MetricCard() {
             </div>
 
             <div className="poppins w-[96%] h-3/4">
-                <div className="relative h-full bg-[#001a8e] rounded-xl!">
+                <div className="relative h-full bg-[#001a8e] !rounded-xl">
                     <div className="z-10 py-4 text-white h-full flex flex-col w-1/4 bg-[#001a8e] rounded-l-xl overflow-y-auto" dir="ltr">
                         <div className="flex flex-col" dir="ltr">
                             <span className="oswald text-lg px-4">FILTERS</span>

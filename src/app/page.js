@@ -423,10 +423,10 @@ export default function Home() {
   return (
     <div className="relative overflow-x-hidden min-h-screen bg-zinc-50  font-sans">
 
-      <div className='flex flex-row gap-2 z-50! fixed bottom-5 right-5'>
+      <div className='flex flex-row gap-2 !z-50 fixed bottom-5 right-5'>
         <Button
           variant='outline'
-          className="rounded-full! active:scale-80 scale-100 transition-all duration-75 ease-in"
+          className="!rounded-full active:scale-80 scale-100 transition-all duration-75 ease-in"
           onClick={handleRefreshComponents}
         >
           ↻
@@ -434,14 +434,14 @@ export default function Home() {
 
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline" className="rounded-full! active:scale-80 scale-100 transition-all duration-75 ease-in">
+            <Button variant="outline" className="!rounded-full active:scale-80 scale-100 transition-all duration-75 ease-in">
               ⎙
             </Button>
           </DialogTrigger>
 
-          <DialogContent className="p-0!" showCloseButton={false}>
-            <DialogTitle className="p-0!" />
-            <DialogHeader className="rounded-t-3xl!">
+          <DialogContent className="!p-0" showCloseButton={false}>
+            <DialogTitle className="!p-0" />
+            <DialogHeader className="!rounded-t-3xl">
               <QueryDetails />
             </DialogHeader>
           </DialogContent>

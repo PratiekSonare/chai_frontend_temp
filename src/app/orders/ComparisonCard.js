@@ -35,7 +35,7 @@ export default function ComparisonCard() {
                             <span className="text-xl">Add a SKU</span>
                         </DialogTrigger>
 
-                        <DialogContent className="w-xl!">
+                        <DialogContent className="!w-xl">
                             {/* sku form */}
                             <DialogHeader>
                                 <DialogTitle>Select an SKU</DialogTitle>
@@ -63,7 +63,7 @@ export default function ComparisonCard() {
                             <span className="text-xl">Add a SKU</span>
                         </DialogTrigger>
 
-                        <DialogContent className="w-xl!">
+                        <DialogContent className="!w-xl">
                             {/* sku form */}
                             <DialogHeader>
                                 <DialogTitle>Select an SKU</DialogTitle>

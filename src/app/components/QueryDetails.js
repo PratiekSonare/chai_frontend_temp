@@ -30,11 +30,11 @@ export default function QueryDetails({ requestId, inputQuery, summarizedQuery, l
 
     return (
             <div className="h-fit!">
-                <div className="w-fit! h-fit flex items-center justify-between px-4 py-2">
+                <div className="!w-fit !h-fit flex items-center justify-between px-4 py-2">
                     <span className="poppins font-bold text-md text-blue-700 align-bottom">Query Details</span>
                 </div>
-                <div className="w-full bg-blue-50 rounded-b-2xl! text-xs!">
-                    <div className="w-full! h-px bg-blue-600"></div>
+                <div className="w-full bg-blue-50 !rounded-b-2xl !text-xs">
+                    <div className="!w-full h-px bg-blue-600"></div>
                     <div className="flex flex-row p-3 gap-2">
                         <div className="flex flex-col gap-2 text-left w-1/2">
                             <div className="flex flex-col gap-1">

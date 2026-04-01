@@ -46,7 +46,7 @@ export const LoadingComponent = ({
 
       {showLogs && (
         <div className="w-full max-w-2xl bg-white/70 border border-blue-200 mb-10 rounded-xl">
-          <div className="text-xs poppins font-bold border-b text-blue-900 bg-blue-200 p-2 rounded-t-xl!"><span >Logs</span></div>
+          <div className="text-xs poppins font-bold border-b text-blue-900 bg-blue-200 p-2 !rounded-t-xl"><span >Logs</span></div>
           <div className="max-h-28 overflow-y-auto space-y-1 p-2">
             {visibleLogs.length === 0 && (
               <p className="text-xs text-blue-700">Waiting for backend logs...</p>
@@ -54,7 +54,7 @@ export const LoadingComponent = ({
             {visibleLogs.map((log) => (
               <div key={log.sequence || `${log.timestamp}-${log.step_key}`} className={`${log.status === "COMPLETE" ? "text-green-700" : "text-blue-700"} poppins flex items-end justify-between text-xs text-blue-900`}>
                 <div className='flex flex-row gap-2'>
-                  <span className="truncate pr-2 text-gray-400!">{formatTimestamp(log.timestamp)}</span>
+                  <span className="truncate pr-2 !text-gray-400">{formatTimestamp(log.timestamp)}</span>
                   <span className="text-left">{log.summary || log.step_key}</span>
                 </div>                
                 <span>{log.status || 'INFO'}</span>
@@ -69,7 +69,7 @@ export const LoadingComponent = ({
         <Button
           variant="destructive"
           onClick={onCancel}
-          className="rounded-lg! absolute bottom-5"
+          className="!rounded-lg absolute bottom-5"
           size="sm"
         >
           Cancel
@@ -97,17 +97,17 @@ export const ErrorComponent = ({ error, onRetry, onReset }) => (
       {error || 'An error occurred while searching. Please try again.'}
     </div>
 
-    <div className="poppins absolute bottom-5 flex space-x-3!">
+    <div className="poppins absolute bottom-5 flex !space-x-3">
       <Button
         variant='destructive'
         onClick={onRetry}
-        className="rounded-lg!"
+        className="!rounded-lg"
       >
         Retry
       </Button>
       <Button
         onClick={onReset}
-        className="rounded-lg!"
+        className="!rounded-lg"
       >
         Start New Search
       </Button>

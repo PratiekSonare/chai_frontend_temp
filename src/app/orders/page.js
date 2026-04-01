@@ -32,10 +32,10 @@ export default function Order() {
     return (
         <div className="relative overflow-x-hidden h-screen bg-zinc-50 overflow-y-auto font-sans snap-y snap-mandatory scroll-smooth">
 
-            <div className='flex flex-row gap-2 z-50! fixed bottom-5 right-5'>
+            <div className='flex flex-row gap-2 !z-50 fixed bottom-5 right-5'>
                 <Button
                     variant='outline'
-                    className="rounded-full! active:scale-80 scale-100 transition-all duration-75 ease-in"
+                    className="!rounded-full active:scale-80 scale-100 transition-all duration-75 ease-in"
                     onClick={handleRefreshComponents}
                 >
                     ↻
@@ -43,7 +43,7 @@ export default function Order() {
 
                 <Dialog>
                     <DialogTrigger asChild>
-                        <Button variant="outline" className="rounded-full! active:scale-80 scale-100 transition-all duration-75 ease-in">
+                        <Button variant="outline" className="!rounded-full active:scale-80 scale-100 transition-all duration-75 ease-in">
                             ⎙
                         </Button>
                     </DialogTrigger>
