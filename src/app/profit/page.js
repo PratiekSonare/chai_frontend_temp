@@ -59,7 +59,7 @@ export default function Profit() {
 
         const [vcsResult, pcResult] = await Promise.all([
             supabase.from("vendor_cost_sheet").select("*"),
-            supabase.from("payment-cycle-and-cash-discount").select("*")
+            supabase.from("payment_cycle_and_cash_discount").select("*")
         ]);
 
         if (vcsResult.error || pcResult.error) {
@@ -106,14 +106,14 @@ export default function Profit() {
     }, [rowsVCS]);
 
     const columnsPC = useMemo(() => {
-        const keys = rowsPC.length > 0 ? Object.keys(rowsPC[0]) : ["NO."];
+        const keys = rowsPC.length > 0 ? Object.keys(rowsPC[0]) : ["payment_cycle_and_cash_discount"];
 
         return keys.map((key) => ({
             key,
             name: key,
-            editable: key !== "NO.",
+            editable: key !== "payment_cycle_and_cash_discount",
             resizable: true,
-            renderEditCell: key !== "NO." ? renderTextEditor : undefined
+            renderEditCell: key !== "payment_cycle_and_cash_discount" ? renderTextEditor : undefined
         }));
     }, [rowsPC]);
 
@@ -201,7 +201,7 @@ export default function Profit() {
             changeMeta,
             originalRows: originalRowsPC,
             setPendingEdits: setPendingEditsPC,
-            primaryKey: "NO."
+            primaryKey: "NO"
         });
     }
 
@@ -248,10 +248,9 @@ export default function Profit() {
         try {
             for (const [rowNo, patch] of edits) {
                 const { error: updateError } = await supabase
-                    .from("payment-cycle-and-cash-discount")
+                    .from("payment_cycle_and_cash_discount")
                     .update(patch)
                     .eq("NO.", rowNo);
-
                 if (updateError) {
                     throw updateError;
                 }
@@ -292,7 +291,7 @@ export default function Profit() {
                     ↻
                 </Button>
 
-                <Dialog>
+                {/* <Dialog>
                     <DialogTrigger asChild>
                         <Button variant="outline" className="!rounded-full active:scale-80 scale-100 transition-all duration-75 ease-in">
                             ⎙
@@ -305,7 +304,7 @@ export default function Profit() {
                             <QueryDetails />
                         </DialogHeader>
                     </DialogContent>
-                </Dialog>
+                </Dialog> */}
 
             </div>
 
@@ -392,7 +391,7 @@ export default function Profit() {
                         columns={columnsPC}
                         rows={rowsPC}
                         onRowsChange={handleRowsChangePC}
-                        rowKeyGetter={(row) => row["NO."] ?? JSON.stringify(row)}
+                        rowKeyGetter={(row) => row["payment_cycle_and_cash_discount"] ?? JSON.stringify(row)}
                         className="rdg-light w-full rounded-lg shadow-sm !h-1/2"
                         defaultColumnOptions={{
                             editable: true

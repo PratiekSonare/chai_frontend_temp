@@ -432,7 +432,7 @@ export default function Home() {
           ↻
         </Button>
 
-        <Dialog>
+        {/* <Dialog>
           <DialogTrigger asChild>
             <Button variant="outline" className="!rounded-full active:scale-80 scale-100 transition-all duration-75 ease-in">
               ⎙
@@ -445,7 +445,7 @@ export default function Home() {
               <QueryDetails />
             </DialogHeader>
           </DialogContent>
-        </Dialog>
+        </Dialog> */}
         
       </div>
 

@@ -41,7 +41,7 @@ export default function Order() {
                     ↻
                 </Button>
 
-                <Dialog>
+                {/* <Dialog>
                     <DialogTrigger asChild>
                         <Button variant="outline" className="!rounded-full active:scale-80 scale-100 transition-all duration-75 ease-in">
                             ⎙
@@ -54,7 +54,7 @@ export default function Order() {
                             <QueryDetails />
                         </DialogHeader>
                     </DialogContent>
-                </Dialog>
+                </Dialog> */}
 
             </div>
 
@@ -66,12 +66,6 @@ export default function Order() {
             <div className={`relative ${sidebarHovered ? 'ml-[3.56%]' : 'ml-[3%]'} transition-[margin] duration-100 ease-in h-screen w-full shrink-0 flex items-center justify-center snap-start`}>
                 <MetricCard />
             </div>
-            {/*             
-            <img src='./chupps_life.png' className='mx-auto w-1/12 animate-bounce my-12' />
-
-            <div className={`relative ${sidebarHovered ? 'ml-[3.56%]' : 'ml-[3%]'} transition-[margin] duration-100 ease-in h-screen w-full shrink-0 flex items-center justify-center snap-start`}>
-                <ComparisonCarousel />
-            </div> */}
 
             <img src='./chupps_life.png' className='mx-auto w-1/12 animate-bounce my-12' />
 
