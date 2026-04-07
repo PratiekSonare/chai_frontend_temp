@@ -238,13 +238,13 @@ export default function MetricCard() {
                                     <button
                                         key={categoryKey}
                                         onClick={() => setSelectedCategory(categoryKey)}
-                                        className={`px-4 py-3 rounded-lg poppins font-semibold transition-all flex flex-col items-start gap-1.5 ${selectedCategory === categoryKey
+                                        className={`group overflow-x-hidden px-4 py-3 rounded-lg poppins font-semibold transition-all flex flex-col items-start gap-1.5 ${selectedCategory === categoryKey
                                             ? "bg-white text-[#001a8e] shadow-lg"
                                             : "bg-white/10 text-white hover:bg-white/20"
                                             }`}
                                     >
-                                        <span className="text-sm">{categoryData.category}</span>
-                                        <span className="text-xs opacity-70">{categoryData.subtitle || 'View metrics'}</span>
+                                        <span className="translate-y-3 group-hover:translate-y-0 ease-in duration-100 text-sm">{categoryData.category}</span>
+                                        <span className="-translate-x-40 group-hover:translate-x-0 ease-in duration-100 text-xs opacity-70">{categoryData.subtitle || 'View metrics'}</span>
                                     </button>
                                 ))}
                             </div>
@@ -371,7 +371,7 @@ export default function MetricCard() {
                                 orientation="vertical"
                                 className="w-full h-full relative overflow-y-scroll hide-scrollbar"
                             >
-                                <CarouselContent className="h-full rounded-xl!">
+                                <CarouselContent className="h-full !rounded-xl">
                                     {metricsConfig[selectedCategory] &&
                                         Object.entries(metricsConfig[selectedCategory].metrics).map(
                                             ([metricKey, metricConfig]) => {

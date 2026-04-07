@@ -48,6 +48,16 @@ export const METRICS_CONFIG = {
       stateCancellationRates: { title: "State Cancellation Rates", endpoint: "/history/metrics/state-cancellation-rates", type: "table", chartType: "bar", dataKey: "state" }
     }
   },
+  channelPaymentMetrics: {
+    category: "Channel & Payment",
+    color: "bg-linear-to-br from-pink-50 to-pink-100",
+    metrics: {
+      marketplacePerf: { title: "Marketplace Performance", endpoint: "/history/metrics/marketplace-performance", type: "table", chartType: "bar", dataKey: "marketplace" },
+      courierPerf: { title: "Courier Performance", endpoint: "/history/metrics/courier-performance", type: "table", chartType: "bar", dataKey: "courier" },
+      warehouseEff: { title: "Warehouse Efficiency", endpoint: "/history/metrics/warehouse-efficiency", type: "table", chartType: "bar", dataKey: "warehouse" },
+      paymentModeBreakdown: { title: "Payment Mode Breakdown", endpoint: "/history/metrics/payment-mode-breakdown", type: "object", chartType: "pie" }
+    }
+  },
   orderTypeMetrics: {
     category: "Order Type",
     color: "bg-linear-to-br from-red-50 to-red-100",
@@ -61,8 +71,17 @@ export const METRICS_CONFIG = {
     metrics: {
       overallFulfillment: { title: "Overall Fulfillment Rate", endpoint: "/history/metrics/overall-fulfillment-rate", type: "scalar", percent: true },
       overallIssueRate: { title: "Overall Issue Rate", endpoint: "/history/metrics/overall-issue-rate", type: "scalar", percent: true },
-      // paymentRiskAnalysis: { title: "Payment Risk Analysis", endpoint: "/history/metrics/payment-risk-analysis", type: "object" },
-      // marketplaceRiskScore: { title: "Marketplace Risk Score", endpoint: "/history/metrics/marketplace-risk-score", type: "table", chartType: "bar", dataKey: "marketplace" }
+      paymentRiskAnalysis: { title: "Payment Risk Analysis", endpoint: "/history/metrics/payment-risk-analysis", type: "object", chartType: "pie" },
+      marketplaceRiskScore: { title: "Marketplace Risk Score", endpoint: "/history/metrics/marketplace-risk-score", type: "table", chartType: "bar", dataKey: "marketplace" }
+    }
+  },
+  advancedMetrics: {
+    category: "Advanced Analytics",
+    color: "bg-linear-to-br from-cyan-50 to-cyan-100",
+    metrics: {
+      revenuePerChannel: { title: "Revenue per Channel", endpoint: "/history/metrics/revenue-per-channel", type: "object", chartType: "pie" },
+      seasonalTrends: { title: "Seasonal Trends", endpoint: "/history/metrics/seasonal-trends", type: "object", chartType: "stats" },
+      productPaymentCorr: { title: "Product-Payment Correlation", endpoint: "/history/metrics/product-payment-correlation", type: "object", chartType: "stats" }
     }
   }
 };

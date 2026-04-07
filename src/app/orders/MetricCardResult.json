@@ -5,7 +5,37 @@
       "totalOrders": {
         "success": true,
         "data": 2069,
-        "unit": "orders"
+        "unit": "orders",
+        "chart": [
+          {
+            "date": "2025-09-01",
+            "totalOrders": 352
+          },
+          {
+            "date": "2025-09-02",
+            "totalOrders": 232
+          },
+          {
+            "date": "2025-09-03",
+            "totalOrders": 308
+          },
+          {
+            "date": "2025-09-04",
+            "totalOrders": 394
+          },
+          {
+            "date": "2025-09-05",
+            "totalOrders": 293
+          },
+          {
+            "date": "2025-09-06",
+            "totalOrders": 271
+          },
+          {
+            "date": "2025-09-07",
+            "totalOrders": 219
+          }
+        ]
       },
       "unitsSold": {
         "success": true,
@@ -15,7 +45,37 @@
       "grossRevenue": {
         "success": true,
         "data": 1572651.6528,
-        "currency": "INR"
+        "currency": "INR",
+        "chart": [
+          {
+            "date": "2025-09-01",
+            "grossRevenue": 277159.1707
+          },
+          {
+            "date": "2025-09-02",
+            "grossRevenue": 173085.9406
+          },
+          {
+            "date": "2025-09-03",
+            "grossRevenue": 227493.0599
+          },
+          {
+            "date": "2025-09-04",
+            "grossRevenue": 293051.6409
+          },
+          {
+            "date": "2025-09-05",
+            "grossRevenue": 221898.9907
+          },
+          {
+            "date": "2025-09-06",
+            "grossRevenue": 212019.3201
+          },
+          {
+            "date": "2025-09-07",
+            "grossRevenue": 167943.5299
+          }
+        ]
       },
       "aov": {
         "success": true,
@@ -465,15 +525,282 @@
     "channelPaymentMetrics": {
       "marketplacePerf": {
         "success": true,
-        "data": []
+        "data": [
+          {
+            "marketplace": "Myntra PPMP",
+            "orders": 832,
+            "revenue": 614572.0007,
+            "aov": 738.6682700721153
+          },
+          {
+            "marketplace": "Shopify",
+            "orders": 401,
+            "revenue": 392822.0498,
+            "aov": 979.6061092269326
+          },
+          {
+            "marketplace": "Flipkart",
+            "orders": 290,
+            "revenue": 215096.0005,
+            "aov": 741.7103465517241
+          },
+          {
+            "marketplace": "Snapdeal",
+            "orders": 198,
+            "revenue": 140242.0007,
+            "aov": 708.2929328282828
+          },
+          {
+            "marketplace": "AJIO Dropship",
+            "orders": 195,
+            "revenue": 94008.81,
+            "aov": 482.09646153846154
+          },
+          {
+            "marketplace": "Nykaa Fashion",
+            "orders": 51,
+            "revenue": 38229.2002,
+            "aov": 749.5921607843137
+          },
+          {
+            "marketplace": "Amazon.in",
+            "orders": 44,
+            "revenue": 36277.2503,
+            "aov": 824.4829613636364
+          },
+          {
+            "marketplace": "Nykaa",
+            "orders": 28,
+            "revenue": 24491.8101,
+            "aov": 874.7075035714286
+          },
+          {
+            "marketplace": "Amazon Smart Connect",
+            "orders": 13,
+            "revenue": 9027.1503,
+            "aov": 694.3961769230768
+          },
+          {
+            "marketplace": "POPclub",
+            "orders": 9,
+            "revenue": 5761.0002,
+            "aov": 640.1111333333333
+          },
+          {
+            "marketplace": "Tata Cliq",
+            "orders": 4,
+            "revenue": 2053.52,
+            "aov": 513.38
+          },
+          {
+            "marketplace": "B2B",
+            "orders": 4,
+            "revenue": 70.86,
+            "aov": 17.715
+          }
+        ]
       },
       "courierPerf": {
         "success": true,
-        "data": []
+        "data": [
+          {
+            "courier": "eKart",
+            "orders": 445,
+            "revenue": 324861.0006,
+            "aov": 730.0247204494383
+          },
+          {
+            "courier": "Shadowfax",
+            "orders": 369,
+            "revenue": 319020.3395,
+            "aov": 864.5537655826558
+          },
+          {
+            "courier": "DE_E2E",
+            "orders": 432,
+            "revenue": 318748.0,
+            "aov": 737.8425925925926
+          },
+          {
+            "courier": "flipkartlogistics",
+            "orders": 230,
+            "revenue": 153078.0,
+            "aov": 665.5565217391304
+          },
+          {
+            "courier": "myntra",
+            "orders": 153,
+            "revenue": 130703.0007,
+            "aov": 854.2679784313726
+          },
+          {
+            "courier": "Delhivery_SPL",
+            "orders": 77,
+            "revenue": 75527.8304,
+            "aov": 980.8809142857143
+          },
+          {
+            "courier": "Delhivery",
+            "orders": 86,
+            "revenue": 48900.4502,
+            "aov": 568.6098860465116
+          },
+          {
+            "courier": "SelfShip",
+            "orders": 41,
+            "revenue": 37608.3399,
+            "aov": 917.2765829268293
+          },
+          {
+            "courier": "Amazon Easyship",
+            "orders": 44,
+            "revenue": 36277.2503,
+            "aov": 824.4829613636364
+          },
+          {
+            "courier": "XPRESSBEES",
+            "orders": 64,
+            "revenue": 32754.3502,
+            "aov": 511.786721875
+          },
+          {
+            "courier": "Delhivery Surface NFDS",
+            "orders": 26,
+            "revenue": 19604.8101,
+            "aov": 754.0311576923076
+          },
+          {
+            "courier": "DTDC Surface",
+            "orders": 18,
+            "revenue": 17262.2,
+            "aov": 959.0111111111112
+          },
+          {
+            "courier": "DELHIVERYSURFACE",
+            "orders": 16,
+            "revenue": 12251.0,
+            "aov": 765.6875
+          },
+          {
+            "courier": "EKART",
+            "orders": 13,
+            "revenue": 9381.0002,
+            "aov": 721.6154
+          },
+          {
+            "courier": "ATS",
+            "orders": 11,
+            "revenue": 7479.1503,
+            "aov": 679.9227545454546
+          },
+          {
+            "courier": "AJIO DropshipDefault Carrier",
+            "orders": 14,
+            "revenue": 6317.54,
+            "aov": 451.2528571428571
+          },
+          {
+            "courier": "NykaShip",
+            "orders": 2,
+            "revenue": 4887.0,
+            "aov": 2443.5
+          },
+          {
+            "courier": "Ekart Surface",
+            "orders": 5,
+            "revenue": 4655.0502,
+            "aov": 931.0100399999999
+          },
+          {
+            "courier": "Nykaa Fashion surface",
+            "orders": 4,
+            "revenue": 2450.0,
+            "aov": 612.5
+          },
+          {
+            "courier": "Ekart_Forward_NOBD_POP",
+            "orders": 3,
+            "revenue": 2244.0,
+            "aov": 748.0
+          },
+          {
+            "courier": "EkartCP",
+            "orders": 3,
+            "revenue": 1585.52,
+            "aov": 528.5066666666667
+          },
+          {
+            "courier": "DLV",
+            "orders": 2,
+            "revenue": 1548.0,
+            "aov": 774.0
+          },
+          {
+            "courier": "Amazon Shipping",
+            "orders": 2,
+            "revenue": 1398.0,
+            "aov": 699.0
+          },
+          {
+            "courier": "BLUEDART",
+            "orders": 3,
+            "revenue": 1188.0,
+            "aov": 396.0
+          },
+          {
+            "courier": "Delhivery_Forward_POP",
+            "orders": 2,
+            "revenue": 1126.0002,
+            "aov": 563.0001
+          },
+          {
+            "courier": "NFShip",
+            "orders": 1,
+            "revenue": 700.0,
+            "aov": 700.0
+          },
+          {
+            "courier": "E-Kart Logistics",
+            "orders": 1,
+            "revenue": 600.0,
+            "aov": 600.0
+          },
+          {
+            "courier": "Xpresee",
+            "orders": 1,
+            "revenue": 468.0,
+            "aov": 468.0
+          },
+          {
+            "courier": "STN52472QTY04SEP2025",
+            "orders": 1,
+            "revenue": 17.13,
+            "aov": 17.13
+          },
+          {
+            "courier": "STN2152QTY05SEP2025",
+            "orders": 1,
+            "revenue": 10.69,
+            "aov": 10.69
+          }
+        ]
       },
       "warehouseEff": {
         "success": true,
-        "data": []
+        "data": [
+          {
+            "warehouse": "Easy Spirit Enterprises Private Limited",
+            "orders": 1334,
+            "revenue": 1038352.8525,
+            "aov": 778.3754516491755
+          },
+          {
+            "warehouse": "Moder Godam",
+            "orders": 735,
+            "revenue": 534298.8003,
+            "aov": 726.9371432653061
+          }
+        ]
       },
       "paymentModeBreakdown": {
         "success": true,
@@ -513,13 +840,87 @@
       },
       "marketplaceRiskScore": {
         "success": true,
-        "data": []
+        "data": [
+          {
+            "marketplace": "AJIO Dropship",
+            "risk_score": 7.18,
+            "total_orders": 195
+          },
+          {
+            "marketplace": "Amazon Smart Connect",
+            "risk_score": 0.0,
+            "total_orders": 13
+          },
+          {
+            "marketplace": "Amazon.in",
+            "risk_score": 4.55,
+            "total_orders": 44
+          },
+          {
+            "marketplace": "B2B",
+            "risk_score": 50.0,
+            "total_orders": 4
+          },
+          {
+            "marketplace": "Flipkart",
+            "risk_score": 11.72,
+            "total_orders": 290
+          },
+          {
+            "marketplace": "Myntra PPMP",
+            "risk_score": 18.39,
+            "total_orders": 832
+          },
+          {
+            "marketplace": "Nykaa",
+            "risk_score": 7.14,
+            "total_orders": 28
+          },
+          {
+            "marketplace": "Nykaa Fashion",
+            "risk_score": 1.96,
+            "total_orders": 51
+          },
+          {
+            "marketplace": "POPclub",
+            "risk_score": 44.44,
+            "total_orders": 9
+          },
+          {
+            "marketplace": "Shopify",
+            "risk_score": 10.72,
+            "total_orders": 401
+          },
+          {
+            "marketplace": "Snapdeal",
+            "risk_score": 9.09,
+            "total_orders": 198
+          },
+          {
+            "marketplace": "Tata Cliq",
+            "risk_score": 0.0,
+            "total_orders": 4
+          }
+        ]
       }
     },
     "advancedMetrics": {
       "revenuePerChannel": {
         "success": true,
-        "data": {}
+        "data": {
+          "AJIO Dropship": 94008.81,
+          "Amazon Smart Connect": 9027.1503,
+          "Amazon.in": 36277.2503,
+          "B2B": 70.86,
+          "Flipkart": 215096.0005,
+          "Myntra PPMP": 614572.0007,
+          "Nykaa": 24491.8101,
+          "Nykaa Fashion": 38229.2002,
+          "POPclub": 5761.0002,
+          "Shopify": 392822.0498,
+          "Snapdeal": 140242.0007,
+          "Tata Cliq": 2053.52
+        }
       },
       "seasonalTrends": {
         "success": true,
@@ -536,5 +937,5 @@
       }
     }
   },
-  "timestamp": "2026-04-07T15:33:06.436305"
+  "timestamp": "2026-04-07T19:40:18.508794"
 }
