@@ -61,6 +61,8 @@ export default function Order() {
             {/* sidebar */}
             <Sidebar onHoverChange={setSidebarHovered} />
 
+            <img src='./chupps_life.png' className='mx-auto w-1/12 animate-bounce my-12' />
+
             {/* aboslute */}
             <Header />
             <div className={`relative ${sidebarHovered ? 'ml-[3.56%]' : 'ml-[3%]'} transition-[margin] duration-100 ease-in h-screen w-full shrink-0 flex items-center justify-center snap-start`}>
@@ -69,11 +71,11 @@ export default function Order() {
 
             <img src='./chupps_life.png' className='mx-auto w-1/12 animate-bounce my-12' />
 
-            <div className={`relative ${sidebarHovered ? 'ml-[3.56%]' : 'ml-[3%]'} transition-[margin] duration-100 ease-in h-screen w-full shrink-0 flex items-center justify-center snap-start`}>
+            {/* <div className={`relative ${sidebarHovered ? 'ml-[3.56%]' : 'ml-[3%]'} transition-[margin] duration-100 ease-in h-screen w-full shrink-0 flex items-center justify-center snap-start`}>
                 <ComparisonCard />
             </div>
 
-            <img src='./chupps_life.png' className='mx-auto w-1/12 animate-bounce my-12' />
+            <img src='./chupps_life.png' className='mx-auto w-1/12 animate-bounce my-12' /> */}
             {/* 
             <div className={`relative ${sidebarHovered ? 'ml-[3.56%]' : 'ml-[3%]'} transition-[margin] duration-100 ease-in h-screen w-full shrink-0 flex items-center justify-center snap-start`}>
                 <DayComparisonCard />

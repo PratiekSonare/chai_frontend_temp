@@ -32,8 +32,11 @@ const CHART_COLORS = [
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
+    // Check if any payload item has growth data
+    const growthData = payload.find(p => p.payload && p.payload.growth !== undefined);
+    
     return (
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl p-4 backdrop-blur-xl" style={{ minWidth: "180px" }}>
+      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl p-5 backdrop-blur-xl" style={{ minWidth: "250px" }}>
         <p className="font-semibold text-gray-900 dark:text-white mb-3 border-b border-gray-100 dark:border-gray-700 pb-2">
           {label}
         </p>
@@ -55,6 +58,20 @@ const CustomTooltip = ({ active, payload, label }) => {
             </span>
           </div>
         ))}
+        {growthData && growthData.payload && growthData.payload.growth !== null && (
+          <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-600 dark:text-gray-300">Growth</span>
+              <span className={`font-medium ${
+                growthData.payload.growth >= 0 
+                  ? 'text-green-600 dark:text-green-400' 
+                  : 'text-red-600 dark:text-red-400'
+              }`}>
+                {growthData.payload.growth >= 0 ? '+' : ''}{growthData.payload.growth}%
+              </span>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -85,7 +102,7 @@ const BarChartComponent = ({ data, dataKey }) => (
         {Object.keys(data[0])
           .filter(
             (k) =>
-              k !== dataKey && k !== "percentage" && typeof data[0][k] === "number"
+              k !== dataKey && k !== "percentage" && k !== "growth" && k !== "count" && k !== "revenue" && typeof data[0][k] === "number"
           )
           .map((key, idx) => (
             <Bar
@@ -102,9 +119,9 @@ const BarChartComponent = ({ data, dataKey }) => (
 );
 
 const LineChartComponent = ({ data, dataKey }) => {
-  // Extract all numeric keys except the dataKey and percentage
+  // Extract all numeric keys except the dataKey, percentage, growth, count, and revenue
   const numericKeys = Object.keys(data[0]).filter(
-    (k) => k !== dataKey && k !== "percentage" && typeof data[0][k] === "number"
+    (k) => k !== dataKey && k !== "percentage" && k !== "growth" && k !== "count" && k !== "revenue" && typeof data[0][k] === "number"
   );
 
   return (

@@ -133,7 +133,7 @@ export default function MetricCarousel({ metrics, searchData, isSuccess }) {
                     />
                 </CarouselItem>
 
-                {/* Cancellation Metrics */}
+                {/* Cancellation Metrics
                 <CarouselItem className="basis-1/2">
                     <MetricGrid
                         cN="bg-red-600"
@@ -148,7 +148,7 @@ export default function MetricCarousel({ metrics, searchData, isSuccess }) {
                         ]}
                         ChartingComponent={<CancellationBarChart searchData={searchData} isSuccess={isSuccess} />}
                     />
-                </CarouselItem>
+                </CarouselItem> */}
 
                 {/* Time-based Metrics */}
                 <CarouselItem className="basis-1/2">

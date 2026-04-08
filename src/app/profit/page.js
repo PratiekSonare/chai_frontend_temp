@@ -201,7 +201,7 @@ export default function Profit() {
             changeMeta,
             originalRows: originalRowsPC,
             setPendingEdits: setPendingEditsPC,
-            primaryKey: "NO"
+            primaryKey: "NO."
         });
     }
 
@@ -250,7 +250,7 @@ export default function Profit() {
                 const { error: updateError } = await supabase
                     .from("payment_cycle_and_cash_discount")
                     .update(patch)
-                    .eq("NO.", rowNo);
+                    .eq('"NO."', rowNo);
                 if (updateError) {
                     throw updateError;
                 }

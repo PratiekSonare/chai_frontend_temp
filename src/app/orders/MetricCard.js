@@ -97,8 +97,6 @@ export default function MetricCard() {
     // Use metrics config from utilities
     const metricsConfig = METRICS_CONFIG;
 
-    // Handle apply filters
-    // Note: Filters are passed via buildFilters() in useFetchMetric hook's payload
     const handleApplyFilters = useCallback(() => {
         const appliedFilters = {
             marketplaces: selectedMarketplaces,
@@ -238,9 +236,10 @@ export default function MetricCard() {
                                     <button
                                         key={categoryKey}
                                         onClick={() => setSelectedCategory(categoryKey)}
-                                        className={`group overflow-x-hidden px-4 py-3 rounded-lg poppins font-semibold transition-all flex flex-col items-start gap-1.5 ${selectedCategory === categoryKey
+                                        className={`group overflow-x-hidden px-4 py-3 rounded-lg poppins transition-all flex flex-col items-start gap-1.5 
+                                            ${selectedCategory === categoryKey
                                             ? "bg-white text-[#001a8e] shadow-lg"
-                                            : "bg-white/10 text-white hover:bg-white/20"
+                                            : "bg-white/10 text-white hover:bg-white/20 border border-white"
                                             }`}
                                     >
                                         <span className="translate-y-3 group-hover:translate-y-0 ease-in duration-100 text-sm">{categoryData.category}</span>
@@ -322,18 +321,17 @@ export default function MetricCard() {
                                     searchValue={billingStateSearch}
                                     onSearchChange={setBillingStateSearch}
                                 />
-                                
+
                                 {/* Apply Filters Button */}
                                 {isFilter && (
                                     <div className="px-4 py-3 border-t border-white/20">
                                         <button
                                             onClick={handleApplyFilters}
                                             disabled={Object.values(metricsLoading).some(v => v)}
-                                            className={`w-full px-4 py-3 rounded-lg poppins font-semibold transition-all flex items-center justify-center gap-2 ${
-                                                Object.values(metricsLoading).some(v => v)
+                                            className={`w-full px-4 py-3 rounded-lg poppins font-semibold transition-all flex items-center justify-center gap-2 ${Object.values(metricsLoading).some(v => v)
                                                     ? "bg-white/30 text-white/60 cursor-not-allowed"
                                                     : "bg-white text-[#001a8e] hover:bg-white/90 active:scale-95 shadow-lg"
-                                            }`}
+                                                }`}
                                         >
                                             {Object.values(metricsLoading).some(v => v) ? (
                                                 <>
@@ -381,16 +379,46 @@ export default function MetricCard() {
                                                 const chartData = metricData?.chart;
 
                                                 return (
-                                                    <CarouselItem key={metricKey} className="basis-1/2 rounded-xl">
+                                                    <CarouselItem key={metricKey} className={`${metricConfig.type === "scalar" ? "basis-1/4" : "basis-1/2"} rounded-xl`}>
                                                         <div className="bg-zinc-50 border-l border-b border-r border-[#001a8e] h-full flex flex-col rounded-xl">
 
                                                             <div className="flex flex-col gap-2 pt-3 pl-3 pb-2">
                                                                 <span className="oswald uppercase tracking-wider text-[#001a8e] text-xl">
                                                                     {metricConfig.title}
                                                                 </span>
-                                                                {(metricConfig.type === "scalar" || metricConfig.hasChart) && !isLoading && data !== undefined && (
-                                                                    <div className="text-3xl font-bold text-[#001a8e]">
-                                                                        {formatMetricValue(data, metricConfig)}
+                                                                {metricConfig.formula && (
+                                                                    <span className="poppins text-xs text-gray-600 italic">
+                                                                        {metricConfig.formula}
+                                                                    </span>
+                                                                )}
+
+                                                                {(metricConfig.hasChart) && !isLoading && data !== undefined && (
+                                                                    <div className="flex flex-row items-center gap-4">
+                                                                        <div className="text-3xl font-bold text-[#001a8e]">
+                                                                            {formatMetricValue(data, metricConfig)}
+                                                                        </div>
+                                                                        {metricConfig.percent === true && (
+                                                                            <svg width="60" height="35" viewBox="0 0 60 35" className="overflow-visible">
+                                                                                {/* Background semicircle */}
+                                                                                <path
+                                                                                    d="M 5 30 A 25 25 0 0 1 55 30"
+                                                                                    fill="none"
+                                                                                    stroke="#e5e7eb"
+                                                                                    strokeWidth="3"
+                                                                                    strokeLinecap="round"
+                                                                                />
+                                                                                {/* Progress semicircle */}
+                                                                                <path
+                                                                                    d="M 5 30 A 25 25 0 0 1 55 30"
+                                                                                    fill="none"
+                                                                                    stroke="#001a8e"
+                                                                                    strokeWidth="3"
+                                                                                    strokeLinecap="round"
+                                                                                    strokeDasharray={`${(Math.min(Math.max(data, 0), 100) / 100) * 78.5} 78.5`}
+                                                                                    style={{ transformOrigin: "30px 30px", transform: "scaleX(-1)" }}
+                                                                                />
+                                                                            </svg>
+                                                                        )}
                                                                     </div>
                                                                 )}
                                                             </div>
@@ -406,8 +434,32 @@ export default function MetricCard() {
                                                                 ) : metricConfig.hasChart && chartData ? (
                                                                     renderChart(metricKey, metricConfig, chartData)
                                                                 ) : metricConfig.type === "scalar" ? (
-                                                                    <div className="h-full flex items-center justify-center">
-                                                                        <span className="text-gray-400">Value displayed above</span>
+                                                                    <div className="h-full flex items-center justify-center gap-8">
+                                                                        {metricConfig.percent === true && (
+                                                                            <svg width="100" height="60" viewBox="0 0 100 60" className="overflow-visible">
+                                                                                {/* Background semicircle */}
+                                                                                <path
+                                                                                    d="M 10 50 A 40 40 0 0 1 90 50"
+                                                                                    fill="none"
+                                                                                    stroke="#e5e7eb"
+                                                                                    strokeWidth="5"
+                                                                                    strokeLinecap="round"
+                                                                                />
+                                                                                {/* Progress semicircle */}
+                                                                                <path
+                                                                                    d="M 10 50 A 40 40 0 0 1 90 50"
+                                                                                    fill="none"
+                                                                                    stroke="#001a8e"
+                                                                                    strokeWidth="5"
+                                                                                    strokeLinecap="round"
+                                                                                    strokeDasharray={`${(Math.min(Math.max(data, 0), 100) / 100) * 125.6} 125.6`}
+                                                                                    style={{ transformOrigin: "50px 50px", transform: "scaleX(-1)" }}
+                                                                                />
+                                                                            </svg>
+                                                                        )}
+                                                                        <div className="text-3xl font-bold text-[#001a8e]">
+                                                                            {formatMetricValue(data, metricConfig)}
+                                                                        </div>
                                                                     </div>
                                                                 ) : data ? (
                                                                     renderChart(metricKey, metricConfig, data)

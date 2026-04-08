@@ -155,10 +155,6 @@ export default function Home() {
     }
   }, [searchState.state, isLoading, isSuccess, isError]);
 
-  // useEffect(() => {
-  //   console.log("STATE:", searchState.context);
-  // }, [searchState]);
-
   useEffect(() => {
     logSinceRef.current = 0;
   }, [requestId]);
