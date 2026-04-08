@@ -142,24 +142,6 @@ export const ErrorComponent = ({ error, errors, onRetry, onReset }) => {
                   </p>
                 </div>
 
-                {/* Error Type Badge */}
-                {err.error_type && (
-                  <div className="mb-3 flex flex-wrap gap-2">
-                    <span className="inline-block bg-red-100 text-red-700 text-xs font-mono px-2.5 py-1 rounded border border-red-200">
-                      {err.error_type}
-                    </span>
-                    {err.severity && (
-                      <span className={`inline-block text-xs font-semibold px-2.5 py-1 rounded ${
-                        err.severity === 'critical' ? 'bg-orange-100 text-orange-700 border border-orange-200' :
-                        err.severity === 'warning' ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' :
-                        'bg-blue-100 text-blue-700 border border-blue-200'
-                      }`}>
-                        {err.severity.toUpperCase()}
-                      </span>
-                    )}
-                  </div>
-                )}
-
                 {/* Additional Context/Suggestion */}
                 {err.context && (
                   <div className="mt-3 pt-3 border-t border-red-200">
