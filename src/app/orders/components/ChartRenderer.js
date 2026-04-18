@@ -32,14 +32,22 @@ const CHART_COLORS = [
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
-    // Check if any payload item has growth data
+    // Check if any payload item has growth data or style_name
     const growthData = payload.find(p => p.payload && p.payload.growth !== undefined);
+    const styleNameData = payload[0]?.payload?.style_name;
     
     return (
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl p-5 backdrop-blur-xl" style={{ minWidth: "250px" }}>
-        <p className="font-semibold text-gray-900 dark:text-white mb-3 border-b border-gray-100 dark:border-gray-700 pb-2">
-          {label}
-        </p>
+      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl p-5 backdrop-blur-xl" style={{ minWidth: "280px" }}>
+        <div className="mb-3 pb-2 border-b border-gray-100 dark:border-gray-700">
+          <p className="font-semibold text-gray-900 dark:text-white text-sm">
+            {label}
+          </p>
+          {styleNameData && (
+            <p className="text-xs text-purple-600 dark:text-purple-400 font-medium mt-1">
+              Style: <span className="font-semibold">{styleNameData}</span>
+            </p>
+          )}
+        </div>
         {payload.map((entry, index) => (
           <div key={`item-${index}`} className="flex items-center justify-between py-1 text-sm">
             <div className="flex items-center gap-2">
@@ -102,7 +110,7 @@ const BarChartComponent = ({ data, dataKey }) => (
         {Object.keys(data[0])
           .filter(
             (k) =>
-              k !== dataKey && k !== "percentage" && k !== "growth" && k !== "count" && k !== "revenue" && typeof data[0][k] === "number"
+              k !== dataKey && k !== "percentage" && k !== "growth" && k !== "count" && k !== "revenue" && k !== "style_name" && k !== "sku" && typeof data[0][k] === "number"
           )
           .map((key, idx) => (
             <Bar
@@ -228,53 +236,77 @@ const PieChartComponent = ({ data, dataKey }) => {
   );
 };
 
-const TableComponent = ({ data }) => (
-  <div className="overflow-auto h-full rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm bg-white dark:bg-gray-900">
-    <table className="w-full text-sm ">
-      <thead className=" uppercase sticky top-0 bg-zinc-100 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
-        <tr className="">
-          {Object.keys(data[0]).map((k, idx) => (
-            <th
-              key={k}
-              className={`px-6 py-4 text-left font-semibold text-gray-700 dark:text-gray-300 ${
-                idx === 0 ? "rounded-tl-2xl" : ""
-              } ${idx === Object.keys(data[0]).length - 1 ? "rounded-tr-2xl" : ""}`}
-            >
-              {k.replace(/([A-Z])/g, " $1").trim()}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-        {data.slice(0, 10).map((row, idx) => (
-          <tr
-            key={idx}
-            className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150"
-          >
-            {Object.values(row).map((val, vidx) => (
-              <td
-                key={vidx}
-                className="px-6 py-4 text-gray-600 dark:text-gray-300 whitespace-nowrap"
+const TableComponent = ({ data }) => {
+  const keys = Object.keys(data[0]);
+  const styleNameIdx = keys.indexOf('style_name');
+  
+  return (
+    <div className="overflow-auto h-full rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm bg-white dark:bg-gray-900">
+      <table className="w-full text-sm ">
+        <thead className=" uppercase sticky top-0 bg-zinc-100 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+          <tr className="">
+            {keys.map((k, idx) => (
+              <th
+                key={k}
+                className={`px-6 py-4 text-left font-semibold ${
+                  k === 'style_name'
+                    ? 'text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-900/20'
+                    : 'text-gray-700 dark:text-gray-300'
+                } ${
+                  idx === 0 ? "rounded-tl-2xl" : ""
+                } ${idx === keys.length - 1 ? "rounded-tr-2xl" : ""}`}
               >
-                {typeof val === "number"
-                  ? val.toLocaleString("en-US", {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })
-                  : val}
-              </td>
+                {k.replace(/([A-Z])/g, " $1").trim()}
+              </th>
             ))}
           </tr>
-        ))}
-      </tbody>
-    </table>
-    {data.length > 10 && (
-      <div className="sticky bottom-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-6 py-3 text-xs text-gray-500 dark:text-gray-400">
-        Showing 1–10 of {data.length} entries
-      </div>
-    )}
-  </div>
-);
+        </thead>
+        <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+          {data.slice(0, 10).map((row, idx) => (
+            <tr
+              key={idx}
+              className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150"
+            >
+              {keys.map((key, vidx) => {
+                const val = row[key];
+                const isStyleName = key === 'style_name';
+                return (
+                  <td
+                    key={vidx}
+                    className={`px-6 py-4 whitespace-nowrap ${
+                      isStyleName
+                        ? 'font-semibold text-purple-700 dark:text-purple-300 bg-purple-50/50 dark:bg-purple-900/10'
+                        : 'text-gray-600 dark:text-gray-300'
+                    }`}
+                  >
+                    {isStyleName && val ? (
+                      <span className="inline-flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+                        {val}
+                      </span>
+                    ) : typeof val === "number" ? (
+                      val.toLocaleString("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })
+                    ) : (
+                      val
+                    )}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {data.length > 10 && (
+        <div className="sticky bottom-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-6 py-3 text-xs text-gray-500 dark:text-gray-400">
+          Showing 1–10 of {data.length} entries
+        </div>
+      )}
+    </div>
+  );
+};
 
 const StatsComponent = ({ data }) => {
   const formatStatValue = (key, value) => {
@@ -295,14 +327,13 @@ const StatsComponent = ({ data }) => {
   };
 
   return (
-    <div className="h-64 flex items-center justify-center p-6">
-      <div className="w-full grid grid-cols-2 gap-4">
+    <div className="h-64 flex items-center justify-center p-6grid grid-cols-2 gap-4">
         {Object.entries(data).map(([key, value]) => {
           const { key: displayKey, value: displayValue } = formatStatValue(key, value);
           return (
             <div
               key={key}
-              className="flex flex-col items-center justify-center p-4 rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 dark:from-blue-900/20 dark:to-indigo-900/20 dark:border-blue-800"
+              className="flex flex-col items-center justify-center p-4 rounded-lg bg-transparent border border-blue-500 dark:from-blue-900/20 dark:to-indigo-900/20 dark:border-blue-800"
             >
               <span className="text-xs text-gray-600 dark:text-gray-400 mb-2 font-semibold uppercase tracking-wide">
                 {displayKey}
@@ -314,7 +345,6 @@ const StatsComponent = ({ data }) => {
           );
         })}
       </div>
-    </div>
   );
 };
 

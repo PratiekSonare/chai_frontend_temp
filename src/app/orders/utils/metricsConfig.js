@@ -10,8 +10,8 @@ export const METRICS_CONFIG = {
       unitsSold: { title: "Units Sold", formula: "Total quantity of items sold", color: "text-indigo-700", endpoint: "/history/batch/all-metrics", type: "scalar" },
       aov: { title: "AOV", formula: "Gross Revenue ÷ Total Orders", color: "text-violet-700", endpoint: "/history/batch/all-metrics", type: "scalar", currency: true },
       uniqueSkus: { title: "Unique SKUs", formula: "Count of distinct products sold", color: "text-cyan-700", endpoint: "/history/batch/all-metrics", type: "scalar" },
-      cancellationRate: { title: "Cancellation Rate", formula: "(Cancelled Orders ÷ Total Orders) × 100", color: "text-rose-700", endpoint: "/history/batch/all-metrics", type: "scalar", percent: true },
-      rtoRate: { title: "RTO Rate", formula: "(Returned Orders ÷ Total Orders) × 100", color: "text-orange-700", endpoint: "/history/batch/all-metrics", type: "scalar", percent: true },
+      // cancellationRate: { title: "Cancellation Rate", formula: "(Cancelled Orders ÷ Total Orders) × 100", color: "text-rose-700", endpoint: "/history/batch/all-metrics", type: "scalar", percent: true },
+      // rtoRate: { title: "RTO Rate", formula: "(Returned Orders ÷ Total Orders) × 100", color: "text-orange-700", endpoint: "/history/batch/all-metrics", type: "scalar", percent: true },
       codShare: { title: "COD Share", formula: "(COD Orders ÷ Total Orders) × 100", color: "text-emerald-700", endpoint: "/history/batch/all-metrics", type: "scalar", percent: true },
       deliveredRate: { title: "Delivered Rate", formula: "(Delivered Orders ÷ Total Orders) × 100", color: "text-teal-700", endpoint: "/history/batch/all-metrics", type: "scalar", percent: true }
     }
@@ -20,7 +20,7 @@ export const METRICS_CONFIG = {
     category: "Product & Inventory",
     color: "bg-linear-to-br from-purple-50 to-purple-100",
     metrics: {
-      skuDiversityIndex: { title: "SKU Diversity Index", formula: "Measure of product variety (0-100)", endpoint: "/history/metrics/sku-diversity-index", type: "scalar" },
+      skuDiversityIndex: { title: "SKU Diversity Index", formula: "Measure of product variety [Unique SKUs ÷ Total Orders]", endpoint: "/history/metrics/sku-diversity-index", type: "scalar" },
       topSkusByRevenue: { title: "Top SKUs by Revenue", formula: "SKUs ranked by total revenue generated", endpoint: "/history/metrics/top-skus-by-revenue", type: "table", chartType: "bar", dataKey: "sku" },
       topSkusByUnits: { title: "Top SKUs by Units", formula: "SKUs ranked by units sold", endpoint: "/history/metrics/top-skus-by-units", type: "table", chartType: "bar", dataKey: "sku" },
       avgUnitsPerOrder: { title: "Avg Units per Order", formula: "Total Units ÷ Total Orders", endpoint: "/history/metrics/average-units-per-order", type: "scalar" },

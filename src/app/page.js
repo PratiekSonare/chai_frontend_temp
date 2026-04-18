@@ -57,8 +57,6 @@ const rows = [
 
 export default function Home() {
 
-
-
   const placeholder_list = [
     "Compare orders between Maharashtra and Telangana from the past 3 days.",
     "Fetch orders from 1st Jan to 8th Feb of SKU 11400-255-8.",
@@ -297,7 +295,6 @@ export default function Home() {
       sendSearch({ type: 'SEARCH', query: inputValue.trim() });
     }
   }, [isLoading, sendSearch]);
-
 
   const handleCancel = useCallback(() => {
     console.log('Search cancelled');
