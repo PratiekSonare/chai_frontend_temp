@@ -1,3 +1,6 @@
+// Profit page - allow user to edit the vendor cost sheet and payment cycle sheet.
+// Features: add intelligence?
+
 "use client";
 
 import { DataGrid, renderTextEditor } from "react-data-grid";

@@ -17,6 +17,7 @@ import {
   Cell,
 } from "recharts";
 import { formatMetricValue } from "../orders/utils/formatMetricValue";
+import { SemiCircle } from "../components/SemiCircle";
 
 const S3_BASE = "https://chupps-data-portal.s3.amazonaws.com";
 const SKU_PREFIX = "sku-metrics/";
@@ -84,35 +85,6 @@ const CustomTooltip = ({ active, payload, label }) => {
   );
 };
 
-function SemiCircle({ pct }) {
-  const clamped = Math.min(Math.max(pct, 0), 100);
-  const arc = (clamped / 100) * 125.6;
-  return (
-    <svg
-      width="100"
-      height="60"
-      viewBox="0 0 100 60"
-      className="overflow-visible"
-    >
-      <path
-        d="M 10 50 A 40 40 0 0 1 90 50"
-        fill="none"
-        stroke="#e5e7eb"
-        strokeWidth="5"
-        strokeLinecap="round"
-      />
-      <path
-        d="M 90 50 A 40 40 0 0 0 10 50"
-        fill="none"
-        stroke="#001a8e"
-        strokeWidth="5"
-        strokeLinecap="round"
-        strokeDasharray={`${arc} 125.6`}
-      />
-    </svg>
-  );
-}
-
 function Spinner({ size = 5 }) {
   return (
     <span
@@ -174,20 +146,30 @@ function OverviewSection({ cumulative }) {
 
       {/* Order status breakdown */}
       {cumulative.order_status_breakdown && (
-        <div className="col-span-2 bg-zinc-50 border border-gray-200 rounded-xl p-4">
-          <span className="oswald uppercase tracking-wider text-[#001a8e] text-sm block mb-3">
+        <div className="col-span-2 bg-gradient-to-br from-zinc-50 to-white border border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-[#001a8e]/30 transition-all">
+          <span className="oswald uppercase tracking-wider text-[#001a8e] text-sm block mb-3 font-bold">
             Order Status Breakdown
           </span>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-2 xl:grid-cols-4 gap-2.5">
             {Object.entries(cumulative.order_status_breakdown).map(
-              ([status, count]) => (
-                <span
-                  key={status}
-                  className="px-3 py-1 rounded-full bg-[#001a8e]/10 text-[#001a8e] text-sm poppins capitalize"
-                >
-                  {status}: <strong>{count}</strong>
-                </span>
-              ),
+              ([status, count]) => {
+                const isNegative = count < 0;
+                return (
+                  <div
+                    key={status}
+                    className={`${isNegative ? "bg-red-50 border-red-100" : "bg-blue-50 border-blue-100"} rounded-lg p-3 border transition-all`}
+                  >
+                    <div className="text-gray-600 text-xs uppercase tracking-wide font-semibold mb-1">
+                      {status}
+                    </div>
+                    <div
+                      className={`text-xl font-bold ${isNegative ? "text-red-700" : "text-[#001a8e]"}`}
+                    >
+                      {count}
+                    </div>
+                  </div>
+                );
+              },
             )}
           </div>
         </div>
@@ -195,25 +177,39 @@ function OverviewSection({ cumulative }) {
 
       {/* Payment split */}
       {cumulative.payment_split && (
-        <div className="col-span-2 bg-zinc-50 border border-gray-200 rounded-xl p-4">
-          <span className="oswald uppercase tracking-wider text-[#001a8e] text-sm block mb-3">
+        <div className="col-span-2 bg-gradient-to-br from-zinc-50 to-white border border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-[#001a8e]/30 transition-all">
+          <span className="oswald uppercase tracking-wider text-[#001a8e] text-sm block mb-3 font-bold">
             Payment Split
           </span>
-          <div className="flex flex-col gap-2">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-2.5">
             {Object.entries(cumulative.payment_split).map(([mode, data]) => {
               const isNegativeRevenue = data.revenue < 0;
               return (
                 <div
                   key={mode}
-                  className="flex justify-between text-sm poppins"
+                  className={`${isNegativeRevenue ? "bg-red-50 border-red-100" : "bg-amber-50 border-amber-100"} rounded-lg p-3 border transition-all`}
                 >
-                  <span className="capitalize text-gray-600">{mode}</span>
-                  <span
-                    className={`font-medium ${isNegativeRevenue ? "text-red-700" : "text-gray-900"}`}
-                  >
-                    {data.orders} orders ·{" "}
-                    {formatMetricValue(data.revenue, { currency: true })}
-                  </span>
+                  <div className="text-gray-600 text-xs uppercase tracking-wide font-semibold mb-2 capitalize">
+                    {mode}
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-500 text-xs">Orders</span>
+                      <span
+                        className={`font-bold text-sm ${isNegativeRevenue ? "text-red-700" : "text-gray-900"}`}
+                      >
+                        {data.orders}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-500 text-xs">Revenue</span>
+                      <span
+                        className={`font-bold text-sm ${isNegativeRevenue ? "text-red-700" : "text-amber-700"}`}
+                      >
+                        {formatMetricValue(data.revenue, { currency: true })}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               );
             })}

@@ -20,6 +20,7 @@ import { renderChart } from "./components/ChartRenderer";
 import FilterGroup from "./components/FilterGroup";
 import { useFilterState, useBuildFilters } from "./hooks/useFilterState";
 import { useFetchMetric } from "./hooks/useFetchMetric";
+import { SemiCircle } from "../components/SemiCircle";
 
 export default function MetricCard() {
   // Initialize state from utilities
@@ -599,34 +600,7 @@ export default function MetricCard() {
                                         {formatMetricValue(data, metricConfig)}
                                       </div>
                                       {metricConfig.percent === true && (
-                                        <svg
-                                          width="60"
-                                          height="35"
-                                          viewBox="0 0 60 35"
-                                          className="overflow-visible"
-                                        >
-                                          {/* Background semicircle */}
-                                          <path
-                                            d="M 5 30 A 25 25 0 0 1 55 30"
-                                            fill="none"
-                                            stroke="#e5e7eb"
-                                            strokeWidth="3"
-                                            strokeLinecap="round"
-                                          />
-                                          {/* Progress semicircle */}
-                                          <path
-                                            d="M 5 30 A 25 25 0 0 1 55 30"
-                                            fill="none"
-                                            stroke="#001a8e"
-                                            strokeWidth="3"
-                                            strokeLinecap="round"
-                                            strokeDasharray={`${(Math.min(Math.max(data, 0), 100) / 100) * 78.5} 78.5`}
-                                            style={{
-                                              transformOrigin: "30px 30px",
-                                              transform: "scaleX(-1)",
-                                            }}
-                                          />
-                                        </svg>
+                                        <SemiCircle pct={data} size="small" />
                                       )}
                                     </div>
                                   )}
@@ -652,34 +626,7 @@ export default function MetricCard() {
                                 ) : metricConfig.type === "scalar" ? (
                                   <div className="h-full flex items-center justify-center gap-8">
                                     {metricConfig.percent === true && (
-                                      <svg
-                                        width="100"
-                                        height="60"
-                                        viewBox="0 0 100 60"
-                                        className="overflow-visible"
-                                      >
-                                        {/* Background semicircle */}
-                                        <path
-                                          d="M 10 50 A 40 40 0 0 1 90 50"
-                                          fill="none"
-                                          stroke="#e5e7eb"
-                                          strokeWidth="5"
-                                          strokeLinecap="round"
-                                        />
-                                        {/* Progress semicircle */}
-                                        <path
-                                          d="M 10 50 A 40 40 0 0 1 90 50"
-                                          fill="none"
-                                          stroke="#001a8e"
-                                          strokeWidth="5"
-                                          strokeLinecap="round"
-                                          strokeDasharray={`${(Math.min(Math.max(data, 0), 100) / 100) * 125.6} 125.6`}
-                                          style={{
-                                            transformOrigin: "50px 50px",
-                                            transform: "scaleX(-1)",
-                                          }}
-                                        />
-                                      </svg>
+                                      <SemiCircle pct={data} size="large" />
                                     )}
                                     <div className="text-3xl font-bold text-[#001a8e]">
                                       {formatMetricValue(data, metricConfig)}
