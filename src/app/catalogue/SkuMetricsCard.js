@@ -116,7 +116,7 @@ function OverviewSection({ cumulative }) {
         return (
           <div
             key={key}
-            className={`${bgColor} border ${borderColor} rounded-xl p-4 flex flex-col gap-2`}
+            className={`metric-sdw ${bgColor} border ${borderColor} rounded-xl p-4 flex flex-col gap-2`}
           >
             <span className="oswald uppercase tracking-wider text-gray-600 text-sm">
               {label}
@@ -146,7 +146,7 @@ function OverviewSection({ cumulative }) {
 
       {/* Order status breakdown */}
       {cumulative.order_status_breakdown && (
-        <div className="col-span-2 bg-gradient-to-br from-zinc-50 to-white border border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-[#001a8e]/30 transition-all">
+        <div className="metric-sdw col-span-2 bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-[#001a8e]/30 transition-all">
           <span className="oswald uppercase tracking-wider text-[#001a8e] text-sm block mb-3 font-bold">
             Order Status Breakdown
           </span>
@@ -177,7 +177,7 @@ function OverviewSection({ cumulative }) {
 
       {/* Payment split */}
       {cumulative.payment_split && (
-        <div className="col-span-2 bg-gradient-to-br from-zinc-50 to-white border border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-[#001a8e]/30 transition-all">
+        <div className="metric-sdw col-span-2 bg-gradient-to-br from-zinc-50 to-white border border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-[#001a8e]/30 transition-all">
           <span className="oswald uppercase tracking-wider text-[#001a8e] text-sm block mb-3 font-bold">
             Payment Split
           </span>
@@ -275,7 +275,7 @@ function MarketplaceSection({ byMarketplace }) {
         {Object.entries(byMarketplace).map(([mp, d]) => (
           <div
             key={mp}
-            className="bg-gradient-to-br from-zinc-50 to-white border border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-[#001a8e]/30 transition-all"
+            className="metric-sdw bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-[#001a8e]/30 transition-all"
           >
             <div className="flex justify-between items-center mb-4 pb-3 border-b border-gray-200">
               <span className="oswald uppercase tracking-wider text-[#001a8e] text-base font-bold">
@@ -392,7 +392,7 @@ function PricingSection({ priceHistory }) {
         ))}
       </div>
 
-      <ResponsiveContainer width="100%" height={260}>
+      <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={filtered.map((d) => ({
             ...d,
@@ -414,7 +414,7 @@ function PricingSection({ priceHistory }) {
           <Line
             type="monotone"
             dataKey="avg_sp"
-            name="Avg SP (₹)"
+            name="SP (₹)"
             stroke={CHART_COLORS[0]}
             strokeWidth={2}
             dot={false}
@@ -422,7 +422,7 @@ function PricingSection({ priceHistory }) {
           <Line
             type="monotone"
             dataKey="avg_cp"
-            name="Avg CP (₹)"
+            name="CP (₹)"
             stroke={CHART_COLORS[4]}
             strokeWidth={2}
             dot={false}
@@ -430,7 +430,7 @@ function PricingSection({ priceHistory }) {
           <Line
             type="monotone"
             dataKey="avg_mrp"
-            name="Avg MRP (₹)"
+            name="MRP (₹)"
             stroke={CHART_COLORS[2]}
             strokeWidth={2}
             dot={false}
@@ -439,7 +439,7 @@ function PricingSection({ priceHistory }) {
         </LineChart>
       </ResponsiveContainer>
 
-      <ResponsiveContainer width="100%" height={180}>
+      <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={filtered.map((d) => ({
             ...d,
@@ -653,7 +653,7 @@ function DailySection({ dailySeries }) {
 
   return (
     <div className="p-4 h-full overflow-y-auto flex flex-col gap-4">
-      <ResponsiveContainer width="100%" height={240}>
+      <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={data.map((d) => ({
             ...d,
@@ -692,7 +692,7 @@ function DailySection({ dailySeries }) {
         </LineChart>
       </ResponsiveContainer>
 
-      <ResponsiveContainer width="100%" height={180}>
+      <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={data.map((d) => ({
             ...d,
@@ -989,7 +989,7 @@ export default function SkuMetricsCard({ refreshKey }) {
             </div>
           )}
           {/* ── Left Sidebar ── */}
-          <div className="z-10 pb-4 text-white h-full flex flex-col justify-between gap-4 w-1/4 bg-[#001a8e] rounded-l-xl overflow-y-auto sticky top-0">
+          <div className="z-10 pb-4 text-white border-r border-white/20  h-full flex flex-col justify-between gap-4 w-1/4 bg-[#001a8e] rounded-l-xl overflow-y-auto sticky top-0">
             {/* SKU Selector */}
             <div className="px-4 pt-4 shrink-0">
               <span className="text-xs uppercase tracking-widest text-white/60 mb-2 block">
@@ -1061,8 +1061,10 @@ export default function SkuMetricsCard({ refreshKey }) {
               )}
             </div>
 
+            <div className="my-auto"></div>
+
             {/* Section Navigation */}
-            <div className="px-4 shrink-0">
+            <div className="px-4 pt-4 shrink-0 border-t border-white/20">
               <span className="text-xs uppercase tracking-widest text-white/60 mb-2 block">
                 Sections
               </span>
@@ -1092,7 +1094,7 @@ export default function SkuMetricsCard({ refreshKey }) {
 
             {/* Rolling Window Quick Stats */}
             {rolling && (
-              <div className="px-4 flex-1 overflow-y-auto">
+              <div className="px-4 flex-1 overflow-y-auto pt-4 border-t border-white/20">
                 <span className="text-xs uppercase tracking-widest text-white/60 mb-2 block">
                   Rolling Windows
                 </span>
@@ -1156,25 +1158,23 @@ export default function SkuMetricsCard({ refreshKey }) {
             <div className="flex-1 m-3 bg-zinc-50 rounded-xl overflow-hidden flex flex-col">
               {/* Section header */}
               {skuData && (
-                <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 flex-shrink-0">
-                  <div>
-                    <span className="oswald uppercase tracking-wider text-[#001a8e] text-lg">
-                      {SECTIONS.find((s) => s.key === selectedSection)?.label}
+                <div className="py-4 w-full flex flex-row items-center justify-between px-4 border-b border-gray-200">
+                  <span className="oswald uppercase tracking-wider text-[#001a8e] text-lg">
+                    {SECTIONS.find((s) => s.key === selectedSection)?.label}
+                  </span>
+                  <div className="poppins text-sm text-gray-700">
+                    <span className="font-semibold">
+                      {(Array.isArray(skuData.suborder_model_no)
+                        ? skuData.suborder_model_no.join(", ")
+                        : skuData.suborder_model_no) || skuData.sku}
                     </span>
-                    <div className="ml-2 poppins text-sm text-gray-700">
-                      <span className="font-semibold">
-                        {(Array.isArray(skuData.suborder_model_no)
-                          ? skuData.suborder_model_no.join(", ")
-                          : skuData.suborder_model_no) || skuData.sku}
-                      </span>
-                      {skuData.suborder_productName && (
-                        <div className="text-xs text-gray-500">
-                          {Array.isArray(skuData.suborder_productName)
-                            ? skuData.suborder_productName.join(", ")
-                            : skuData.suborder_productName}
-                        </div>
-                      )}
-                    </div>
+                    {skuData.suborder_productName && (
+                      <div className="text-xs text-gray-500">
+                        {Array.isArray(skuData.suborder_productName)
+                          ? skuData.suborder_productName.join(", ")
+                          : skuData.suborder_productName}
+                      </div>
+                    )}
                   </div>
                 </div>
               )}

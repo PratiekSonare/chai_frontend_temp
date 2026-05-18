@@ -90,6 +90,11 @@ export default function RtoPage() {
   }, [startDate, endDate]);
 
   useEffect(() => {
+    // Auto-fetch on component mount with default yesterday's date
+    fetchRtoData();
+  }, [fetchRtoData]);
+
+  useEffect(() => {
     if (refreshKey > 0) {
       fetchRtoData();
     }
@@ -257,10 +262,22 @@ export default function RtoPage() {
               </div>
 
               {/* Right Content Area */}
-              <div className="w-3/4 h-full bg-[#001a8e] border border-transparent flex flex-col rounded-xl overflow-y-auto">
+              <div className="w-3/4 h-full bg-[#001a8e] border border-transparent flex flex-col rounded-xl overflow-y-auto relative">
+                {/* Loading Overlay */}
+                {loading && (
+                  <div className="absolute inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center rounded-xl z-50">
+                    <div className="flex flex-col items-center gap-4">
+                      <span className="h-10 w-10 rounded-full border-4 border-white border-t-transparent animate-spin" />
+                      <span className="text-white/90 text-sm font-medium">
+                        Loading RTO data...
+                      </span>
+                    </div>
+                  </div>
+                )}
+
                 {/* Metrics Grid */}
-                <div className="flex-1 flex flex-col p-3 min-h-0 overflow-y-auto">
-                  <div className="flex-1 flex flex-col p-3 min-h-0 overflow-y-auto">
+                <div className="flex-1 flex flex-col p-2 min-h-0 overflow-y-auto">
+                  <div className="flex-1 flex flex-col p-2 min-h-0 overflow-y-auto">
                     {loading && !payload ? (
                       <div className="flex items-center justify-center h-full">
                         <div className="flex flex-col items-center gap-3">
@@ -275,49 +292,49 @@ export default function RtoPage() {
                         {/* Top Metrics Row */}
                         <div className="grid grid-cols-4 gap-3">
                           <div className="metric-sdw rounded-xl bg-zinc-50 border-l border-b border-r border-[#001a8e] p-4 flex flex-col">
-                            <span className="oswald uppercase tracking-wider text-[#001a8e] text-xs">
+                            <span className="oswald uppercase tracking-wider text-[#001a8e] text-md">
                               Total orders
                             </span>
-                            <p className="mt-2 text-2xl font-bold text-[#001a8e]">
+                            <p className="mt-2 text-4xl font-bold text-[#001a8e]">
                               {payload?.totals?.orders ?? 0}
                             </p>
                           </div>
                           <div className="metric-sdw rounded-xl bg-zinc-50 border-l border-b border-r border-[#001a8e] p-4 flex flex-col">
-                            <span className="oswald uppercase tracking-wider text-red-700 text-xs">
+                            <span className="oswald uppercase tracking-wider text-red-700 text-md">
                               Cancelled
                             </span>
-                            <p className="mt-2 text-2xl font-bold text-red-700">
+                            <p className="mt-2 text-4xl font-bold text-red-700">
                               {payload?.totals?.cancelled ?? 0}
                             </p>
                           </div>
                           <div className="metric-sdw rounded-xl bg-zinc-50 border-l border-b border-r border-[#001a8e] p-4 flex flex-col">
-                            <span className="oswald uppercase tracking-wider text-amber-700 text-xs">
+                            <span className="oswald uppercase tracking-wider text-amber-700 text-md">
                               Returned
                             </span>
-                            <p className="mt-2 text-2xl font-bold text-amber-700">
+                            <p className="mt-2 text-4xl font-bold text-amber-700">
                               {payload?.totals?.returned ?? 0}
                             </p>
                           </div>
                           <div className="metric-sdw rounded-xl bg-zinc-50 border-l border-b border-r border-[#001a8e] p-4 flex flex-col">
-                            <span className="oswald uppercase tracking-wider text-violet-700 text-xs">
+                            <span className="oswald uppercase tracking-wider text-violet-700 text-md">
                               Pending
                             </span>
-                            <p className="mt-2 text-2xl font-bold text-violet-700">
+                            <p className="mt-2 text-4xl font-bold text-violet-700">
                               {payload?.totals?.pending_returns ?? 0}
                             </p>
                           </div>
                         </div>
 
                         {/* Active Section Details */}
-                        <div className="bg-white rounded-xl border border-[#001a8e]/20 p-4 space-y-4">
+                        <div className="metric-sdw bg-white rounded-xl border border-[#001a8e]/20 p-4 space-y-4">
                           <div className="flex items-center justify-between">
                             <div>
-                              <span className="oswald uppercase tracking-widest text-[#001a8e] text-xs font-bold opacity-70">
+                              <span className="oswald uppercase tracking-wider text-[#001a8e] text-md opacity-70">
                                 {sections.find(
                                   (item) => item.key === activeSection,
                                 )?.label || "Active Section"}
                               </span>
-                              <p className="mt-1.5 text-lg font-bold text-zinc-900">
+                              <p className="mt-1.5 text-2xl font-bold text-zinc-900">
                                 {activeOrders.length}{" "}
                                 <span className="text-sm font-semibold text-zinc-600">
                                   Orders
@@ -325,23 +342,23 @@ export default function RtoPage() {
                               </p>
                             </div>
                             <div className="text-right">
-                              <p className="text-xs text-zinc-500 uppercase tracking-wide">
+                              <p className="text-sm text-zinc-500 uppercase tracking-wide">
                                 Date Range
                               </p>
-                              <p className="mt-1 text-sm font-semibold text-zinc-700">
+                              <p className="mt-1 text-md font-semibold text-zinc-700">
                                 {startDate} — {endDate}
                               </p>
                             </div>
                           </div>
 
-                          <div className="grid grid-cols-3 gap-2.5 pt-3 border-t border-zinc-200/50">
+                          <div className="grid grid-cols-3 gap-2.5">
                             <div className="bg-red-50/50 rounded-lg p-3 border border-red-100/30 hover:border-red-200/50 transition-colors">
                               <div className="flex items-center gap-2">
-                                <p className="text-xs text-red-700 font-semibold uppercase tracking-wider">
+                                <p className="text-md text-red-700 font-semibold uppercase tracking-wider">
                                   Impact
                                 </p>
                               </div>
-                              <p className="mt-2 text-base font-bold text-red-600">
+                              <p className="mt-2 text-xl font-bold text-red-600">
                                 ₹
                                 {(
                                   activeData.revenue_impact || 0
@@ -353,11 +370,11 @@ export default function RtoPage() {
                             </div>
                             <div className="bg-blue-50/50 rounded-lg p-3 border border-blue-100/30 hover:border-blue-200/50 transition-colors">
                               <div className="flex items-center gap-2">
-                                <p className="text-xs text-[#001a8e] font-semibold uppercase tracking-wider">
-                                  Avg Days
+                                <p className="text-md text-[#001a8e] font-semibold uppercase tracking-wider">
+                                  Avg Days to Process
                                 </p>
                               </div>
-                              <p className="mt-2 text-base font-bold text-[#001a8e]">
+                              <p className="mt-2 text-2xl font-bold text-[#001a8e]">
                                 {(
                                   activeData.avg_days_to_cancellation || 0
                                 ).toFixed(1)}
@@ -368,11 +385,11 @@ export default function RtoPage() {
                             </div>
                             <div className="bg-amber-50/50 rounded-lg p-3 border border-amber-100/30 hover:border-amber-200/50 transition-colors">
                               <div className="flex items-center gap-2">
-                                <p className="text-xs text-amber-700 font-semibold uppercase tracking-wider">
+                                <p className="text-md text-amber-700 font-semibold uppercase tracking-wider">
                                   Top State
                                 </p>
                               </div>
-                              <p className="mt-2 text-base font-bold text-amber-700">
+                              <p className="mt-2 text-2xl font-bold text-amber-700">
                                 {activeData.top_states?.[0]?.key || "—"}
                               </p>
                             </div>
@@ -384,7 +401,7 @@ export default function RtoPage() {
                           {/* Top States */}
                           <div className="metric-sdw bg-white rounded-xl border border-blue-100/30 p-3 hover:border-blue-200/50 transition-all hover:shadow-md">
                             <div className="flex items-center gap-2 mb-2.5">
-                              <span className="oswald uppercase tracking-wider text-[#001a8e] text-xs font-bold">
+                              <span className="oswald uppercase tracking-wider text-[#001a8e] text-md">
                                 Top States
                               </span>
                             </div>
@@ -399,7 +416,7 @@ export default function RtoPage() {
                                     <span className="text-zinc-700 font-semibold">
                                       {item.key}
                                     </span>
-                                    <span className="inline-flex items-center justify-center min-w-[20px] h-5 rounded-full bg-blue-100 text-[#001a8e] font-bold text-xs">
+                                    <span className="inline-flex px-4 items-center justify-center min-w-[20px] h-5 rounded-full bg-blue-100 text-[#001a8e] font-bold text-xs">
                                       {item.count}
                                     </span>
                                   </div>
@@ -416,7 +433,7 @@ export default function RtoPage() {
                           {/* Top Pincodes */}
                           <div className="metric-sdw bg-white rounded-xl border border-emerald-100/30 p-3 hover:border-emerald-200/50 transition-all hover:shadow-md">
                             <div className="flex items-center gap-2 mb-2.5">
-                              <span className="oswald uppercase tracking-wider text-emerald-700 text-xs font-bold">
+                              <span className="oswald uppercase tracking-wider text-emerald-700 text-md">
                                 Top Pincodes
                               </span>
                             </div>
@@ -448,7 +465,7 @@ export default function RtoPage() {
                           {/* Payment Breakdown */}
                           <div className="metric-sdw bg-white rounded-xl border border-purple-100/30 p-3 hover:border-purple-200/50 transition-all hover:shadow-md">
                             <div className="flex items-center gap-2 mb-2.5">
-                              <span className="oswald uppercase tracking-wider text-purple-700 text-xs font-bold">
+                              <span className="oswald uppercase tracking-wider text-purple-700 text-md">
                                 Payment
                               </span>
                             </div>
@@ -459,16 +476,24 @@ export default function RtoPage() {
                                     key={idx}
                                     className="flex items-center justify-between text-xs p-2 rounded-md bg-purple-50/40 hover:bg-purple-50/70 transition-colors"
                                   >
-                                    <span className="text-zinc-700 font-semibold">
+                                    <span className="flex-1 text-zinc-700 font-semibold">
                                       {item.mode}
                                     </span>
-                                    <div className="flex items-center gap-1">
-                                      <span className="inline-flex items-center justify-center min-w-[20px] h-5 rounded-full bg-purple-100 text-purple-700 font-bold text-xs">
-                                        {item.count}
-                                      </span>
-                                      <span className="text-purple-600 font-semibold">
+                                    <div className="flex items-center gap-2 flex-1">
+                                      <div className="flex-1 bg-purple-100 rounded-full h-2 overflow-hidden">
+                                        <div
+                                          className="bg-purple-600 h-full rounded-full"
+                                          style={{
+                                            width: `${item.percentage}%`,
+                                          }}
+                                        ></div>
+                                      </div>
+                                      <span className="text-purple-600 font-semibold text-xs min-w-[40px] text-right">
                                         {item.percentage}%
                                       </span>
+                                      {/* <span className="inline-flex items-center justify-center min-w-[20px] h-5 rounded-full bg-purple-100 text-purple-700 font-bold text-xs">
+                                        {item.count}
+                                      </span> */}
                                     </div>
                                   </div>
                                 ),
@@ -486,7 +511,7 @@ export default function RtoPage() {
                           {/* Marketplace Breakdown */}
                           <div className="metric-sdw bg-white rounded-xl border border-orange-100/30 p-3 hover:border-orange-200/50 transition-all hover:shadow-md">
                             <div className="flex items-center gap-2 mb-2.5">
-                              <span className="oswald uppercase tracking-wider text-orange-700 text-xs font-bold">
+                              <span className="oswald uppercase tracking-wider text-orange-700 text-md">
                                 Marketplaces
                               </span>
                             </div>
@@ -497,14 +522,22 @@ export default function RtoPage() {
                                     key={idx}
                                     className="flex items-center justify-between text-xs p-2 rounded-md bg-orange-50/40 hover:bg-orange-50/70 transition-colors"
                                   >
-                                    <span className="text-zinc-700 font-semibold">
+                                    <span className="flex-1 text-zinc-700 font-semibold">
                                       {item.marketplace}
                                     </span>
-                                    <div className="flex items-center gap-1">
-                                      <span className="inline-flex items-center justify-center min-w-[20px] h-5 rounded-full bg-orange-100 text-orange-700 font-bold text-xs">
+                                    <div className="flex items-center gap-2 flex-1">
+                                      {/* <span className="inline-flex items-center justify-center text-orange-700 font-bold text-xs">
                                         {item.count}
-                                      </span>
-                                      <span className="text-orange-600 font-semibold">
+                                      </span> */}
+                                      <div className="flex-1 bg-orange-100 rounded-full h-2 overflow-hidden">
+                                        <div
+                                          className="bg-orange-600 h-full rounded-full"
+                                          style={{
+                                            width: `${item.percentage}%`,
+                                          }}
+                                        ></div>
+                                      </div>
+                                      <span className="text-orange-600 font-semibold text-xs min-w-[40px] text-right">
                                         {item.percentage}%
                                       </span>
                                     </div>
