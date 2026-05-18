@@ -18,4 +18,7 @@ jobs:
             cd ~/chupps/frontend
             git pull
             tmux kill-session -t frontend 2>/dev/null || true
-            tmux new-session -d -s frontend "npm run dev"
+            npm install
+            npm run build
+            tmux kill-session -t frontend 2>/dev/null || true
+            tmux new-session -d -s frontend "npm start"
