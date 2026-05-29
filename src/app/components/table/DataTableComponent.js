@@ -11,6 +11,8 @@ export default function DataTableComponent({
   summarized_query,
   title = "ORDER TABLE",
   columnKeys = null,
+  onRowSelect = null,
+  showOrderModal = true,
 }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -234,7 +236,14 @@ export default function DataTableComponent({
           onSortColumnsChange={setSortColumns}
           onCellClick={(args) => {
             // args: { row, column, rowIdx }
-            handleOpenModal(args.row, "Order Details");
+            // Call onRowSelect callback if provided (for risk analysis, etc.)
+            if (onRowSelect) {
+              onRowSelect(args.row);
+            }
+            // Open modal only if showOrderModal is enabled
+            if (showOrderModal) {
+              handleOpenModal(args.row, "Order Details");
+            }
           }}
         />
         <div className="pagination-controls flex items-center justify-between p-2 bg-gray-100 rounded-b-lg border-t border-gray-200">
@@ -281,8 +290,8 @@ export default function DataTableComponent({
         </div>
       </div>
 
-      {/* Order Details Modal */}
-      {selectedOrder && (
+      {/* Order Details Modal - only show if enabled */}
+      {showOrderModal && selectedOrder && (
         <OrderDataCard
           orderData={selectedOrder}
           onClose={() => setSelectedOrder(null)}

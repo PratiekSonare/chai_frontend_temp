@@ -1,10 +1,19 @@
 import { useState, useCallback, useEffect } from "react";
 import MetricCarouselOrder from "./standard/MetricCarouselOrder";
 import DataTableComponent from "../table/DataTableComponent";
-import { Button } from "@/components/ui/button";
+import DatePickerDropdown from "../DatePickerDropdown";
 import { apiUrl } from "@/lib/api";
 
 export default function DateRangeOrders({ orderType }) {
+  // Helper functions for date calculations
+  const getDateNDaysAgo = (days) => {
+    const date = new Date();
+    date.setDate(date.getDate() - days);
+    return date.toISOString().split("T")[0];
+  };
+
+  const getYesterdayDate = () => getDateNDaysAgo(1);
+
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [searchData, setSearchData] = useState([]);
@@ -13,6 +22,27 @@ export default function DateRangeOrders({ orderType }) {
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
+
+  // Preset date range handlers
+  const handleYesterday = useCallback(() => {
+    const yesterday = getYesterdayDate();
+    setStartDate(yesterday);
+    setEndDate(yesterday);
+  }, []);
+
+  const handleLastWeek = useCallback(() => {
+    const endDate = getYesterdayDate();
+    const startDate = getDateNDaysAgo(7);
+    setStartDate(startDate);
+    setEndDate(endDate);
+  }, []);
+
+  const handleLastMonth = useCallback(() => {
+    const endDate = getYesterdayDate();
+    const startDate = getDateNDaysAgo(30);
+    setStartDate(startDate);
+    setEndDate(endDate);
+  }, []);
 
   const fetchOrdersData = useCallback(async () => {
     if (!startDate || !endDate) {
@@ -58,6 +88,13 @@ export default function DateRangeOrders({ orderType }) {
     }
   }, [startDate, endDate, orderType]);
 
+  // Auto-fetch when preset dates are selected
+  useEffect(() => {
+    if (startDate && endDate) {
+      fetchOrdersData();
+    }
+  }, [startDate, endDate, fetchOrdersData]);
+
   const handleRefresh = useCallback(() => {
     setRefreshKey((prev) => prev + 1);
     fetchOrdersData();
@@ -70,10 +107,9 @@ export default function DateRangeOrders({ orderType }) {
   };
 
   return (
-    <div className="w-full h-screen flex flex-col gap-4 p-5">
-      {/* Date Filter Section */}
-      <div className="flex flex-col justify-start gap-10">
-        <div className="flex flex-col items-start text-left">
+    <div className="w-full h-screen flex flex-col gap-5 p-5">
+      <div className="relative w-full h-full flex flex-col items-center justify-center gap-5 px-20">
+        <div className="flex flex-col items-center">
           <span className="poppins font-extrabold text-3xl">
             Extract Orders
           </span>
@@ -92,92 +128,57 @@ export default function DateRangeOrders({ orderType }) {
           )}
         </div>
 
-        <div className="flex flex-col gap-4 items-end w-fit">
-          <div className="flex flex-row gap-4">
-            <div className="flex flex-col gap-2 flex-1">
-              <label className="text-sm font-medium text-gray-700">
-                Start Date
-              </label>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                disabled={loading}
-              />
-            </div>
-
-            <div className="flex flex-col gap-2 flex-1">
-              <label className="text-sm font-medium text-gray-700">
-                End Date
-              </label>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                disabled={loading}
-              />
-            </div>
-          </div>
-
-          <div className="flex flex-row gap-4 flex-1 w-full">
-            <Button
-              onClick={fetchOrdersData}
-              disabled={loading || !startDate || !endDate}
-              className="flex-1 w-fit px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? "Loading..." : "Fetch Orders"}
-            </Button>
-
-            {isSuccess && (
-              <Button
-                onClick={handleRefresh}
-                variant="outline"
-                className="px-4 py-2"
-              >
-                ↻
-              </Button>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div className="my-5"></div>
-
-      {/* Results Section */}
-      {isSuccess && !loading && (
-        <>
-          {finalMetrics && (
-            <MetricCarouselOrder
-              key={`metrics-${refreshKey}`}
-              metrics={finalMetrics}
-              searchData={searchData}
-              isSuccess={isSuccess}
-            />
-          )}
-
-          <DataTableComponent
-            key={`datatable-${refreshKey}`}
-            data={tableData}
-            summarized_query={tableData.summarized_query}
+        <div className="z-100 absolute top-0 right-0">
+          <DatePickerDropdown
+            startDate={startDate}
+            setStartDate={setStartDate}
+            endDate={endDate}
+            setEndDate={setEndDate}
+            onFetch={fetchOrdersData}
+            onRefresh={handleRefresh}
+            onYesterday={handleYesterday}
+            onLastWeek={handleLastWeek}
+            onLastMonth={handleLastMonth}
+            loading={loading}
+            isSuccess={isSuccess}
           />
-        </>
-      )}
-
-      {!isSuccess && !loading && (
-        <div className="bg-gray-50 h-full flex items-center justify-center rounded-lg border-4 border-dashed border-gray-300 p-8 text-center">
-          <p className="text-gray-600 text-xl">
-            Click "Fetch Orders" to load data for the selected date range
-          </p>
         </div>
-      )}
 
-      {loading && (
-        <div className="bg-gray-50 h-full flex items-center justify-center rounded-lg border-4 border-dashed border-gray-300 p-8 text-center">
-          <p className="text-gray-600">Loading orders data...</p>
-        </div>
-      )}
+        {/* Results Section */}
+        {isSuccess && !loading && (
+          <div className="w-full h-[90%] p-5">
+            {finalMetrics && (
+              <MetricCarouselOrder
+                key={`metrics-${refreshKey}`}
+                metrics={finalMetrics}
+                searchData={searchData}
+                isSuccess={isSuccess}
+              />
+            )}
+
+            <DataTableComponent
+              key={`datatable-${refreshKey}`}
+              data={tableData}
+              summarized_query={tableData.summarized_query}
+            />
+          </div>
+        )}
+
+        {!isSuccess && !loading && (
+          <div className="bg-gray-50 my-auto h-[90%] w-full flex items-center justify-center rounded-lg border-4 border-dashed border-gray-300 p-8 text-center">
+            <p className="text-gray-600 text-xl">
+              Click &ldquo;Fetch Orders&rdquo; to load data for the selected
+              date range
+            </p>
+          </div>
+        )}
+
+        {loading && (
+          <div className="bg-gray-50 my-auto h-[90%] w-full flex items-center justify-center rounded-lg border-4 border-dashed border-gray-300 p-8 text-center">
+            <p className="text-gray-600">Loading orders data...</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

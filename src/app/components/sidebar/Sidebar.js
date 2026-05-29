@@ -1,6 +1,7 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, Fragment } from "react";
 
 export default function Sidebar({ onHoverChange }) {
   const [hoveredIndex, setHoveredIndex] = useState(null);
@@ -164,43 +165,43 @@ export default function Sidebar({ onHoverChange }) {
         },
       ],
     },
-    {
-      svg: (
-        <svg
-          className="w-8 h-8 translate-y-3 group-hover:translate-y-0 transition-transform duration-200 ease-in"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-          <g
-            id="SVGRepo_tracerCarrier"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          ></g>
-          <g id="SVGRepo_iconCarrier">
-            {" "}
-            <path
-              d="M15.5777 3.38197L17.5777 4.43152C19.7294 5.56066 20.8052 6.12523 21.4026 7.13974C22 8.15425 22 9.41667 22 11.9415V12.0585C22 14.5833 22 15.8458 21.4026 16.8603C20.8052 17.8748 19.7294 18.4393 17.5777 19.5685L15.5777 20.618C13.8221 21.5393 12.9443 22 12 22C11.0557 22 10.1779 21.5393 8.42229 20.618L6.42229 19.5685C4.27063 18.4393 3.19479 17.8748 2.5974 16.8603C2 15.8458 2 14.5833 2 12.0585V11.9415C2 9.41667 2 8.15425 2.5974 7.13974C3.19479 6.12523 4.27063 5.56066 6.42229 4.43152L8.42229 3.38197C10.1779 2.46066 11.0557 2 12 2C12.9443 2 13.8221 2.46066 15.5777 3.38197Z"
-              stroke="#fff"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            ></path>{" "}
-            <path
-              d="M21 7.5L17 9.5M12 12L3 7.5M12 12V21.5M12 12C12 12 14.7426 10.6287 16.5 9.75C16.6953 9.65237 17 9.5 17 9.5M17 9.5V13M17 9.5L7.5 4.5"
-              stroke="#fff"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            ></path>{" "}
-          </g>
-        </svg>
-      ),
-      text: "INVENTORY",
-      route: "/",
-      content_title: "Inventory",
-      desc: "Fetch latest inventory and assortment, analyze and compare historical inventory to map trends!",
-      subtitle: "Real-time inventory across different channels.",
-    },
+    // {
+    //   svg: (
+    //     <svg
+    //       className="w-8 h-8 translate-y-3 group-hover:translate-y-0 transition-transform duration-200 ease-in"
+    //       viewBox="0 0 24 24"
+    //       fill="none"
+    //       xmlns="http://www.w3.org/2000/svg"
+    //     >
+    //       <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+    //       <g
+    //         id="SVGRepo_tracerCarrier"
+    //         strokeLinecap="round"
+    //         strokeLinejoin="round"
+    //       ></g>
+    //       <g id="SVGRepo_iconCarrier">
+    //         {" "}
+    //         <path
+    //           d="M15.5777 3.38197L17.5777 4.43152C19.7294 5.56066 20.8052 6.12523 21.4026 7.13974C22 8.15425 22 9.41667 22 11.9415V12.0585C22 14.5833 22 15.8458 21.4026 16.8603C20.8052 17.8748 19.7294 18.4393 17.5777 19.5685L15.5777 20.618C13.8221 21.5393 12.9443 22 12 22C11.0557 22 10.1779 21.5393 8.42229 20.618L6.42229 19.5685C4.27063 18.4393 3.19479 17.8748 2.5974 16.8603C2 15.8458 2 14.5833 2 12.0585V11.9415C2 9.41667 2 8.15425 2.5974 7.13974C3.19479 6.12523 4.27063 5.56066 6.42229 4.43152L8.42229 3.38197C10.1779 2.46066 11.0557 2 12 2C12.9443 2 13.8221 2.46066 15.5777 3.38197Z"
+    //           stroke="#fff"
+    //           strokeWidth="1.5"
+    //           strokeLinecap="round"
+    //         ></path>{" "}
+    //         <path
+    //           d="M21 7.5L17 9.5M12 12L3 7.5M12 12V21.5M12 12C12 12 14.7426 10.6287 16.5 9.75C16.6953 9.65237 17 9.5 17 9.5M17 9.5V13M17 9.5L7.5 4.5"
+    //           stroke="#fff"
+    //           strokeWidth="1.5"
+    //           strokeLinecap="round"
+    //         ></path>{" "}
+    //       </g>
+    //     </svg>
+    //   ),
+    //   text: "INVENTORY",
+    //   route: "/",
+    //   content_title: "Inventory",
+    //   desc: "Fetch latest inventory and assortment, analyze and compare historical inventory to map trends!",
+    //   subtitle: "Real-time inventory across different channels.",
+    // },
     {
       svg: (
         <svg
@@ -324,66 +325,66 @@ export default function Sidebar({ onHoverChange }) {
       desc: "Discover factors for return / cancellation; target audience and geography with highest RTO.",
       subtitle: "Measure return & cancellation trends.",
     },
-    {
-      svg: (
-        <svg
-          className="w-8 h-8 translate-y-3 group-hover:translate-y-0 transition-transform duration-200 ease-in"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-          <g
-            id="SVGRepo_tracerCarrier"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          ></g>
-          <g id="SVGRepo_iconCarrier">
-            {" "}
-            <circle
-              cx="9"
-              cy="9"
-              r="2"
-              stroke="#fff"
-              strokeWidth="1.5"
-            ></circle>{" "}
-            <path
-              d="M13 15C13 16.1046 13 17 9 17C5 17 5 16.1046 5 15C5 13.8954 6.79086 13 9 13C11.2091 13 13 13.8954 13 15Z"
-              stroke="#fff"
-              strokeWidth="1.5"
-            ></path>{" "}
-            <path
-              d="M2 12C2 8.22876 2 6.34315 3.17157 5.17157C4.34315 4 6.22876 4 10 4H14C17.7712 4 19.6569 4 20.8284 5.17157C22 6.34315 22 8.22876 22 12C22 15.7712 22 17.6569 20.8284 18.8284C19.6569 20 17.7712 20 14 20H10C6.22876 20 4.34315 20 3.17157 18.8284C2 17.6569 2 15.7712 2 12Z"
-              stroke="#fff"
-              strokeWidth="1.5"
-            ></path>{" "}
-            <path
-              d="M19 12H15"
-              stroke="#fff"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            ></path>{" "}
-            <path
-              d="M19 9H14"
-              stroke="#fff"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            ></path>{" "}
-            <path
-              d="M19 15H16"
-              stroke="#fff"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            ></path>{" "}
-          </g>
-        </svg>
-      ),
-      text: "DISTRIBUTORS",
-      route: "/",
-      content_title: "Distributors",
-      desc: "(OFFLINE SALES) Analyze distributor-wise performance, trends and compare performance",
-      subtitle: "Keep your distributors happy.",
-    },
+    // {
+    //   svg: (
+    //     <svg
+    //       className="w-8 h-8 translate-y-3 group-hover:translate-y-0 transition-transform duration-200 ease-in"
+    //       viewBox="0 0 24 24"
+    //       fill="none"
+    //       xmlns="http://www.w3.org/2000/svg"
+    //     >
+    //       <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+    //       <g
+    //         id="SVGRepo_tracerCarrier"
+    //         strokeLinecap="round"
+    //         strokeLinejoin="round"
+    //       ></g>
+    //       <g id="SVGRepo_iconCarrier">
+    //         {" "}
+    //         <circle
+    //           cx="9"
+    //           cy="9"
+    //           r="2"
+    //           stroke="#fff"
+    //           strokeWidth="1.5"
+    //         ></circle>{" "}
+    //         <path
+    //           d="M13 15C13 16.1046 13 17 9 17C5 17 5 16.1046 5 15C5 13.8954 6.79086 13 9 13C11.2091 13 13 13.8954 13 15Z"
+    //           stroke="#fff"
+    //           strokeWidth="1.5"
+    //         ></path>{" "}
+    //         <path
+    //           d="M2 12C2 8.22876 2 6.34315 3.17157 5.17157C4.34315 4 6.22876 4 10 4H14C17.7712 4 19.6569 4 20.8284 5.17157C22 6.34315 22 8.22876 22 12C22 15.7712 22 17.6569 20.8284 18.8284C19.6569 20 17.7712 20 14 20H10C6.22876 20 4.34315 20 3.17157 18.8284C2 17.6569 2 15.7712 2 12Z"
+    //           stroke="#fff"
+    //           strokeWidth="1.5"
+    //         ></path>{" "}
+    //         <path
+    //           d="M19 12H15"
+    //           stroke="#fff"
+    //           strokeWidth="1.5"
+    //           strokeLinecap="round"
+    //         ></path>{" "}
+    //         <path
+    //           d="M19 9H14"
+    //           stroke="#fff"
+    //           strokeWidth="1.5"
+    //           strokeLinecap="round"
+    //         ></path>{" "}
+    //         <path
+    //           d="M19 15H16"
+    //           stroke="#fff"
+    //           strokeWidth="1.5"
+    //           strokeLinecap="round"
+    //         ></path>{" "}
+    //       </g>
+    //     </svg>
+    //   ),
+    //   text: "DISTRIBUTORS",
+    //   route: "/",
+    //   content_title: "Distributors",
+    //   desc: "(OFFLINE SALES) Analyze distributor-wise performance, trends and compare performance",
+    //   subtitle: "Keep your distributors happy.",
+    // },
     {
       svg: (
         <svg
@@ -462,7 +463,7 @@ export default function Sidebar({ onHoverChange }) {
         </svg>
       ),
       text: "RISK",
-      route: "/",
+      route: "/risk",
       content_title: "ORDER RISK ESTIMATION",
       desc: "Fetch risk scores of real-time orders for address & order intention verification.",
       subtitle: "How risky is this order?",
@@ -503,82 +504,50 @@ export default function Sidebar({ onHoverChange }) {
 
   return (
     <div className="">
-      <div
-        className="text-white fixed left-0 top-0 z-200  w-[4%] group hover:w-[6.56%] transition-all duration-100 ease-in h-screen flex flex-col gap-0 bg-[#001fb0]"
-        onMouseEnter={() => onHoverChange?.(true)}
-        onMouseLeave={() => onHoverChange?.(false)}
-      >
-        <div className="flex-1 overflow-hidden">
+      <div className="px-6 text-white top-0 left-0 right-0 z-200 h-24 bg-[#001fb0] w-full flex flex-row justify-between items-stretch">
+        <button onClick={() => router.push("/")} className="flex items-center">
           <img
-            className="group-hover:translate-y-0 -translate-y-96 transition-transform duration-300 ease-in"
-            src="./chupps_logo.png"
-            alt="grid"
+            className="h-10"
+            src="./chupps_only_logo.svg"
+            alt="Chupps Logo"
           />
-          {/* <svg className="w-8 h-8 mx-auto group-hover:-translate-x-52 translate-x-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M7 12L14 12M14 12L11 15M14 12L11 9" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M17 16L17 8" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"></path> <path d="M2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12Z" stroke="#fff" strokeWidth="1.5"></path> </g></svg>                 */}
-        </div>
-        <div
-          className="relative flex flex-col"
-          onMouseLeave={() => setHoveredIndex(null)}
-        >
-          <div
-            className="absolute inset-x-0 h-24 bg-[#001a8e] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] pointer-events-none"
-            style={{
-              transform: `translateY(${(hoveredIndex ?? 0) * 100}%)`,
-              opacity: hoveredIndex === null ? 0 : 1,
-            }}
-          />
-          {buttonMap.map(({ svg, text, route }, idx) => (
-            <button
-              key={idx}
-              onMouseEnter={() => setHoveredIndex(idx)}
-              onClick={() => router.push(`${route}`)}
-              className={`${idx === 0 ? "group-hover:border-y-2" : idx === buttonMap.length - 1 ? "group-hover:border-b-0" : "group-hover:border-b-2"} relative z-10 flex flex-col items-center justify-center gap-2 group-hover:border-[#001a8e]/80 h-24 transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] opacity-80 hover:opacity-100`}
-            >
-              {svg}
-              <span className="-translate-x-100 group-hover:translate-x-0 transition-transform duration-200 ease-in text-xs tracking-wide oswald font-bold">
-                {text}
-              </span>
-            </button>
-          ))}
-          {hoveredIndex !== null && (
-            <div
-              className="w-96 h-96 absolute left-full bottom-0 z-300 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
-              style={{
-                transform: `translateY(-${((buttonMap.length - hoveredIndex - 1) * ITEM_HEIGHT * 3) / 5}px)`,
-              }}
-            >
-              <div className="h-full w-full bg-[#001a8e] border-l-0 border-2 border-[#001a8e]/80 rounded-r-xl">
-                <div className="flex flex-col items-start justify-start h-full w-full poppins py-4">
-                  <div className="flex flex-col gap-0">
-                    <span className="px-4 text-xl font-bold uppercase">
-                      {buttonMap[hoveredIndex]?.content_title}
-                    </span>
+        </button>
 
-                    <span className="px-4 text-sm italic text-gray-500">
-                      {buttonMap[hoveredIndex]?.subtitle}
-                    </span>
+        <div className="flex" onMouseLeave={() => setHoveredIndex(null)}>
+          <div className="flex justify-center items-stretch gap-0 h-[75%] my-auto">
+            {buttonMap.map(({ svg, text, route }, idx) => (
+              <Fragment key={idx}>
+                <button
+                  onMouseEnter={() => setHoveredIndex(idx)}
+                  onClick={() => router.push(`${route}`)}
+                  className="relative px-10 flex flex-col justify-center rounded-2xl items-center gap-5 w-full h-full transition-all duration-200 opacity-80 hover:opacity-100 hover:bg-[#001a8e]"
+                >
+                  <div className="w-6 h-6 flex items-center justify-center">
+                    {svg}
                   </div>
-
-                  {/* Subsections preview */}
-                  {buttonMap[hoveredIndex]?.subsections && (
-                    <div className="w-full mt-3 border-t-2 border-gray-500 pt-3">
-                      <span className="px-4 text-xs uppercase tracking-widest font-semibold text-gray-400 block mb-3">
+                  <span className="pb-2 text-xs tracking-wide poppins font-bold whitespace-nowrap">
+                    {text}
+                  </span>
+                  {/* Dropdown on hover */}
+                  {hoveredIndex === idx && buttonMap[idx]?.subsections && (
+                    <div className="absolute top-full left-0 mt-1 w-64 bg-[#001a8e] border border-[#001a8e]/80 rounded-md shadow-lg p-3 z-300">
+                      <span className="text-xs uppercase tracking-widest font-semibold text-gray-400 block mb-3">
                         Quick Access
                       </span>
-                      <div className="flex flex-col gap-2 px-3">
-                        {buttonMap[hoveredIndex].subsections.map(
-                          (subsection, idx) => (
-                            <button
-                              key={idx}
+                      <div className="flex flex-col gap-2">
+                        {buttonMap[idx].subsections.map(
+                          (subsection, subIdx) => (
+                            <div
+                              key={subIdx}
                               onClick={() => {
                                 router.push(subsection.route);
                                 setExpandedIndex(null);
                                 setHoveredIndex(null);
                               }}
-                              className="text-left px-3 py-2.5 bg-[#001fb0] hover:bg-[#0025d4] rounded-md transition-all duration-200 text-white border border-[#001a8e]/60 hover:border-[#001a8e]/100 group"
+                              className="text-left px-3 py-2.5 bg-[#001fb0] hover:bg-[#0025d4] rounded-md transition-all duration-200 text-white border border-[#001a8e]/60 hover:border-[#001a8e]/100 group cursor-pointer"
                             >
-                              <div className="flex items-center gap-2 mb-2">
-                                <div className="flex-shrink-0 opacity-80 group-hover:opacity-100 transition-opacity">
+                              <div className="flex items-center gap-2">
+                                <div className="opacity-80 group-hover:opacity-100 transition-opacity w-5 h-5">
                                   {subsection.icon}
                                 </div>
                                 <span className="text-sm font-semibold group-hover:translate-x-0.5 transition-transform flex-1">
@@ -588,16 +557,21 @@ export default function Sidebar({ onHoverChange }) {
                               <p className="text-xs text-gray-300 opacity-70 group-hover:opacity-90 transition-opacity pl-7">
                                 {subsection.desc}
                               </p>
-                            </button>
+                            </div>
                           ),
                         )}
                       </div>
                     </div>
                   )}
-                </div>
-              </div>
-            </div>
-          )}
+                </button>
+                {idx !== buttonMap.length - 1 && (
+                  <div className="flex items-center">
+                    <div className="w-px h-10 border-l border-white/20"></div>
+                  </div>
+                )}
+              </Fragment>
+            ))}
+          </div>
         </div>
       </div>
     </div>

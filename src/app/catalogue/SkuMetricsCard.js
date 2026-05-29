@@ -116,7 +116,7 @@ function OverviewSection({ cumulative }) {
         return (
           <div
             key={key}
-            className={`metric-sdw ${bgColor} border ${borderColor} rounded-xl p-4 flex flex-col gap-2`}
+            className={`hover:border-[#001a8e]/30 metric-sdw ${bgColor} border ${borderColor} rounded-xl p-4 flex flex-col gap-2`}
           >
             <span className="oswald uppercase tracking-wider text-gray-600 text-sm">
               {label}
@@ -823,6 +823,7 @@ export default function SkuMetricsCard({ refreshKey }) {
   const [listError, setListError] = useState(null);
   const [selectedSection, setSelectedSection] = useState("overview");
   const [skuDataCache, setSkuDataCache] = useState({}); // Cache for all SKU metadata
+  const [rollingWindowIndex, setRollingWindowIndex] = useState(0);
 
   const fetchSkuList = useCallback(async () => {
     setListLoading(true);
@@ -964,9 +965,34 @@ export default function SkuMetricsCard({ refreshKey }) {
     }
   };
 
+  // Load default SKU on startup when list is ready
+  useEffect(() => {
+    if (skuList.length > 0 && !selectedSku) {
+      handleSelectSku("11200-850");
+    }
+  }, [skuList.length, selectedSku, handleSelectSku]);
+
+  // Cycle through rolling windows every 3 seconds
+  useEffect(() => {
+    if (!rolling) return;
+    const windows = [
+      { key: "7d", label: "Last 7 days" },
+      { key: "30d", label: "Last 30 days" },
+      { key: "all_time", label: "All time" },
+    ].filter(({ key }) => rolling[key]);
+
+    if (windows.length === 0) return;
+
+    const interval = setInterval(() => {
+      setRollingWindowIndex((prev) => (prev + 1) % windows.length);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [rolling]);
+
   return (
-    <div className="w-[90%] h-screen flex flex-col justify-center items-start gap-10 overflow-y-auto">
-      <div className="flex flex-col items-start text-left">
+    <div className="w-full h-screen flex flex-col justify-center items-center gap-5 overflow-y-auto">
+      <div className="flex flex-col items-center">
         <span className="poppins font-extrabold text-3xl">
           Chupps SKU Catalogue
         </span>
@@ -975,8 +1001,8 @@ export default function SkuMetricsCard({ refreshKey }) {
         </span>
       </div>
 
-      <div className="poppins w-[96%] relative">
-        <div className="relative bg-[#001a8e] rounded-xl flex h-[85vh] min-h-[600px]">
+      <div className="poppins w-full relative">
+        <div className="rounded-xl flex h-[75vh] min-h-[600px] p-10 pt-0">
           {/* Loading Overlay */}
           {listLoading && (
             <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm rounded-xl">
@@ -989,9 +1015,9 @@ export default function SkuMetricsCard({ refreshKey }) {
             </div>
           )}
           {/* ── Left Sidebar ── */}
-          <div className="z-10 pb-4 text-white border-r border-white/20  h-full flex flex-col justify-between gap-4 w-1/4 bg-[#001a8e] rounded-l-xl overflow-y-auto sticky top-0">
+          <div className="w-1/3 z-10 p-5 text-white border-r border-white/20 h-full flex flex-col justify-between gap-4 bg-[#001a8e] rounded-l-xl overflow-y-auto">
             {/* SKU Selector */}
-            <div className="px-4 pt-4 shrink-0">
+            <div className="">
               <span className="text-xs uppercase tracking-widest text-white/60 mb-2 block">
                 Select SKU
               </span>
@@ -1069,12 +1095,12 @@ export default function SkuMetricsCard({ refreshKey }) {
                 Sections
               </span>
               <div className="grid grid-cols-2 gap-2">
-                {SECTIONS.map(({ key, label, subtitle }) => (
+                {SECTIONS.map(({ key, label, subtitle }, index) => (
                   <button
                     key={key}
                     onClick={() => setSelectedSection(key)}
                     disabled={!skuData}
-                    className={`group overflow-hidden px-3 py-2.5 rounded-lg poppins transition-all flex flex-col items-start gap-1 disabled:opacity-40 disabled:cursor-not-allowed
+                    className={`group overflow-hidden px-3 py-2.5 rounded-lg poppins transition-all flex flex-col items-start gap-1 disabled:opacity-40 disabled:cursor-not-allowed ${index === 0 ? "col-span-2" : ""}
                                             ${
                                               selectedSection === key
                                                 ? "bg-white text-[#001a8e] shadow-lg"
@@ -1094,67 +1120,91 @@ export default function SkuMetricsCard({ refreshKey }) {
 
             {/* Rolling Window Quick Stats */}
             {rolling && (
-              <div className="px-4 flex-1 overflow-y-auto pt-4 border-t border-white/20">
+              <div className="px-4 flex-1 pt-4 border-t border-white/20 flex flex-col justify-between h-full">
+                <style>{`
+                  @keyframes blurIn {
+                    from {
+                      opacity: 0;
+                      filter: blur(8px);
+                    }
+                    to {
+                      opacity: 1;
+                      filter: blur(0px);
+                    }
+                  }
+                  .rolling-window {
+                    animation: blurIn 0.6s ease-out forwards;
+                  }
+                `}</style>
                 <span className="text-xs uppercase tracking-widest text-white/60 mb-2 block">
                   Rolling Windows
                 </span>
-                {[
-                  { key: "7d", label: "Last 7 days" },
-                  { key: "30d", label: "Last 30 days" },
-                  { key: "all_time", label: "All time" },
-                ].map(({ key, label }) => {
-                  const w = rolling[key];
-                  if (!w) return null;
-                  return (
-                    <div
-                      key={key}
-                      className="bg-white/10 border border-white/20 rounded-lg p-3 mb-2"
-                    >
-                      <div className="text-white/70 text-xs uppercase tracking-wider mb-2">
-                        {label}
-                      </div>
-                      <div className="grid grid-cols-2 gap-1.5 text-xs">
-                        <div>
-                          <div className="text-white/50">Revenue</div>
-                          <div className="text-white font-semibold">
-                            {formatMetricValue(w.revenue, { currency: true })}
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-white/50">Units</div>
-                          <div className="text-white font-semibold">
-                            {w.units_sold}
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-white/50">Orders</div>
-                          <div className="text-white font-semibold">
-                            {w.orders}
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-white/50">Margin</div>
-                          <div className="text-white font-semibold">
-                            {w.gross_margin_pct}%
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+                <div className="flex flex-col gap-0">
+                  {(() => {
+                    const windows = [
+                      { key: "7d", label: "Last 7 days" },
+                      { key: "30d", label: "Last 30 days" },
+                      { key: "all_time", label: "All time" },
+                    ].filter(({ key }) => rolling[key]);
 
-                {skuData?.last_updated && (
-                  <p className="text-xs text-white/30 mt-2">
-                    Updated:{" "}
-                    {new Date(skuData.last_updated).toLocaleDateString("en-IN")}
-                  </p>
-                )}
+                    if (windows.length === 0) return null;
+
+                    const current = windows[rollingWindowIndex];
+                    const w = rolling[current.key];
+
+                    return (
+                      <div
+                        key={rollingWindowIndex}
+                        className="rolling-window bg-white/10 border border-white/20 rounded-lg p-3 mb-2"
+                      >
+                        <div className="text-white/70 text-xs uppercase tracking-wider mb-2">
+                          {current.label}
+                        </div>
+                        <div className="grid grid-cols-2 gap-1.5 text-xs">
+                          <div>
+                            <div className="text-white/50">Revenue</div>
+                            <div className="text-white font-semibold">
+                              {formatMetricValue(w.revenue, { currency: true })}
+                            </div>
+                          </div>
+                          <div>
+                            <div className="text-white/50">Units</div>
+                            <div className="text-white font-semibold">
+                              {w.units_sold}
+                            </div>
+                          </div>
+                          <div>
+                            <div className="text-white/50">Orders</div>
+                            <div className="text-white font-semibold">
+                              {w.orders}
+                            </div>
+                          </div>
+                          <div>
+                            <div className="text-white/50">Margin</div>
+                            <div className="text-white font-semibold">
+                              {w.gross_margin_pct}%
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()}
+
+                  {skuData?.last_updated && (
+                    <p className="text-xs text-white/30 mt-2">
+                      Updated:{" "}
+                      {new Date(skuData.last_updated).toLocaleDateString(
+                        "en-IN",
+                      )}
+                    </p>
+                  )}
+                </div>
               </div>
             )}
           </div>
 
           {/* ── Right Content Area ── */}
-          <div className="w-3/4 h-full bg-[#001a8e] border border-transparent flex flex-col rounded-r-xl">
+          <div className="w-full h-full bg-[#001a8e] border border-transparent flex flex-col rounded-r-xl">
             <div className="flex-1 m-3 bg-zinc-50 rounded-xl overflow-hidden flex flex-col">
               {/* Section header */}
               {skuData && (

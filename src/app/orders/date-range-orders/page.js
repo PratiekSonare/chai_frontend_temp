@@ -1,6 +1,7 @@
 "use client";
 import DateRangeOrders from "../../components/output/DateRangeOrders";
 import Sidebar from "../../components/sidebar/Sidebar";
+import DotField from "@/components/DotField";
 import { Button } from "@/components/ui/button";
 import Header from "../../components/header";
 import { useState, useCallback } from "react";
@@ -14,25 +15,35 @@ export default function DateRangeOrdersPage() {
   }, []);
 
   return (
-    <div className="relative overflow-x-hidden h-screen bg-zinc-50 overflow-y-auto font-sans snap-y snap-mandatory scroll-smooth">
-      <div className="flex flex-row gap-2 !z-50 fixed bottom-5 right-5">
-        <Button
-          variant="outline"
-          className="!rounded-full active:scale-80 scale-100 transition-all duration-75 ease-in"
-          onClick={handleRefreshComponents}
-        >
-          ↻
-        </Button>
-      </div>
-
+    <div className="overflow-hidden h-screen">
       <Sidebar onHoverChange={setSidebarHovered} />
+      <div className="h-screen bg-[#001fb0] p-5 pt-0">
+        <div className="relative landing-sdw overflow-x-hidden bg-zinc-50 overflow-y-auto font-sans snap-y snap-mandatory scroll-smooth rounded-t-4xl">
+          {/* background dotfield */}
+          <div className="absolute inset-0.5 z-0 opacity-70">
+            <DotField
+              dotRadius={2}
+              dotSpacing={15}
+              bulgeStrength={500}
+              glowRadius={2}
+              sparkle={true}
+              waveAmplitude={0}
+              cursorRadius={25}
+              cursorForce={0.1}
+              bulgeOnly
+              gradientFrom="#A855F7"
+              gradientTo="#001FB0"
+              glowColor="#000000"
+            />
+          </div>
 
-      <Header />
-      <div
-        className={`relative ${sidebarHovered ? "ml-[3.56%]" : "ml-[3%]"} transition-[margin] duration-100 ease-in w-full shrink-0 flex items-center justify-center`}
-      >
-        <div className="w-11/12" key={refreshKey}>
-          <DateRangeOrders />
+          <div
+            className={`relative w-full shrink-0 flex items-center justify-center`}
+          >
+            <div className="w-11/12" key={refreshKey}>
+              <DateRangeOrders />
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -1,4 +1,7 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
+
+import DotField from "../components/DotField";
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useMachine } from "@xstate/react";
@@ -473,170 +476,179 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="relative overflow-x-hidden min-h-screen bg-zinc-50  font-sans">
-      <div className="flex flex-row gap-2 !z-50 fixed bottom-5 right-5">
-        <Button
-          variant="outline"
-          className="!rounded-full active:scale-80 scale-100 transition-all duration-75 ease-in"
-          onClick={handleRefreshComponents}
-        >
-          ↻
-        </Button>
-
-        {/* <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="outline" className="!rounded-full active:scale-80 scale-100 transition-all duration-75 ease-in">
-              ⎙
-            </Button>
-          </DialogTrigger>
-
-          <DialogContent className="!p-0" showCloseButton={false}>
-            <DialogTitle className="!p-0" />
-            <DialogHeader className="!rounded-t-3xl">
-              <QueryDetails />
-            </DialogHeader>
-          </DialogContent>
-        </Dialog> */}
-      </div>
-
-      {/* sidebar */}
+    <div className="overflow-hidden h-screen">
       <Sidebar onHoverChange={setSidebarHovered} />
-
-      {/* main content */}
-      <div
-        className={`relative h-screen ${sidebarHovered ? "ml-[3.56%]" : "ml-[3%]"} transition-[margin] duration-100 ease-in flex flex-col items-center overflow-y-auto scroll-smooth`}
-      >
-        <Header />
-
-        <div className="flex flex-col justify-center items-center min-h-screen w-full shrink-0">
-          {status === "active" ? (
-            <Active />
-          ) : status === "development" ? (
-            <Development />
-          ) : (
-            <Down />
-          )}
-
-          <div className="flex flex-col justify-center items-center w-full">
-            <img className="w-2/5" src="./data_portal.png" alt="grid" />
-            <img
-              className="absolute top-0 w-1/2 opacity-8"
-              src="./grid.png"
-            ></img>
+      <div className="h-screen bg-[#001fb0] p-5 pt-0">
+        <div className="relative landing-sdw overflow-hidden bg-zinc-50 font-sans rounded-t-4xl">
+          <div className="flex flex-row gap-2 z-50! fixed bottom-5 right-5">
+            <Button
+              variant="outline"
+              className="!rounded-full active:scale-80 scale-100 transition-all duration-75 ease-in"
+              onClick={handleRefreshComponents}
+            >
+              ↻
+            </Button>
           </div>
 
-          <div className="my-4"></div>
-
-          {/* searchbar */}
-          <Searchbar
-            searchbarRef={searchbarRef}
-            placeholder={placeholder_list[placeholderIndex]}
-            inputValue={inputValue}
-            setInputValue={setInputValue}
-            onSearch={handleSearch}
-            isError={isError}
-            isLoading={isLoading}
-            isSuccess={isSuccess}
-          />
-
-          <div className="my-2"></div>
-
-          <QuickLinks />
-        </div>
-
-        <SkuInsightsCards />
-
-        <img
-          src="./chupps_life.png"
-          className="w-1/12 animate-bounce mt-12 mb-24"
-        />
-
-        <div
-          ref={searchResultsRef}
-          className="w-full max-w-full min-h-screen flex flex-col justify-center items-center mx-auto px-4 shrink-0"
-        >
-          {isLoading && (
-            <LoadingComponent
-              onCancel={handleCancel}
-              requestId={requestId}
-              logs={workflowLogs}
-              currentStep={currentStep}
-              nextStep={nextStep}
+          {/* background dotfield */}
+          <div className="absolute inset-0.5 z-0 opacity-70">
+            <DotField
+              dotRadius={3}
+              dotSpacing={20}
+              bulgeStrength={500}
+              glowRadius={0}
+              sparkle={true}
+              waveAmplitude={0}
+              cursorRadius={50}
+              cursorForce={0.1}
+              bulgeOnly={true}
+              gradientFrom="#A855F7"
+              gradientTo="#001FB0"
+              glowColor="#000000"
             />
-          )}
+          </div>
 
-          {isError && (
-            <ErrorComponent
-              error={searchError}
-              onRetry={handleRetry}
-              onReset={handleReset}
-            />
-          )}
+          {/* main content */}
+          <div
+            className={`relative no-scrollbar z-10 h-screen flex flex-col items-center overflow-y-auto scroll-smooth pointer-events-none`}
+          >
+            {/* Re-enabling pointer events for child elements so they stay interactive */}
+            <div className="w-full flex-col flex items-center pointer-events-auto">
+              <Header />
 
-          {isSuccess && searchType === "standard" && (
-            <Standard
-              isSuccess={isSuccess}
-              searchData={searchData}
-              finalMetrics={finalMetrics}
-              metricsLoading={metricsLoading}
-              refreshKey={refreshKey}
-              summarizedQuery={summarizedQuery}
-            />
-          )}
+              <div className="flex flex-col justify-center items-center min-h-screen w-full">
+                {status === "active" ? (
+                  <Active />
+                ) : status === "development" ? (
+                  <Development />
+                ) : (
+                  <Down />
+                )}
 
-          {isSuccess && searchType === "comparison" && (
-            <Comparison
-              createPaymentChart={createPaymentChart}
-              isSuccess={isSuccess}
-              searchData={searchState?.context.data}
-              searchType={searchType}
-              comparisonType={comparisonType}
-              searchFilter={comparisonFilter}
-              detailedMetrics={detailedMetrics}
-              refreshKey={refreshKey}
-            />
-          )}
+                <div className="flex flex-col justify-center items-center w-full">
+                  <img
+                    className="w-1/2"
+                    src="./data_portal_new.png"
+                    alt="grid"
+                  />
+                </div>
 
-          {isSuccess && searchType === "metric_analysis" && (
-            <MetricAnalysis
-              metric_analysis={metric_analysis}
-              metric_calculated={metric_calculated}
-            />
-          )}
+                <div className="my-2"></div>
 
-          {isSuccess && searchType === "schema_discovery" && (
-            <SchemaDiscovery field={field} field_info={field_info} />
-          )}
+                {/* searchbar */}
+                <Searchbar
+                  searchbarRef={searchbarRef}
+                  placeholder={placeholder_list[placeholderIndex]}
+                  inputValue={inputValue}
+                  setInputValue={setInputValue}
+                  onSearch={handleSearch}
+                  isError={isError}
+                  isLoading={isLoading}
+                  isSuccess={isSuccess}
+                />
 
-          {isSuccess && searchType === "custom_metric_generation" && (
-            <CustomMetricGeneration
-              metric_analysis={metric_analysis}
-              metric_calculated={metric_calculated}
-            />
-          )}
+                <div className="my-2"></div>
 
-          {isSuccess &&
-            searchType === "standard" &&
-            Array.isArray(searchData) &&
-            searchData.length === 0 && (
-              <div className="text-center py-12">
-                <p className="text-gray-500">
-                  No results found for your search.
-                </p>
-                <button
-                  onClick={handleReset}
-                  className="mt-4 text-blue-600 hover:text-blue-800 font-medium"
-                >
-                  Try a different search
-                </button>
+                <QuickLinks />
+
+                {/* <SkuInsightsCards /> */}
               </div>
-            )}
 
-          {!isLoading && !isSuccess && !isError && (
-            <>
-              <EmptyStateComponent />
-            </>
-          )}
+              <img
+                src="./chupps_life.png"
+                className="w-1/12 animate-bounce mt-12 mb-24 pointer-events-auto"
+                alt="Chupps Life"
+              />
+
+              <div
+                ref={searchResultsRef}
+                className="bg-zinc-50 border-t-2 border-[#001FB0] w-full max-w-full min-h-screen flex flex-col justify-center items-center mx-auto px-4 shrink-0 pointer-events-auto"
+              >
+                {isLoading && (
+                  <LoadingComponent
+                    onCancel={handleCancel}
+                    requestId={requestId}
+                    logs={workflowLogs}
+                    currentStep={currentStep}
+                    nextStep={nextStep}
+                  />
+                )}
+
+                {isError && (
+                  <ErrorComponent
+                    error={searchError}
+                    onRetry={handleRetry}
+                    onReset={handleReset}
+                  />
+                )}
+
+                {isSuccess && searchType === "standard" && (
+                  <Standard
+                    isSuccess={isSuccess}
+                    searchData={searchData}
+                    finalMetrics={finalMetrics}
+                    metricsLoading={metricsLoading}
+                    refreshKey={refreshKey}
+                    summarizedQuery={summarizedQuery}
+                  />
+                )}
+
+                {isSuccess && searchType === "comparison" && (
+                  <Comparison
+                    createPaymentChart={createPaymentChart}
+                    isSuccess={isSuccess}
+                    searchData={searchState?.context.data}
+                    searchType={searchType}
+                    comparisonType={comparisonType}
+                    searchFilter={comparisonFilter}
+                    detailedMetrics={detailedMetrics}
+                    refreshKey={refreshKey}
+                  />
+                )}
+
+                {isSuccess && searchType === "metric_analysis" && (
+                  <MetricAnalysis
+                    metric_analysis={metric_analysis}
+                    metric_calculated={metric_calculated}
+                  />
+                )}
+
+                {isSuccess && searchType === "schema_discovery" && (
+                  <SchemaDiscovery field={field} field_info={field_info} />
+                )}
+
+                {isSuccess && searchType === "custom_metric_generation" && (
+                  <CustomMetricGeneration
+                    metric_analysis={metric_analysis}
+                    metric_calculated={metric_calculated}
+                  />
+                )}
+
+                {isSuccess &&
+                  searchType === "standard" &&
+                  Array.isArray(searchData) &&
+                  searchData.length === 0 && (
+                    <div className="text-center py-12">
+                      <p className="text-gray-500">
+                        No results found for your search.
+                      </p>
+                      <button
+                        onClick={handleReset}
+                        className="mt-4 text-blue-600 hover:text-blue-800 font-medium"
+                      >
+                        Try a different search
+                      </button>
+                    </div>
+                  )}
+
+                {!isLoading && !isSuccess && !isError && (
+                  <>
+                    <EmptyStateComponent />
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

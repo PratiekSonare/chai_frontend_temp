@@ -19,6 +19,7 @@ const METRICS_SERVICE_ENDPOINTS = [
   "/cancellation/",
   "/geography/",
   "/history/",
+  "/predict",
 ];
 
 const getQueryServiceUrl = (path = "") => {

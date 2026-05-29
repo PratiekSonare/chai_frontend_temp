@@ -8,6 +8,7 @@ import { useEffect, useMemo, useState, useCallback } from "react";
 import { supabase } from "../../lib/supabase";
 import Sidebar from "../components/sidebar/Sidebar";
 import Header from "../components/header";
+import DotField from "@/components/DotField";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -286,153 +287,159 @@ export default function Profit() {
     );
   }
 
-  if (error) {
-    return <div className="p-4 text-red-600">{error}</div>;
-  }
+  1;
 
   return (
-    <div className="relative overflow-x-hidden h-screen bg-zinc-50 overflow-y-auto font-sans !pointer-events-auto">
-      <div className="flex flex-row gap-2 !z-50 fixed bottom-5 right-5">
-        <Button
-          variant="outline"
-          className="!rounded-full active:scale-80 scale-100 transition-all duration-75 ease-in"
-          onClick={handleRefreshComponents}
-        >
-          ↻
-        </Button>
-
-        {/* <Dialog>
-                    <DialogTrigger asChild>
-                        <Button variant="outline" className="!rounded-full active:scale-80 scale-100 transition-all duration-75 ease-in">
-                            ⎙
-                        </Button>
-                    </DialogTrigger>
-
-                    <DialogContent showCloseButton={false}>
-                        <DialogTitle />
-                        <DialogHeader>
-                            <QueryDetails />
-                        </DialogHeader>
-                    </DialogContent>
-                </Dialog> */}
-      </div>
-
-      {/* sidebar */}
+    <div className="overflow-hidden h-screen">
       <Sidebar onHoverChange={setSidebarHovered} />
-
-      <div className="absolute top-5 right-5 z-40 flex items-center bg-gray-200 rounded-lg p-1 gap-1 pointer-events-auto">
-        <button
-          type="button"
-          onClick={() => setActiveTable("vcs")}
-          className={`px-4 py-2 text-sm font-medium rounded-lg transition-all cursor-pointer ${
-            activeTable === "vcs"
-              ? "bg-white text-black shadow-md"
-              : "bg-gray-200 text-gray-600 hover:text-gray-800"
-          }`}
-        >
-          Vendor Cost Sheet
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTable("pc")}
-          className={`px-4 py-2 text-sm font-medium rounded-lg transition-all cursor-pointer ${
-            activeTable === "pc"
-              ? "bg-white text-black shadow-md"
-              : "bg-gray-200 text-gray-600 hover:text-gray-800"
-          }`}
-        >
-          Payment Cycle
-        </button>
-      </div>
-
-      <div
-        className={`relative ${sidebarHovered ? "ml-[3.56%]" : "ml-[3%]"} transition-[margin] duration-100 ease-in h-screen w-full flex items-center justify-center`}
-      >
-        <div className="w-[90%] h-screen flex flex-col justify-center items-start gap-10">
-          <div className="w-full flex flex-row justify-between items-center">
-            <div className="flex flex-col items-start text-left">
-              <span className="poppins font-extrabold text-3xl">
-                {activeTable === "vcs"
-                  ? "Vendor Cost Sheet"
-                  : "Payment Cycle and Cash Discount"}
-              </span>
-              <span className="poppins text-lg text-gray-500">
-                {activeTable === "vcs"
-                  ? "Click and edit the vendor cost sheet anytime!"
-                  : "Click and edit the payment cycle table anytime!"}
-              </span>
-            </div>
-
-            <div className="flex flex-col justify-center items-end gap-3">
-              <div className="flex items-center gap-4">
-                <button
-                  type="button"
-                  onClick={
-                    activeTable === "vcs"
-                      ? handleConfirmChangesVCS
-                      : handleConfirmChangesPC
-                  }
-                  disabled={
-                    activeTable === "vcs"
-                      ? pendingChangeCountVCS === 0 || isSavingVCS
-                      : pendingChangeCountPC === 0 || isSavingPC
-                  }
-                  className="rounded bg-black px-3 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {activeTable === "vcs"
-                    ? isSavingVCS
-                      ? "Saving..."
-                      : "Confirm Changes"
-                    : isSavingPC
-                      ? "Saving..."
-                      : "Confirm Changes"}
-                </button>
-              </div>
-              <span className="text-sm text-gray-600">
-                {activeTable === "vcs"
-                  ? pendingChangeCountVCS
-                  : pendingChangeCountPC}{" "}
-                row(s) pending
-              </span>
-            </div>
+      <div className="h-screen bg-[#001fb0] p-5 pt-0">
+        <div className="relative landing-sdw overflow-x-hidden h-[calc(100vh-1.25rem)] bg-zinc-50 overflow-y-auto font-sans rounded-t-4xl !pointer-events-auto">
+          <div className="flex flex-row gap-2 !z-50 fixed bottom-5 right-5">
+            <Button
+              variant="outline"
+              className="!rounded-full active:scale-80 scale-100 transition-all duration-75 ease-in"
+              onClick={handleRefreshComponents}
+            >
+              ↻
+            </Button>
           </div>
 
-          {activeTable === "vcs" && saveErrorVCS ? (
-            <div className="mb-3 rounded border border-red-300 bg-red-50 p-2 text-sm text-red-700">
-              {saveErrorVCS}
-            </div>
-          ) : null}
-          {activeTable === "pc" && saveErrorPC ? (
-            <div className="mb-3 rounded border border-red-300 bg-red-50 p-2 text-sm text-red-700">
-              {saveErrorPC}
-            </div>
-          ) : null}
+          {/* background dotfield */}
+          <div className="absolute inset-0.5 z-0 opacity-70">
+            <DotField
+              dotRadius={2}
+              dotSpacing={15}
+              bulgeStrength={500}
+              glowRadius={2}
+              sparkle={true}
+              waveAmplitude={0}
+              cursorRadius={25}
+              cursorForce={0.1}
+              bulgeOnly
+              gradientFrom="#A855F7"
+              gradientTo="#001FB0"
+              glowColor="#000000"
+            />
+          </div>
 
-          {activeTable === "vcs" ? (
-            <DataGrid
-              columns={columnsVCS}
-              rows={rowsVCS}
-              onRowsChange={handleRowsChangeVCS}
-              rowKeyGetter={(row) => row["Style Name"] ?? JSON.stringify(row)}
-              className="rdg-light w-full rounded-lg shadow-sm !h-1/2"
-              defaultColumnOptions={{
-                editable: true,
-              }}
-            />
-          ) : (
-            <DataGrid
-              columns={columnsPC}
-              rows={rowsPC}
-              onRowsChange={handleRowsChangePC}
-              rowKeyGetter={(row) =>
-                row["payment_cycle_and_cash_discount"] ?? JSON.stringify(row)
-              }
-              className="rdg-light w-full rounded-lg shadow-sm !h-1/2"
-              defaultColumnOptions={{
-                editable: true,
-              }}
-            />
-          )}
+          <div className="absolute top-5 right-5 z-40 flex items-center bg-gray-200 rounded-lg p-1 gap-1 pointer-events-auto">
+            <button
+              type="button"
+              onClick={() => setActiveTable("vcs")}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-all cursor-pointer ${
+                activeTable === "vcs"
+                  ? "bg-white text-black shadow-md"
+                  : "bg-gray-200 text-gray-600 hover:text-gray-800"
+              }`}
+            >
+              Vendor Cost Sheet
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTable("pc")}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-all cursor-pointer ${
+                activeTable === "pc"
+                  ? "bg-white text-black shadow-md"
+                  : "bg-gray-200 text-gray-600 hover:text-gray-800"
+              }`}
+            >
+              Payment Cycle
+            </button>
+          </div>
+
+          <div
+            className={`relative ${sidebarHovered ? "ml-[3.56%]" : "ml-[3%]"} transition-[margin] duration-100 ease-in h-screen w-full flex items-center justify-center`}
+          >
+            <div className="w-[90%] h-screen flex flex-col justify-center items-start gap-10">
+              <div className="w-full flex flex-row justify-between items-center">
+                <div className="flex flex-col items-start text-left">
+                  <span className="poppins font-extrabold text-3xl">
+                    {activeTable === "vcs"
+                      ? "Vendor Cost Sheet"
+                      : "Payment Cycle and Cash Discount"}
+                  </span>
+                  <span className="poppins text-lg text-gray-500">
+                    {activeTable === "vcs"
+                      ? "Click and edit the vendor cost sheet anytime!"
+                      : "Click and edit the payment cycle table anytime!"}
+                  </span>
+                </div>
+
+                <div className="flex flex-col justify-center items-end gap-3">
+                  <div className="flex items-center gap-4">
+                    <button
+                      type="button"
+                      onClick={
+                        activeTable === "vcs"
+                          ? handleConfirmChangesVCS
+                          : handleConfirmChangesPC
+                      }
+                      disabled={
+                        activeTable === "vcs"
+                          ? pendingChangeCountVCS === 0 || isSavingVCS
+                          : pendingChangeCountPC === 0 || isSavingPC
+                      }
+                      className="rounded bg-black px-3 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {activeTable === "vcs"
+                        ? isSavingVCS
+                          ? "Saving..."
+                          : "Confirm Changes"
+                        : isSavingPC
+                          ? "Saving..."
+                          : "Confirm Changes"}
+                    </button>
+                  </div>
+                  <span className="text-sm text-gray-600">
+                    {activeTable === "vcs"
+                      ? pendingChangeCountVCS
+                      : pendingChangeCountPC}{" "}
+                    row(s) pending
+                  </span>
+                </div>
+              </div>
+
+              {activeTable === "vcs" && saveErrorVCS ? (
+                <div className="mb-3 rounded border border-red-300 bg-red-50 p-2 text-sm text-red-700">
+                  {saveErrorVCS}
+                </div>
+              ) : null}
+              {activeTable === "pc" && saveErrorPC ? (
+                <div className="mb-3 rounded border border-red-300 bg-red-50 p-2 text-sm text-red-700">
+                  {saveErrorPC}
+                </div>
+              ) : null}
+
+              {activeTable === "vcs" ? (
+                <DataGrid
+                  columns={columnsVCS}
+                  rows={rowsVCS}
+                  onRowsChange={handleRowsChangeVCS}
+                  rowKeyGetter={(row) =>
+                    row["Style Name"] ?? JSON.stringify(row)
+                  }
+                  className="rdg-light w-full rounded-lg shadow-sm !h-1/2"
+                  defaultColumnOptions={{
+                    editable: true,
+                  }}
+                />
+              ) : (
+                <DataGrid
+                  columns={columnsPC}
+                  rows={rowsPC}
+                  onRowsChange={handleRowsChangePC}
+                  rowKeyGetter={(row) =>
+                    row["payment_cycle_and_cash_discount"] ??
+                    JSON.stringify(row)
+                  }
+                  className="rdg-light w-full rounded-lg shadow-sm !h-1/2"
+                  defaultColumnOptions={{
+                    editable: true,
+                  }}
+                />
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
