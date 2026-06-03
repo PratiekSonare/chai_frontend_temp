@@ -156,26 +156,27 @@ export default function Comparison({ isSuccess, searchData, searchType, searchFi
 
     // Extract groups data for comparison queries
     const groups = useMemo(() => {
-        if (isSuccess && searchType === "comparison" && searchData?.comparison_data) {
+        if (isSuccess && (searchType === "comparison" || searchType === "COMPARISON") && searchData?.comparison_data) {
+            const compData = searchData.comparison_data;
             if (comparisonType === "multi_group") {
                 // For multi-group, extract from groups array or group_summaries keys
-                if (searchData.comparison_data.groups && Array.isArray(searchData.comparison_data.groups)) {
-                    return searchData.comparison_data.groups;
+                if (compData.groups && Array.isArray(compData.groups)) {
+                    return compData.groups;
                 }
-                if (searchData.comparison_data.group_summaries) {
-                    return Object.keys(searchData.comparison_data.group_summaries);
+                if (compData.group_summaries) {
+                    return Object.keys(compData.group_summaries);
                 }
             } else if (comparisonType === "pairwise") {
                 // For pairwise, extract from groups object with 'a' and 'b' keys
-                if (searchData.comparison_data.groups) {
-                    return Object.values(searchData.comparison_data.groups);
+                if (compData.groups) {
+                    return Object.values(compData.groups);
                 }
             }
         }
         return [];
     }, [isSuccess, searchType, searchData, comparisonType]);
 
-    const insights = isSuccess && searchType === "comparison" && searchData?.insights || "No insights generated.";
+    const insights = isSuccess && (searchType === "comparison" || searchType === "COMPARISON") && searchData?.insights || "No insights generated.";
 
     return (
         <div className="w-full h-screen p-5 space-y-2">

@@ -17,7 +17,7 @@ export default function Standard({
   const tableData = {
     query_type: "standard",
     data: searchData || [],
-    summarized_query: summarizedQuery,
+    summarized_query: summarizedQuery || "",
   };
 
   return (

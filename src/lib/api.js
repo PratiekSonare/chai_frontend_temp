@@ -11,6 +11,7 @@ const QUERY_SERVICE_ENDPOINTS = [
   "/execute",
   "/query/logs",
   "/query/",
+  "/query_v2/",
 ];
 const METRICS_SERVICE_ENDPOINTS = [
   "/orders/",

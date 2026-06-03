@@ -1,6 +1,6 @@
-import { createMachine, assign, fromPromise } from 'xstate';
-import axios from 'axios';
-import { apiUrl } from './api';
+import { createMachine, assign, fromPromise } from "xstate";
+import axios from "axios";
+import { apiUrl } from "./api";
 
 let activeQueryController = null;
 
@@ -12,28 +12,31 @@ const abortActiveQuery = () => {
   try {
     activeQueryController.abort();
   } catch (error) {
-    console.error('Failed to abort active query:', error);
+    console.error("Failed to abort active query:", error);
   } finally {
     activeQueryController = null;
   }
 };
 
-export const cancelQueryOnServer = async (requestId, reason = 'client_cancelled') => {
+export const cancelQueryOnServer = async (
+  requestId,
+  reason = "client_cancelled",
+) => {
   if (!requestId) {
     return;
   }
 
   try {
     await fetch(apiUrl(`/query/${requestId}/cancel`), {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ reason }),
-      keepalive: true
+      keepalive: true,
     });
   } catch (error) {
-    console.error('Failed to notify server cancellation:', error);
+    console.error("Failed to notify server cancellation:", error);
   }
 };
 
@@ -45,49 +48,53 @@ const generateRequestId = () => {
 
 // Search states
 export const searchMachine = createMachine({
-  id: 'search',
-  initial: 'idle',
+  id: "search",
+  initial: "idle",
   context: {
-    query: '',
+    query: "",
     data: [],
     error: null,
     metrics: null,
     requestId: null,
     logs: [],
-    lastLogSequence: 0
+    lastLogSequence: 0,
   },
   states: {
     idle: {
       on: {
         SEARCH: {
-          target: 'loading',
+          target: "loading",
           actions: assign({
             query: ({ event }) => event.query,
             error: null,
             requestId: () => generateRequestId(),
             logs: () => [],
-            lastLogSequence: () => 0
-          })
-        }
-      }
+            lastLogSequence: () => 0,
+          }),
+        },
+      },
     },
     loading: {
       invoke: {
-        id: 'searchService',
+        id: "searchService",
         src: fromPromise(async ({ input }) => {
           abortActiveQuery();
           const controller = new AbortController();
           activeQueryController = controller;
 
           try {
-            const response = await axios.post(apiUrl('/query'), {
-              query: input.query 
-            }, {
-              headers: {
-                'X-Request-ID': input.requestId
+            const response = await axios.post(
+              apiUrl("/query-v2/query"),
+              {
+                query: input.query,
               },
-              signal: controller.signal
-            });
+              {
+                headers: {
+                  "X-Request-ID": input.requestId,
+                },
+                signal: controller.signal,
+              },
+            );
 
             return response.data;
           } finally {
@@ -96,15 +103,21 @@ export const searchMachine = createMachine({
             }
           }
         }),
-        input: ({ context }) => ({ query: context.query, requestId: context.requestId }),
+        input: ({ context }) => ({
+          query: context.query,
+          requestId: context.requestId,
+        }),
         onDone: {
-          target: 'success',
+          target: "success",
           actions: assign({
             data: ({ event }) => event.output,
             error: null,
-            requestId: ({ context, event }) => event.output?.request_id || context.requestId,
+            requestId: ({ context, event }) =>
+              event.output?.request_id || context.requestId,
             logs: ({ context, event }) => {
-              const backendLogs = Array.isArray(event.output?.logs) ? event.output.logs : [];
+              const backendLogs = Array.isArray(event.output?.logs)
+                ? event.output.logs
+                : [];
               if (!backendLogs.length) {
                 return context.logs;
               }
@@ -116,31 +129,36 @@ export const searchMachine = createMachine({
               }, []);
             },
             lastLogSequence: ({ context, event }) => {
-              const backendLogs = Array.isArray(event.output?.logs) ? event.output.logs : [];
-              const latestBackend = backendLogs.reduce((max, log) => Math.max(max, Number(log.sequence || 0)), 0);
+              const backendLogs = Array.isArray(event.output?.logs)
+                ? event.output.logs
+                : [];
+              const latestBackend = backendLogs.reduce(
+                (max, log) => Math.max(max, Number(log.sequence || 0)),
+                0,
+              );
               return Math.max(context.lastLogSequence, latestBackend);
-            }
-          })
+            },
+          }),
         },
         onError: {
-          target: 'failure',
+          target: "failure",
           actions: assign({
-            error: ({ event }) => event.error?.message || 'Search failed',
-            data: []
-          })
-        }
+            error: ({ event }) => event.error?.message || "Search failed",
+            data: [],
+          }),
+        },
       },
       on: {
         CANCEL: {
-          target: 'idle',
+          target: "idle",
           actions: [
             () => abortActiveQuery(),
             assign({
               logs: () => [],
               lastLogSequence: () => 0,
-              requestId: () => null
-            })
-          ]
+              requestId: () => null,
+            }),
+          ],
         },
         APPEND_LOGS: {
           actions: assign({
@@ -158,17 +176,20 @@ export const searchMachine = createMachine({
             },
             lastLogSequence: ({ context, event }) => {
               const incoming = Array.isArray(event.logs) ? event.logs : [];
-              const latestIncoming = incoming.reduce((max, log) => Math.max(max, Number(log.sequence || 0)), 0);
+              const latestIncoming = incoming.reduce(
+                (max, log) => Math.max(max, Number(log.sequence || 0)),
+                0,
+              );
               return Math.max(context.lastLogSequence, latestIncoming);
-            }
-          })
-        }
-      }
+            },
+          }),
+        },
+      },
     },
     success: {
       on: {
         SEARCH: {
-          target: 'loading',
+          target: "loading",
           actions: [
             () => abortActiveQuery(),
             assign({
@@ -176,14 +197,14 @@ export const searchMachine = createMachine({
               error: null,
               requestId: () => generateRequestId(),
               logs: () => [],
-              lastLogSequence: () => 0
-            })
-          ]
+              lastLogSequence: () => 0,
+            }),
+          ],
         },
         SET_METRICS: {
           actions: assign({
-            metrics: ({ event }) => event.metrics
-          })
+            metrics: ({ event }) => event.metrics,
+          }),
         },
         APPEND_LOGS: {
           actions: assign({
@@ -201,26 +222,29 @@ export const searchMachine = createMachine({
             },
             lastLogSequence: ({ context, event }) => {
               const incoming = Array.isArray(event.logs) ? event.logs : [];
-              const latestIncoming = incoming.reduce((max, log) => Math.max(max, Number(log.sequence || 0)), 0);
+              const latestIncoming = incoming.reduce(
+                (max, log) => Math.max(max, Number(log.sequence || 0)),
+                0,
+              );
               return Math.max(context.lastLogSequence, latestIncoming);
-            }
-          })
+            },
+          }),
         },
         RESET: {
-          target: 'idle',
+          target: "idle",
           actions: assign({
             metrics: null,
             logs: [],
             lastLogSequence: 0,
-            requestId: null
-          })
-        }
-      }
+            requestId: null,
+          }),
+        },
+      },
     },
     failure: {
       on: {
         SEARCH: {
-          target: 'loading',
+          target: "loading",
           actions: [
             () => abortActiveQuery(),
             assign({
@@ -228,11 +252,11 @@ export const searchMachine = createMachine({
               error: null,
               requestId: () => generateRequestId(),
               logs: () => [],
-              lastLogSequence: () => 0
-            })
-          ]
+              lastLogSequence: () => 0,
+            }),
+          ],
         },
-        RETRY: 'loading',
+        RETRY: "loading",
         APPEND_LOGS: {
           actions: assign({
             logs: ({ context, event }) => {
@@ -249,21 +273,24 @@ export const searchMachine = createMachine({
             },
             lastLogSequence: ({ context, event }) => {
               const incoming = Array.isArray(event.logs) ? event.logs : [];
-              const latestIncoming = incoming.reduce((max, log) => Math.max(max, Number(log.sequence || 0)), 0);
+              const latestIncoming = incoming.reduce(
+                (max, log) => Math.max(max, Number(log.sequence || 0)),
+                0,
+              );
               return Math.max(context.lastLogSequence, latestIncoming);
-            }
-          })
+            },
+          }),
         },
         RESET: {
-          target: 'idle',
+          target: "idle",
           actions: assign({
             metrics: null,
             logs: [],
             lastLogSequence: 0,
-            requestId: null
-          })
-        }
-      }
-    }
-  }
+            requestId: null,
+          }),
+        },
+      },
+    },
+  },
 });

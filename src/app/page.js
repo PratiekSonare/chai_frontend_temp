@@ -2,650 +2,608 @@
 "use client";
 
 import DotField from "../components/DotField";
-
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useMachine } from "@xstate/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import gsap from "gsap";
 
 import Sidebar from "./components/sidebar/Sidebar";
-import Down from "./components/down";
-import Development from "./components/development";
-import Active from "./components/active";
-import Searchbar from "./components/searchbar";
-import QuickLinks from "./components/quickLinks";
-import Header from "./components/header";
 import { searchMachine } from "../lib/searchMachine";
-import {
-  LoadingComponent,
-  ErrorComponent,
-  EmptyStateComponent,
-} from "./components/StateComponents";
+import { LoadingComponent, ErrorComponent } from "./components/StateComponents";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-
-import Chart from "chart.js/auto";
-import ChartDataLabels from "chartjs-plugin-datalabels";
-
-import Standard from "./components/output/standard/Standard";
-import Comparison from "./components/output/comparison/Comparison";
+import ReactMarkdown from "react-markdown";
+import DataTableComponent from "./components/table/DataTableComponent";
 import MetricAnalysis from "./components/output/metric_analysis/MetricAnalysis";
-import SchemaDiscovery from "./components/output/schema_discovery/SchemaDiscovery";
-import CustomMetricGeneration from "./components/output/custom_metric_generation/CustomMetricGeneration";
-import QueryDetails from "./components/QueryDetails";
-import { apiUrl } from "@/lib/api";
+import {
+  Send,
+  Trash2,
+  RefreshCw,
+  Bot,
+  User,
+  TrendingUp,
+  ShoppingCart,
+  BarChart3,
+  GitCompare,
+  Table,
+  LineChart,
+} from "lucide-react";
 
-import OrdersPage from "./orders/page";
-import SkuInsightsCards from "./components/SkuInsightsCards";
-
-import gsap from "gsap";
 gsap.registerPlugin(ScrollTrigger);
 
-// const [searchState, setSearchState] = useState(standardState);
+const exportToGoogleSheets = (rawTableData, queryName) => {
+  let rows = [];
+  if (Array.isArray(rawTableData)) {
+    rows = rawTableData;
+  } else if (rawTableData && Array.isArray(rawTableData.orders)) {
+    rows = rawTableData.orders;
+  } else if (rawTableData && Array.isArray(rawTableData.data)) {
+    rows = rawTableData.data;
+  } else if (
+    rawTableData &&
+    typeof rawTableData.data === "object" &&
+    !Array.isArray(rawTableData.data)
+  ) {
+    const columnData = rawTableData.data;
+    const columns = Object.keys(columnData);
+    if (columns.length > 0) {
+      const rowCount = Object.keys(columnData[columns[0]]).length;
+      for (let rowIdx = 0; rowIdx < rowCount; rowIdx++) {
+        const row = {};
+        columns.forEach((col) => {
+          row[col] = columnData[col][rowIdx];
+        });
+        rows.push(row);
+      }
+    }
+  }
 
-import { DataGrid } from "react-data-grid";
+  if (rows.length === 0) {
+    alert("No data available to export.");
+    return;
+  }
 
-const columns = [
-  { key: "id", name: "ID" },
-  { key: "title", name: "Title" },
-];
+  // Get keys (headers)
+  const headers = Object.keys(rows[0]);
 
-const rows = [
-  { id: 0, title: "Example" },
-  { id: 1, title: "Demo" },
-];
+  // Create tab-separated content (Google Sheets-friendly)
+  const tsvRows = [];
+  tsvRows.push(headers.join("\t"));
 
-export default function Home() {
-  const placeholder_list = [
-    "Compare orders between Maharashtra and Telangana from the past 3 days.",
-    "Fetch orders from 1st Jan to 8th Feb of SKU 11400-255-8.",
-    "What are the different payment methods available?",
-  ];
+  rows.forEach((row) => {
+    const values = headers.map((header) => {
+      let val = row[header];
+      if (val === null || val === undefined) return "";
+      if (typeof val === "object") {
+        return JSON.stringify(val).replace(/\t/g, " ");
+      }
+      return String(val).replace(/\t/g, " ");
+    });
+    tsvRows.push(values.join("\t"));
+  });
 
-  const [placeholderIndex, setPlaceholderIndex] = useState(0);
-  const [status, setStatus] = useState("development");
+  const tsvContent = tsvRows.join("\n");
+
+  // Copy to Clipboard
+  navigator.clipboard
+    .writeText(tsvContent)
+    .then(() => {
+      alert(
+        "Table copied to clipboard!\n\nOpening Google Sheets in a new tab...\nPress Ctrl+V (or Cmd+V) to paste the data into the spreadsheet.",
+      );
+      window.open("https://sheets.new", "_blank");
+    })
+    .catch((err) => {
+      console.error("Failed to copy data: ", err);
+      // Fallback: download CSV
+      const csvContent =
+        "data:text/csv;charset=utf-8," +
+        tsvRows
+          .map((row) =>
+            row
+              .split("\t")
+              .map((v) => `"${v.replace(/"/g, '""')}"`)
+              .join(","),
+          )
+          .join("\n");
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute(
+        "download",
+        `${queryName.toLowerCase().replace(/[^a-z0-9]/g, "_")}_export.csv`,
+      );
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      alert("Failed to copy to clipboard. Downloaded CSV file instead.");
+    });
+};
+
+export default function ChatLandingPage() {
   const [inputValue, setInputValue] = useState("");
   const [searchState, sendSearch] = useMachine(searchMachine);
-  const chartInstancesRef = useRef({});
-
-  const [metricsLoading, setMetricsLoading] = useState(false);
-  const [refreshKey, setRefreshKey] = useState(0);
+  const [messages, setMessages] = useState([]);
   const [sidebarHovered, setSidebarHovered] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+  const [activeView, setActiveView] = useState({ id: null, type: null }); // { id: msgId, type: 'table' | 'metrics' }
+
+  const scrollRef = useRef(null);
   const searchbarRef = useRef(null);
-  const searchResultsRef = useRef(null);
-  const logSinceRef = useRef(0);
 
   const isLoading = searchState.matches("loading");
   const isSuccess = searchState.matches("success");
   const isError = searchState.matches("failure");
-  const searchError = searchState.context?.error;
   const requestId = searchState.context?.requestId;
   const workflowLogs = searchState.context?.logs || [];
 
-  // Get the actual data based on the new nested structure
-  const searchData = searchState?.context.data?.data?.data;
-  const finalMetrics = searchState?.context.metrics;
-  const searchType = searchState?.context.data?.query_type;
-  const summarizedQuery = searchState?.context.data?.summarized_query;
-
-  // Comparison query specific data
-  const comparisonFilter =
-    isSuccess &&
-    searchType === "comparison" &&
-    searchState?.context.data?.comparison_data?.comparison_param;
-  const comparisonType =
-    isSuccess &&
-    searchType === "comparison" &&
-    searchState?.context.data?.comparison_data?.comparison_type;
-  const detailedMetrics =
-    isSuccess &&
-    searchType === "comparison" &&
-    searchState?.context.data?.detailed_metrics;
-
-  // Metric analysis query specific data
-  const metric_analysis =
-    isSuccess &&
-    (searchType === "metric_analysis" ||
-      searchType === "custom_metric_generation") &&
-    searchState?.context.data?.analysis;
-  const metric_calculated =
-    isSuccess &&
-    (searchType === "metric_analysis" ||
-      searchType === "custom_metric_generation") &&
-    searchState?.context.data?.metrics;
-
-  // Schema discovery query specific data
-  const field_info =
-    isSuccess &&
-    searchType === "schema_discovery" &&
-    searchState?.context.data?.data?.field_info;
-  const field =
-    isSuccess &&
-    searchType === "schema_discovery" &&
-    searchState?.context.data?.data?.field;
-
+  // Poll logs for the loading component
   const latestLog = workflowLogs.length
     ? workflowLogs[workflowLogs.length - 1]
     : null;
-
   const currentStep = latestLog?.summary || "Planning execution...";
-  const nextStep = latestLog?.status === "PENDING" ? latestLog?.summary : null;
 
-  const notifyCancel = useCallback(
-    (activeRequestId, reason = "client_cancelled", preferBeacon = false) => {
-      if (!activeRequestId) {
-        return;
-      }
-
-      const cancelUrl = apiUrl(`/query/${activeRequestId}/cancel`);
-      const payload = JSON.stringify({ reason });
-
-      if (
-        preferBeacon &&
-        typeof navigator !== "undefined" &&
-        typeof navigator.sendBeacon === "function"
-      ) {
-        const sent = navigator.sendBeacon(
-          cancelUrl,
-          new Blob([payload], { type: "application/json" }),
-        );
-        if (sent) {
-          return;
-        }
-      }
-
-      fetch(cancelUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: payload,
-        keepalive: true,
-      }).catch((error) => {
-        console.error("Failed to send cancellation request:", error);
-      });
+  const quickStarters = [
+    {
+      label: "SKU Performance",
+      query: "Show top-performing products by sales volume last month",
+      icon: <TrendingUp className="w-4 h-4" />,
     },
-    [],
-  );
+    {
+      label: "Order Tracking",
+      query: "What was the count of yesterday's total orders?",
+      icon: <ShoppingCart className="w-4 h-4" />,
+    },
+    {
+      label: "Sales Metrics",
+      query: "Fetch order metrics for the last 30 days",
+      icon: <BarChart3 className="w-4 h-4" />,
+    },
+    {
+      label: "Channel Comparison",
+      query: "Compare Shopify vs Myntra sales performance",
+      icon: <GitCompare className="w-4 h-4" />,
+    },
+  ];
 
-  // Debug logging for state changes and scroll to results
-  useEffect(() => {
-    console.log("Search state changed:", {
-      context: searchState.context,
-      isLoading,
-      isSuccess,
-      isError,
-    });
-
-    // Scroll to search results when state changes (indicates POST request)
-    if (
-      (isLoading || isSuccess || isError) &&
-      searchResultsRef.current &&
-      !metricsLoading
-    ) {
-      searchResultsRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-  }, [searchState.state, isLoading, isSuccess, isError]);
-
-  useEffect(() => {
-    logSinceRef.current = 0;
-  }, [requestId]);
-
-  useEffect(() => {
-    if (!isLoading || !requestId) {
-      return;
-    }
-
-    let active = true;
-    const pollController = new AbortController();
-    let since = Number(logSinceRef.current || 0);
-
-    const pollLogs = async () => {
-      try {
-        const response = await fetch(
-          apiUrl(`/query/logs/${requestId}?since=${since}`),
-          {
-            signal: pollController.signal,
-          },
-        );
-        if (!response.ok) {
-          return;
-        }
-
-        const payload = await response.json();
-        const logs = Array.isArray(payload?.logs) ? payload.logs : [];
-
-        if (logs.length) {
-          sendSearch({ type: "APPEND_LOGS", logs });
-        }
-
-        const nextSequence = Number(payload?.next_sequence || since);
-        since = Math.max(since, nextSequence);
-        logSinceRef.current = since;
-      } catch (error) {
-        if (error?.name === "AbortError") {
-          return;
-        }
-        console.error("Log polling failed:", error);
-      }
-    };
-
-    pollLogs();
-    const timer = setInterval(() => {
-      if (!active) {
-        return;
-      }
-      pollLogs();
-    }, 1000);
-
-    return () => {
-      active = false;
-      pollController.abort();
-      clearInterval(timer);
-    };
-  }, [isLoading, requestId, sendSearch]);
-
-  useEffect(() => {
-    if (!isLoading || !requestId) {
-      return;
-    }
-
-    const onPageExit = () => {
-      notifyCancel(requestId, "page_unload", true);
-    };
-
-    window.addEventListener("pagehide", onPageExit);
-    window.addEventListener("beforeunload", onPageExit);
-
-    return () => {
-      window.removeEventListener("pagehide", onPageExit);
-      window.removeEventListener("beforeunload", onPageExit);
-    };
-  }, [isLoading, requestId, notifyCancel]);
-
-  // Calculate metrics when search data is available for standard queries
-  useEffect(() => {
-    const metricsController = new AbortController();
-    let disposed = false;
-
-    const calculateMetrics = async () => {
-      if (
-        isSuccess &&
-        searchData &&
-        searchData.length > 0 &&
-        searchType === "standard"
-      ) {
-        setMetricsLoading(true);
-        try {
-          const response = await fetch(apiUrl("/orders/metrics"), {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            signal: metricsController.signal,
-            body: JSON.stringify({
-              orders: searchData,
-            }),
-          });
-
-          if (response.ok) {
-            const metrics = await response.json();
-            sendSearch({ type: "SET_METRICS", metrics });
-          } else {
-            console.error("Failed to calculate metrics:", response.statusText);
-          }
-        } catch (error) {
-          if (error?.name === "AbortError") {
-            return;
-          }
-          console.error("Error calculating metrics:", error);
-        } finally {
-          if (!disposed) {
-            setMetricsLoading(false);
-            console.log("succ state: ", searchState.context);
-          }
-        }
-      } else {
-        console.log("❌ CONDITIONS NOT MET - API call skipped");
-        console.log("failed state: ", searchState.context);
-      }
-    };
-
-    calculateMetrics();
-
-    return () => {
-      disposed = true;
-      metricsController.abort();
-    };
-  }, [isSuccess, searchData, searchType, sendSearch]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setPlaceholderIndex(
-        (prevIndex) => (prevIndex + 1) % placeholder_list.length,
-      );
-    }, 2000);
-
-    return () => clearInterval(interval);
-  }, []);
-
+  // Handle Search Initiation
   const handleSearch = useCallback(
-    (inputValue) => {
-      if (isLoading) {
-        return;
-      }
+    (query) => {
+      if (isLoading || !query.trim()) return;
 
-      if (inputValue.trim()) {
-        console.log("Search initiated with:", inputValue);
-        sendSearch({ type: "SEARCH", query: inputValue.trim() });
-      }
+      // Clear existing loading/error messages and add user message to chat
+      setMessages((prev) => {
+        const filteredMessages = prev.filter(
+          (msg) => msg.role !== "loading" && msg.role !== "error",
+        );
+        return [
+          ...filteredMessages,
+          { id: Date.now(), role: "user", content: query },
+        ];
+      });
+
+      sendSearch({ type: "SEARCH", query: query.trim() });
+      setInputValue("");
     },
     [isLoading, sendSearch],
   );
 
-  const handleCancel = useCallback(() => {
-    console.log("Search cancelled");
-    notifyCancel(requestId, "manual_cancel");
-    sendSearch({ type: "CANCEL" });
-  }, [notifyCancel, requestId, sendSearch]);
-
-  const handleRetry = useCallback(() => {
-    sendSearch({ type: "RETRY" });
-  }, [sendSearch]);
-
-  const handleReset = useCallback(() => {
-    sendSearch({ type: "RESET" });
-    setInputValue("");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [sendSearch]);
-
-  const handleRefreshComponents = useCallback(() => {
-    setRefreshKey((prev) => prev + 1);
-  }, []);
-
-  // Create payment doughnut chart
-  const createPaymentChart = useCallback((canvasRef, metrics, stateName) => {
-    if (!canvasRef || !metrics?.payment_mode_distribution) return;
-
-    // Destroy existing chart for this state
-    if (chartInstancesRef.current[stateName]) {
-      chartInstancesRef.current[stateName].destroy();
-    }
-
-    Chart.register(ChartDataLabels);
-
-    const paymentData = metrics.payment_mode_distribution;
-    const totalPayments = Object.values(paymentData).reduce((a, b) => a + b, 0);
-
-    chartInstancesRef.current[stateName] = new Chart(canvasRef, {
-      type: "doughnut",
-      data: {
-        labels: Object.keys(paymentData),
-        datasets: [
-          {
-            data: Object.values(paymentData),
-            backgroundColor: [
-              "#0024af", // COD - Blue-600
-              "#2387e4", // PrePaid - Blue-600 lighter
-              "rgba(37, 99, 235, 0.4)", // Online - Blue-600 lighter
-              "rgba(37, 99, 235, 0.2)", // Others - Blue-600 lightest
-            ],
-            borderColor: [
-              "rgba(29, 78, 216, 1)", // Blue-700
-              "rgba(30, 64, 175, 1)", // Blue-800
-              "rgba(30, 58, 138, 1)", // Blue-900
-              "rgba(37, 99, 235, 1)", // Blue-600
-            ],
-            borderWidth: 1,
-            rotation: -90,
-            circumference: 180,
-            hoverOffset: 15,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        layout: {
-          padding: {
-            top: 10,
-            bottom: 10,
-            left: 10,
-            right: 10,
-          },
-        },
-        plugins: {
-          legend: {
-            display: false,
-          },
-          tooltip: {
-            callbacks: {
-              label: function (context) {
-                const percentage =
-                  totalPayments > 0
-                    ? ((context.parsed / totalPayments) * 100).toFixed(1)
-                    : 0;
-                return `${context.label}: ${context.parsed} (${percentage}%)`;
-              },
-            },
-          },
-          datalabels: {
-            display: true,
-            formatter: function (value, context) {
-              const total = context.dataset.data.reduce((a, b) => a + b, 0);
-              const percentage =
-                total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-              return `${percentage}%`;
-            },
-            font: {
-              size: 10,
-              weight: "bold",
-              family: "Poppins",
-            },
-            color: "#fff",
-            anchor: "center",
-            align: "center",
-          },
-        },
-        animation: {
-          animateRotate: true,
-          duration: 1000,
-          easing: "easeOutQuart",
-        },
-      },
-    });
-  }, []);
-
-  // Cleanup charts on unmount
+  // Manage loading message in chat
   useEffect(() => {
-    return () => {
-      Object.values(chartInstancesRef.current).forEach((chart) => {
-        if (chart) chart.destroy();
+    if (isLoading) {
+      setMessages((prev) => {
+        // If there's already a loading message, don't add another
+        if (prev.some((msg) => msg.role === "loading")) return prev;
+
+        return [
+          ...prev,
+          { id: "loading-message", role: "loading", content: "Loading..." },
+        ];
       });
-    };
-  }, []);
+    } else {
+      // Remove loading message when no longer loading
+      setMessages((prev) => prev.filter((msg) => msg.role !== "loading"));
+    }
+  }, [isLoading]);
+
+  // Manage error message in chat
+  useEffect(() => {
+    if (isError && searchState.context?.error) {
+      setMessages((prev) => {
+        // If there's already an error message, don't add another
+        if (prev.some((msg) => msg.role === "error")) return prev;
+
+        return [
+          ...prev,
+          {
+            id: "error-message",
+            role: "error",
+            content: searchState.context.error.message || "An error occurred",
+            error: searchState.context.error,
+          },
+        ];
+      });
+    } else {
+      // Remove error message when no longer in error state
+      setMessages((prev) => prev.filter((msg) => msg.role !== "error"));
+    }
+  }, [isError, searchState.context?.error]);
+
+  // Handle successful response and append to chat
+  useEffect(() => {
+    if (isSuccess && searchState.context.data) {
+      const response = searchState.context.data;
+      const botMsgId = Date.now() + 1;
+
+      setMessages((prev) => {
+        // Remove any loading or error messages before adding the bot's response
+        const filteredMessages = prev.filter(
+          (msg) => msg.role !== "loading" && msg.role !== "error",
+        );
+
+        // Check if this response is already in messages to avoid duplication
+        if (filteredMessages.some((m) => m.requestId === response.request_id))
+          return filteredMessages;
+
+        return [
+          ...filteredMessages,
+          {
+            id: botMsgId,
+            role: "bot",
+            content: response.answer,
+            requestId: response.request_id,
+            results: response.results,
+            queryType: response.query_type,
+            summarizedQuery: response.summarized_query,
+          },
+        ];
+      });
+    }
+  }, [isSuccess, searchState.context.data]);
+
+  // Auto-scroll to bottom of chat
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages, isLoading, workflowLogs]);
+
+  const handleReset = () => {
+    setMessages([]);
+    sendSearch({ type: "RESET" });
+  };
 
   return (
-    <div className="overflow-hidden h-screen">
+    <div className="overflow-hidden h-screen flex flex-col font-sans bg-[#001fb0]">
       <Sidebar onHoverChange={setSidebarHovered} />
-      <div className="h-screen bg-[#001fb0] p-5 pt-0">
-        <div className="relative landing-sdw overflow-hidden bg-zinc-50 font-sans rounded-t-4xl">
-          <div className="flex flex-row gap-2 z-50! fixed bottom-5 right-5">
-            <Button
-              variant="outline"
-              className="!rounded-full active:scale-80 scale-100 transition-all duration-75 ease-in"
-              onClick={handleRefreshComponents}
-            >
-              ↻
-            </Button>
-          </div>
 
-          {/* background dotfield */}
-          <div className="absolute inset-0.5 z-0 opacity-70">
+      <div className="flex-1 bg-[#001fb0] p-5 pt-0 min-h-0">
+        <div className="relative landing-sdw overflow-hidden bg-zinc-50 font-sans rounded-4xl h-full flex flex-col">
+          {/* Background DotField */}
+          <div
+            className={`${isLoading ? "opacity-80" : "opacity-30"} absolute inset-0.5 z-0 pointer-events-none`}
+          >
             <DotField
               dotRadius={3}
               dotSpacing={20}
               bulgeStrength={500}
               glowRadius={0}
-              sparkle={true}
+              sparkle={isLoading || isError}
               waveAmplitude={0}
               cursorRadius={50}
               cursorForce={0.1}
               bulgeOnly={true}
-              gradientFrom="#A855F7"
+              gradientFrom="#0012b2"
               gradientTo="#001FB0"
               glowColor="#000000"
             />
           </div>
+          <div className="relative z-10 flex flex-col h-full min-h-0">
+            {/* Chat Messages Container */}
+            <div
+              ref={scrollRef}
+              className="flex-1 overflow-y-auto no-scrollbar p-6 space-y-6 flex flex-col min-h-0"
+            >
+              {messages.length === 0 && !isLoading && (
+                <div className="flex-1 flex flex-col items-center justify-center text-center p-8 max-w-2xl mx-auto my-auto z-10">
+                  <div className="relative mb-10">
+                    <img
+                      src="/data_portal_new.png"
+                      className="mx-auto w-4/5 object-contain filter"
+                      alt="Portal"
+                    />
+                  </div>
 
-          {/* main content */}
-          <div
-            className={`relative no-scrollbar z-10 h-screen flex flex-col items-center overflow-y-auto scroll-smooth pointer-events-none`}
-          >
-            {/* Re-enabling pointer events for child elements so they stay interactive */}
-            <div className="w-full flex-col flex items-center pointer-events-auto">
-              <Header />
+                  <h1 className="text-xs font-bold text-gray-400 hover:text-[#001FB0] transition-colors duration-200 cursor-pointer mb-2">
+                    Get started, click on any query to test Chupps AI.
+                  </h1>
 
-              <div className="flex flex-col justify-center items-center min-h-screen w-full">
-                {status === "active" ? (
-                  <Active />
-                ) : status === "development" ? (
-                  <Development />
-                ) : (
-                  <Down />
-                )}
-
-                <div className="flex flex-col justify-center items-center w-full">
-                  <img
-                    className="w-1/2"
-                    src="./data_portal_new.png"
-                    alt="grid"
-                  />
-                </div>
-
-                <div className="my-2"></div>
-
-                {/* searchbar */}
-                <Searchbar
-                  searchbarRef={searchbarRef}
-                  placeholder={placeholder_list[placeholderIndex]}
-                  inputValue={inputValue}
-                  setInputValue={setInputValue}
-                  onSearch={handleSearch}
-                  isError={isError}
-                  isLoading={isLoading}
-                  isSuccess={isSuccess}
-                />
-
-                <div className="my-2"></div>
-
-                <QuickLinks />
-
-                {/* <SkuInsightsCards /> */}
-              </div>
-
-              <img
-                src="./chupps_life.png"
-                className="w-1/12 animate-bounce mt-12 mb-24 pointer-events-auto"
-                alt="Chupps Life"
-              />
-
-              <div
-                ref={searchResultsRef}
-                className="bg-zinc-50 border-t-2 border-[#001FB0] w-full max-w-full min-h-screen flex flex-col justify-center items-center mx-auto px-4 shrink-0 pointer-events-auto"
-              >
-                {isLoading && (
-                  <LoadingComponent
-                    onCancel={handleCancel}
-                    requestId={requestId}
-                    logs={workflowLogs}
-                    currentStep={currentStep}
-                    nextStep={nextStep}
-                  />
-                )}
-
-                {isError && (
-                  <ErrorComponent
-                    error={searchError}
-                    onRetry={handleRetry}
-                    onReset={handleReset}
-                  />
-                )}
-
-                {isSuccess && searchType === "standard" && (
-                  <Standard
-                    isSuccess={isSuccess}
-                    searchData={searchData}
-                    finalMetrics={finalMetrics}
-                    metricsLoading={metricsLoading}
-                    refreshKey={refreshKey}
-                    summarizedQuery={summarizedQuery}
-                  />
-                )}
-
-                {isSuccess && searchType === "comparison" && (
-                  <Comparison
-                    createPaymentChart={createPaymentChart}
-                    isSuccess={isSuccess}
-                    searchData={searchState?.context.data}
-                    searchType={searchType}
-                    comparisonType={comparisonType}
-                    searchFilter={comparisonFilter}
-                    detailedMetrics={detailedMetrics}
-                    refreshKey={refreshKey}
-                  />
-                )}
-
-                {isSuccess && searchType === "metric_analysis" && (
-                  <MetricAnalysis
-                    metric_analysis={metric_analysis}
-                    metric_calculated={metric_calculated}
-                  />
-                )}
-
-                {isSuccess && searchType === "schema_discovery" && (
-                  <SchemaDiscovery field={field} field_info={field_info} />
-                )}
-
-                {isSuccess && searchType === "custom_metric_generation" && (
-                  <CustomMetricGeneration
-                    metric_analysis={metric_analysis}
-                    metric_calculated={metric_calculated}
-                  />
-                )}
-
-                {isSuccess &&
-                  searchType === "standard" &&
-                  Array.isArray(searchData) &&
-                  searchData.length === 0 && (
-                    <div className="text-center py-12">
-                      <p className="text-gray-500">
-                        No results found for your search.
-                      </p>
+                  {/* Quick Starter Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-lg">
+                    {quickStarters.map((starter, i) => (
                       <button
-                        onClick={handleReset}
-                        className="mt-4 text-blue-600 hover:text-blue-800 font-medium"
+                        key={i}
+                        onClick={() => handleSearch(starter.query)}
+                        className="p-4 bg-white hover:bg-blue-50 border border-blue-100 hover:border-[#001FB0] rounded-xl text-left transition-all duration-200 shadow-sm hover:shadow-md group cursor-pointer"
                       >
-                        Try a different search
+                        <div className="flex items-center gap-3">
+                          <span className="p-2 bg-blue-50 text-[#001FB0] rounded-lg group-hover:bg-[#001FB0] group-hover:text-white transition-colors duration-200 flex items-center justify-center">
+                            {starter.icon}
+                          </span>
+                          <div>
+                            <p className="font-semibold text-xs text-[#001FB0] uppercase tracking-wider">
+                              {starter.label}
+                            </p>
+                            <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">
+                              {starter.query}
+                            </p>
+                          </div>
+                        </div>
                       </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {messages.map((msg) => (
+                <div
+                  key={msg.id}
+                  className={`flex w-full ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                >
+                  {msg.role === "loading" && (
+                    <div className="w-full max-w-2xl">
+                      <LoadingComponent
+                        onCancel={() => sendSearch({ type: "CANCEL" })}
+                        requestId={requestId}
+                        logs={workflowLogs}
+                        currentStep={currentStep}
+                        showLogs={true}
+                        variant="chat"
+                      />
                     </div>
                   )}
 
-                {!isLoading && !isSuccess && !isError && (
-                  <>
-                    <EmptyStateComponent />
-                  </>
-                )}
+                  {msg.role === "error" && (
+                    <div className="w-full max-w-2xl">
+                      <ErrorComponent
+                        error={msg.error}
+                        onRetry={() =>
+                          handleSearch(
+                            messages.find((m) => m.role === "user")?.content ||
+                              "",
+                          )
+                        }
+                        onReset={handleReset}
+                        variant="chat"
+                      />
+                    </div>
+                  )}
+
+                  {msg.role === "user" && (
+                    <div className="flex items-start gap-3 max-w-[80%] self-end flex-row-reverse">
+                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#001FB0] text-white flex items-center justify-center font-bold text-xs shadow">
+                        <User className="w-4 h-4" />
+                      </div>
+                      <div className="rounded-2xl px-4 py-3 bg-[#001FB0] text-white shadow-sm rounded-tr-none">
+                        <div className="prose prose-sm prose-invert max-w-none text-white">
+                          <ReactMarkdown
+                            components={{
+                              p: ({ children }) => (
+                                <p className="mb-2 last:mb-0 text-base leading-relaxed">
+                                  {children}
+                                </p>
+                              ),
+                              strong: ({ children }) => (
+                                <strong className="text-white font-extrabold">
+                                  {children}
+                                </strong>
+                              ),
+                              ul: ({ children }) => (
+                                <ul className="list-disc pl-5 mb-2">
+                                  {children}
+                                </ul>
+                              ),
+                            }}
+                          >
+                            {msg.content}
+                          </ReactMarkdown>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {msg.role === "bot" && (
+                    <div className="flex items-start gap-3 max-w-[85%] self-start w-full">
+                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 text-[#001FB0] flex items-center justify-center font-bold text-xs shadow-sm border border-blue-200">
+                        <Bot className="w-4 h-4" />
+                      </div>
+                      <div className="rounded-2xl p-5 bg-white border border-blue-100 text-gray-800 rounded-tl-none shadow-sm flex-1">
+                        <div className="text-xs font-bold text-[#001FB0] mb-2 uppercase tracking-wider poppins">
+                          Chupps AI
+                        </div>
+                        <div className="prose prose-sm max-w-none prose-p:leading-relaxed text-gray-700">
+                          <ReactMarkdown
+                            components={{
+                              p: ({ children }) => (
+                                <p className="mb-2 last:mb-0 text-base leading-relaxed">
+                                  {children}
+                                </p>
+                              ),
+                              strong: ({ children }) => (
+                                <strong className="text-[#001FB0] font-bold">
+                                  {children}
+                                </strong>
+                              ),
+                              ul: ({ children }) => (
+                                <ul className="list-disc pl-5 mb-2">
+                                  {children}
+                                </ul>
+                              ),
+                            }}
+                          >
+                            {msg.content}
+                          </ReactMarkdown>
+                        </div>
+
+                        {msg.results && (
+                          <div className="mt-4 flex flex-wrap gap-2 border-t border-gray-100 pt-4">
+                            {msg.results.data &&
+                              (Array.isArray(msg.results.data)
+                                ? msg.results.data.length > 0
+                                : Object.keys(msg.results.data).length > 0) && (
+                                <>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className={`rounded-full border-[#001FB0] text-[#001FB0] hover:bg-blue-50 ${
+                                      activeView.id === msg.id &&
+                                      activeView.type === "table"
+                                        ? "bg-blue-100"
+                                        : ""
+                                    }`}
+                                    onClick={() =>
+                                      setActiveView(
+                                        activeView.id === msg.id &&
+                                          activeView.type === "table"
+                                          ? { id: null, type: null }
+                                          : { id: msg.id, type: "table" },
+                                      )
+                                    }
+                                  >
+                                    <Table className="w-4 h-4 mr-2" />
+                                    {activeView.id === msg.id &&
+                                    activeView.type === "table"
+                                      ? "Hide Data Table"
+                                      : "View Data Table"}
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="rounded-full border-[#001FB0] text-[#001FB0] hover:bg-blue-50 bg-white"
+                                    onClick={() =>
+                                      exportToGoogleSheets(
+                                        msg.results.data,
+                                        msg.summarizedQuery || "query_result",
+                                      )
+                                    }
+                                  >
+                                    <svg
+                                      className="w-4 h-4 mr-2 text-green-600"
+                                      viewBox="0 0 24 24"
+                                      fill="currentColor"
+                                    >
+                                      <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2zm4 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2z" />
+                                    </svg>
+                                    Export to Google Sheets
+                                  </Button>
+                                </>
+                              )}
+
+                            {msg.results.metrics_calculated &&
+                              msg.results.metrics_calculated.length > 0 && (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className={`rounded-full border-[#001FB0] text-[#001FB0] hover:bg-blue-50 ${
+                                    activeView.id === msg.id &&
+                                    activeView.type === "metrics"
+                                      ? "bg-blue-100"
+                                      : ""
+                                  }`}
+                                  onClick={() =>
+                                    setActiveView(
+                                      activeView.id === msg.id &&
+                                        activeView.type === "metrics"
+                                        ? { id: null, type: null }
+                                        : { id: msg.id, type: "metrics" },
+                                    )
+                                  }
+                                >
+                                  <LineChart className="w-4 h-4 mr-2" />
+                                  {activeView.id === msg.id &&
+                                  activeView.type === "metrics"
+                                    ? "Hide Metrics"
+                                    : "View Metrics"}
+                                </Button>
+                              )}
+                          </div>
+                        )}
+
+                        {/* Inline Expanded Views */}
+                        {activeView.id === msg.id &&
+                          activeView.type === "table" && (
+                            <div className="mt-4 w-full animate-in fade-in slide-in-from-top-2 duration-300">
+                              <DataTableComponent
+                                data={{
+                                  data: msg.results.data,
+                                  query_type:
+                                    msg.queryType?.toLowerCase() || "standard",
+                                  summarized_query: msg.summarizedQuery || "",
+                                }}
+                                summarized_query={msg.summarizedQuery || ""}
+                                title={
+                                  msg.queryType?.replace(/_/g, " ") ||
+                                  "RESULT DATA"
+                                }
+                              />
+                            </div>
+                          )}
+
+                        {activeView.id === msg.id &&
+                          activeView.type === "metrics" && (
+                            <div className="mt-4 w-full animate-in fade-in slide-in-from-top-2 duration-300">
+                              <MetricAnalysis
+                                metric_analysis={null}
+                                metric_calculated={
+                                  msg.results.metrics_calculated
+                                }
+                                showInsight={false}
+                              />
+                            </div>
+                          )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Sticky Searchbar Area */}
+            <div className="w-full py-5 px-6 flex flex-col items-center gap-4 rounded-b-4xl">
+              <div className="w-full max-w-4xl relative flex items-center focus-within:border-[#001FB0]  drop-shadow-2xl focus-within:ring-4 focus-within:ring-[#001FB0] rounded-2xl transition-all pr-2">
+                <input
+                  ref={searchbarRef}
+                  className="w-full p-4 pr-16 bg-zinc-50 rounded-2xl outline-none poppins text-gray-700 placeholder-gray-400 text-sm md:text-base"
+                  placeholder="Ask a follow up question..."
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyDown={(e) =>
+                    e.key === "Enter" && handleSearch(inputValue)
+                  }
+                  disabled={isLoading}
+                />
+                <button
+                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-[#001FB0] text-white p-2.5 rounded-xl active:scale-95 transition-all disabled:opacity-50 disabled:pointer-events-none shadow"
+                  onClick={() => handleSearch(inputValue)}
+                  disabled={isLoading}
+                >
+                  <Send className="w-5 h-5" />
+                </button>
+              </div>
+              <div className="flex items-center gap-6 text-xs font-semibold uppercase tracking-wider">
+                <button
+                  onClick={handleReset}
+                  className="flex items-center gap-1.5 text-gray-400 hover:text-red-500 transition-colors duration-200 cursor-pointer bg-transparent border-0"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  Clear Chat
+                </button>
+                <span className="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
+                <button
+                  onClick={() => (window.location.href = "/")}
+                  className="flex items-center gap-1.5 text-gray-400 hover:text-[#001FB0] transition-colors duration-200 cursor-pointer bg-transparent border-0"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  Reload Page
+                </button>
               </div>
             </div>
           </div>

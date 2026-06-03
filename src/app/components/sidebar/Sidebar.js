@@ -520,7 +520,7 @@ export default function Sidebar({ onHoverChange }) {
                 <button
                   onMouseEnter={() => setHoveredIndex(idx)}
                   onClick={() => router.push(`${route}`)}
-                  className="relative px-10 flex flex-col justify-center rounded-2xl items-center gap-5 w-full h-full transition-all duration-200 opacity-80 hover:opacity-100 hover:bg-[#001a8e]"
+                  className="relative px-10 flex flex-col justify-center rounded-2xl! items-center gap-5! w-full h-full transition-all duration-200 opacity-80 hover:opacity-100 hover:bg-[#001a8e]"
                 >
                   <div className="w-6 h-6 flex items-center justify-center">
                     {svg}
