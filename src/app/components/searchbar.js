@@ -23,20 +23,19 @@ export default function Searchbar({
   isLoading,
   isSuccess,
 }) {
-  const [searchHistory, setSearchHistory] = useState([]);
-  const queryDetailsRef = useRef(null);
-
-  // Load search history from localStorage on mount
-  useEffect(() => {
+  const [searchHistory, setSearchHistory] = useState(() => {
+    if (typeof window === 'undefined') return [];
     const storedHistory = localStorage.getItem("searchHistory");
     if (storedHistory) {
       try {
-        setSearchHistory(JSON.parse(storedHistory));
+        return JSON.parse(storedHistory);
       } catch (e) {
         console.error("Failed to parse search history:", e);
       }
     }
-  }, []);
+    return [];
+  });
+  const queryDetailsRef = useRef(null);
 
   // Handle search with history tracking
   const handleSearch = (query) => {

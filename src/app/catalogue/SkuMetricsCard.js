@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef, startTransition } from "react";
 import {
   BarChart,
   Bar,
@@ -363,15 +363,21 @@ function MarketplaceSection({ byMarketplace }) {
 }
 
 function PricingSection({ priceHistory }) {
-  const [activeMp, setActiveMp] = useState(null);
-
-  const marketplaces = [
-    ...new Set((priceHistory || []).map((d) => d.marketplace)),
-  ];
+  const marketplaces = useMemo(
+    () => [...new Set((priceHistory || []).map((d) => d.marketplace))],
+    [priceHistory]
+  );
+  const [activeMp, setActiveMp] = useState(() => marketplaces[0] || null);
+  const initializedRef = useRef(false);
 
   useEffect(() => {
-    if (marketplaces.length && !activeMp) setActiveMp(marketplaces[0]);
-  }, [marketplaces.join(",")]);
+    if (!initializedRef.current && marketplaces.length && !activeMp) {
+      initializedRef.current = true;
+      startTransition(() => {
+        setActiveMp(marketplaces[0]);
+      });
+    }
+  }, [marketplaces, activeMp]);
 
   if (!priceHistory?.length)
     return <EmptyState message="No price history data" />;

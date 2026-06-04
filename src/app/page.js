@@ -2,7 +2,7 @@
 "use client";
 
 import DotField from "../components/DotField";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, startTransition } from "react";
 import { useMachine } from "@xstate/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
@@ -135,11 +135,44 @@ export default function ChatLandingPage() {
   const requestId = searchState.context?.requestId;
   const workflowLogs = searchState.context?.logs || [];
 
+  // Poll backend logs during loading for real-time step updates
+  useEffect(() => {
+    if (!isLoading || !requestId) return;
+
+    let lastSequence = 0;
+    let intervalId = null;
+
+    const pollLogs = async () => {
+      try {
+        const res = await fetch(
+          apiUrl(`/query-v2/logs/${requestId}?since=${lastSequence}`),
+        );
+        if (!res.ok) return;
+        const data = await res.json();
+        const newLogs = data.logs || [];
+        if (newLogs.length > 0) {
+          lastSequence = data.next_sequence || lastSequence;
+          sendSearch({ type: "APPEND_LOGS", logs: newLogs });
+        }
+      } catch {
+        // Silently ignore polling errors
+      }
+    };
+
+    // Start polling immediately, then every 800ms
+    pollLogs();
+    intervalId = setInterval(pollLogs, 800);
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [isLoading, requestId, sendSearch]);
+
   // Poll logs for the loading component
   const latestLog = workflowLogs.length
     ? workflowLogs[workflowLogs.length - 1]
     : null;
-  const currentStep = latestLog?.summary || "Planning execution...";
+  const currentStep = latestLog?.summary || "Thinking...";
 
   const quickStarters = [
     {
@@ -189,41 +222,49 @@ export default function ChatLandingPage() {
   // Manage loading message in chat
   useEffect(() => {
     if (isLoading) {
-      setMessages((prev) => {
-        // If there's already a loading message, don't add another
-        if (prev.some((msg) => msg.role === "loading")) return prev;
+      startTransition(() => {
+        setMessages((prev) => {
+          // If there's already a loading message, don't add another
+          if (prev.some((msg) => msg.role === "loading")) return prev;
 
-        return [
-          ...prev,
-          { id: "loading-message", role: "loading", content: "Loading..." },
-        ];
+          return [
+            ...prev,
+            { id: "loading-message", role: "loading", content: "Loading..." },
+          ];
+        });
       });
     } else {
       // Remove loading message when no longer loading
-      setMessages((prev) => prev.filter((msg) => msg.role !== "loading"));
+      startTransition(() => {
+        setMessages((prev) => prev.filter((msg) => msg.role !== "loading"));
+      });
     }
   }, [isLoading]);
 
   // Manage error message in chat
   useEffect(() => {
     if (isError && searchState.context?.error) {
-      setMessages((prev) => {
-        // If there's already an error message, don't add another
-        if (prev.some((msg) => msg.role === "error")) return prev;
+      startTransition(() => {
+        setMessages((prev) => {
+          // If there's already an error message, don't add another
+          if (prev.some((msg) => msg.role === "error")) return prev;
 
-        return [
-          ...prev,
-          {
-            id: "error-message",
-            role: "error",
-            content: searchState.context.error.message || "An error occurred",
-            error: searchState.context.error,
-          },
-        ];
+          return [
+            ...prev,
+            {
+              id: "error-message",
+              role: "error",
+              content: searchState.context.error.message || "An error occurred",
+              error: searchState.context.error,
+            },
+          ];
+        });
       });
     } else {
       // Remove error message when no longer in error state
-      setMessages((prev) => prev.filter((msg) => msg.role !== "error"));
+      startTransition(() => {
+        setMessages((prev) => prev.filter((msg) => msg.role !== "error"));
+      });
     }
   }, [isError, searchState.context?.error]);
 
@@ -233,28 +274,30 @@ export default function ChatLandingPage() {
       const response = searchState.context.data;
       const botMsgId = Date.now() + 1;
 
-      setMessages((prev) => {
-        // Remove any loading or error messages before adding the bot's response
-        const filteredMessages = prev.filter(
-          (msg) => msg.role !== "loading" && msg.role !== "error",
-        );
+      startTransition(() => {
+        setMessages((prev) => {
+          // Remove any loading or error messages before adding the bot's response
+          const filteredMessages = prev.filter(
+            (msg) => msg.role !== "loading" && msg.role !== "error",
+          );
 
-        // Check if this response is already in messages to avoid duplication
-        if (filteredMessages.some((m) => m.requestId === response.request_id))
-          return filteredMessages;
+          // Check if this response is already in messages to avoid duplication
+          if (filteredMessages.some((m) => m.requestId === response.request_id))
+            return filteredMessages;
 
-        return [
-          ...filteredMessages,
-          {
-            id: botMsgId,
-            role: "bot",
-            content: response.answer,
-            requestId: response.request_id,
-            results: response.results,
-            queryType: response.query_type,
-            summarizedQuery: response.summarized_query,
-          },
-        ];
+          return [
+            ...filteredMessages,
+            {
+              id: botMsgId,
+              role: "bot",
+              content: response.answer,
+              requestId: response.request_id,
+              results: response.results,
+              queryType: response.query_type,
+              summarizedQuery: response.summarized_query,
+            },
+          ];
+        });
       });
     }
   }, [isSuccess, searchState.context.data]);
@@ -346,7 +389,7 @@ export default function ChatLandingPage() {
               {messages.map((msg) => (
                 <div
                   key={msg.id}
-                  className={`flex w-full ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                  className={`flex w-full max-w-6xl mx-auto ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                 >
                   {msg.role === "loading" && (
                     <div className="w-full max-w-2xl">
@@ -411,7 +454,7 @@ export default function ChatLandingPage() {
                   )}
 
                   {msg.role === "bot" && (
-                    <div className="flex items-start gap-3 max-w-[85%] self-start w-full">
+                    <div className="flex items-start gap-3 self-start w-fit">
                       <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 text-[#001FB0] flex items-center justify-center font-bold text-xs shadow-sm border border-blue-200">
                         <Bot className="w-4 h-4" />
                       </div>

@@ -168,8 +168,8 @@ export default function RtoPage() {
                 </span>
               </div>
 
-              <div className="w-full poppins px-10">
-                <div className="relative bg-[#001a8e] rounded-xl flex h-[75vh] min-h-[600px]">
+              <div className="w-full poppins px-10 scale-90">
+                <div className="relative bg-[#001a8e] rounded-xl flex h-[75vh] min-h-150">
                   {/* Left Sidebar */}
                   <div className="border-r border-white/20 z-10 pb-4 text-white h-full flex flex-col justify-between w-1/4 bg-[#001a8e] rounded-l-xl overflow-y-auto sticky top-0">
                     {/* === SECTION NAVIGATION - Top === */}

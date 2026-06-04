@@ -249,20 +249,20 @@ export const ErrorComponent = ({
                 <span>Google Gemini API Service High Demand (503)</span>
               </div>
               <p className="leading-relaxed mb-2 font-medium">
-                Google's Gemini model is currently overloaded.{" "}
+                Google&apos;s Gemini model is currently overloaded.{" "}
                 <strong>Please note: this is NOT an app issue</strong>, but
-                rather a temporary upstream service spike from Google's servers.
+                rather a temporary upstream service spike from Google&apos;s servers.
               </p>
               <p className="opacity-90 leading-relaxed font-normal">
                 These spikes are usually temporary and resolve within a few
                 seconds. Please wait a moment and try clicking{" "}
-                <strong>"Retry Request"</strong> below to send your query again.
+                <strong>&quot;Retry Request&quot;</strong> below to send your query again.
               </p>
             </div>
           )}
 
           <p className="text-sm text-red-800 font-medium mb-3">
-            I couldn't complete your request. Please try again!
+            I couldn&apos;t complete your request. Please try again!
           </p>
 
           <p className="text-xs text-gray-500 mb-4">
@@ -358,7 +358,7 @@ export const ErrorComponent = ({
             <span>Upstream API Service Limit (Google Gemini 503)</span>
           </div>
           <p className="leading-relaxed mb-2">
-            <strong>Notice:</strong> Google's Gemini AI service is currently
+            <strong>Notice:</strong> Google&apos;s Gemini AI service is currently
             experiencing extremely high traffic and spikes in demand.{" "}
             <strong>This is NOT an issue with the Chupps application</strong>,
             but rather a temporary availability limitation on the Google Gemini

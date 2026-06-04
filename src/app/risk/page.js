@@ -391,25 +391,19 @@ export default function Risk() {
                     </span>
                   </div>
 
-                  {/* Date Filters */}
-                  <div className="shrink">
-                    <h2 className="poppins font-bold text-sm mb-2">
-                      Filter Orders By Date
-                    </h2>
-                    <DatePickerDropdown
-                      startDate={startDate}
-                      setStartDate={setStartDate}
-                      endDate={endDate}
-                      setEndDate={setEndDate}
-                      onFetch={handleFetchOrders}
-                      onRefresh={handleRefresh}
-                      onYesterday={handleYesterday}
-                      onLastWeek={handleLastWeek}
-                      onLastMonth={handleLastMonth}
-                      loading={loading}
-                      isSuccess={isSuccess}
-                    />
-                  </div>
+                  <DatePickerDropdown
+                    startDate={startDate}
+                    setStartDate={setStartDate}
+                    endDate={endDate}
+                    setEndDate={setEndDate}
+                    onFetch={handleFetchOrders}
+                    onRefresh={handleRefresh}
+                    onYesterday={handleYesterday}
+                    onLastWeek={handleLastWeek}
+                    onLastMonth={handleLastMonth}
+                    loading={loading}
+                    isSuccess={isSuccess}
+                  />
 
                   {/* Error Message */}
                   {error && (

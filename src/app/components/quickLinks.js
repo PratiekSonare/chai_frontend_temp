@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
 
-export default function quickLinks() {
+export default function QuickLinks() {
   const router = useRouter();
   return (
     <div className="z-11 oswald flex flex-row items-center justify-center gap-10 w-full">

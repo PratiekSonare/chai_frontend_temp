@@ -56,6 +56,7 @@ export const searchMachine = createMachine({
     error: null,
     metrics: null,
     requestId: null,
+    sessionId: null,
     logs: [],
     lastLogSequence: 0,
   },
@@ -87,6 +88,7 @@ export const searchMachine = createMachine({
               apiUrl("/query-v2/query"),
               {
                 query: input.query,
+                session_id: input.sessionId,
               },
               {
                 headers: {
@@ -106,6 +108,7 @@ export const searchMachine = createMachine({
         input: ({ context }) => ({
           query: context.query,
           requestId: context.requestId,
+          sessionId: context.sessionId,
         }),
         onDone: {
           target: "success",
@@ -114,6 +117,8 @@ export const searchMachine = createMachine({
             error: null,
             requestId: ({ context, event }) =>
               event.output?.request_id || context.requestId,
+            sessionId: ({ context, event }) =>
+              event.output?.session_id || context.sessionId,
             logs: ({ context, event }) => {
               const backendLogs = Array.isArray(event.output?.logs)
                 ? event.output.logs
@@ -237,6 +242,8 @@ export const searchMachine = createMachine({
             logs: [],
             lastLogSequence: 0,
             requestId: null,
+            sessionId: null,
+            data: null,
           }),
         },
       },
@@ -288,6 +295,8 @@ export const searchMachine = createMachine({
             logs: [],
             lastLogSequence: 0,
             requestId: null,
+            sessionId: null,
+            data: null,
           }),
         },
       },

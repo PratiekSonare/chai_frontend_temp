@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, startTransition } from 'react';
 import {
   Accordion,
   AccordionContent,
@@ -13,6 +13,7 @@ export default function OrderDataCard({ orderData, position, onClose }) {
   const [isClosing, setIsClosing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const prevPositionRef = useRef(position);
   const [modalPosition, setModalPosition] = useState({
     x: position?.x || Math.max(window.innerWidth / 2 - 260, 20),
     y: position?.y || 100,
@@ -21,10 +22,13 @@ export default function OrderDataCard({ orderData, position, onClose }) {
   const modalRef = useRef(null);
 
   useEffect(() => {
-    if (position) {
-      setModalPosition({
-        x: Math.min(position.x, window.innerWidth - 480),
-        y: Math.min(position.y, window.innerHeight - 400),
+    if (position && position !== prevPositionRef.current) {
+      prevPositionRef.current = position;
+      startTransition(() => {
+        setModalPosition({
+          x: Math.min(position.x, window.innerWidth - 480),
+          y: Math.min(position.y, window.innerHeight - 400),
+        });
       });
     }
   }, [position]);

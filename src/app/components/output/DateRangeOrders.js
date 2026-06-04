@@ -107,13 +107,13 @@ export default function DateRangeOrders({ orderType }) {
   };
 
   return (
-    <div className="w-full h-screen flex flex-col gap-5 p-5">
-      <div className="relative w-full h-full flex flex-col items-center justify-center gap-5 px-20">
+    <div className="w-full h-screen flex flex-col gap-2 p-3">
+      <div className="relative w-full h-full flex flex-col items-center justify-center gap-2 px-10">
         <div className="flex flex-col items-center">
-          <span className="poppins font-extrabold text-3xl">
+          <span className="poppins font-extrabold text-2xl">
             Extract Orders
           </span>
-          <span className="poppins text-lg text-gray-500">
+          <span className="poppins text-sm text-gray-500">
             Fetch orders and analyze performance in seconds.
           </span>
 
@@ -146,7 +146,7 @@ export default function DateRangeOrders({ orderType }) {
 
         {/* Results Section */}
         {isSuccess && !loading && (
-          <div className="w-full h-[90%] p-5">
+          <div className="w-full h-full">
             {finalMetrics && (
               <MetricCarouselOrder
                 key={`metrics-${refreshKey}`}
@@ -165,7 +165,7 @@ export default function DateRangeOrders({ orderType }) {
         )}
 
         {!isSuccess && !loading && (
-          <div className="bg-gray-50 my-auto h-[90%] w-full flex items-center justify-center rounded-lg border-4 border-dashed border-gray-300 p-8 text-center">
+          <div className="bg-gray-50 my-auto h-[70%] w-full flex items-center justify-center rounded-lg border-4 border-dashed border-gray-300 p-8 text-center">
             <p className="text-gray-600 text-xl">
               Click &ldquo;Fetch Orders&rdquo; to load data for the selected
               date range
@@ -174,7 +174,7 @@ export default function DateRangeOrders({ orderType }) {
         )}
 
         {loading && (
-          <div className="bg-gray-50 my-auto h-[90%] w-full flex items-center justify-center rounded-lg border-4 border-dashed border-gray-300 p-8 text-center">
+          <div className="bg-gray-50 my-auto h-[70%] w-full flex items-center justify-center rounded-lg border-4 border-dashed border-gray-300 p-8 text-center">
             <p className="text-gray-600">Loading orders data...</p>
           </div>
         )}

@@ -12,6 +12,7 @@ const QUERY_SERVICE_ENDPOINTS = [
   "/query/logs",
   "/query/",
   "/query_v2/",
+  "/query-v2/",
 ];
 const METRICS_SERVICE_ENDPOINTS = [
   "/orders/",
@@ -21,6 +22,7 @@ const METRICS_SERVICE_ENDPOINTS = [
   "/geography/",
   "/history/",
   "/predict",
+  "/forecast/",
 ];
 
 const getQueryServiceUrl = (path = "") => {

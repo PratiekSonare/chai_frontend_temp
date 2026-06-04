@@ -235,33 +235,30 @@ export default function MetricCard() {
   }, []);
 
   return (
-    <div className="w-[90%] h-screen flex flex-col justify-center items-start gap-10 overflow-y-auto">
-      <div className="flex flex-col items-start text-left">
-        <span className="poppins font-extrabold text-3xl">
+    <div className="w-[85%] h-screen flex flex-col justify-start items-start gap-5 overflow-y-auto">
+      <div className="flex flex-col items-center text-center pt-2 mx-auto">
+        <span className="poppins font-extrabold text-2xl">
           Chupps Order Metrics
         </span>
-        <span className="poppins text-lg text-gray-500">
+        <span className="poppins text-sm text-gray-500">
           Filter out order metrics and get instant insights! Click on any metric
           card to expand for detailed analysis.
         </span>
       </div>
 
-      <div className="poppins w-[96%] relative">
-        <div className="relative bg-[#001a8e] rounded-xl flex h-[85vh] min-h-[600px]">
-          {" "}
-          {/* Optional: give parent a fixed/min height */}
-          {/* Left Sidebar - Filters */}
+      <div className="poppins w-full relative">
+        <div className="relative bg-[#001a8e] rounded-xl flex h-[78vh] min-h-100">
           <div className="z-10 pb-4 text-white h-full flex flex-col justify-between w-1/4 bg-[#001a8e] rounded-l-xl overflow-y-auto sticky top-0">
             {/* === CATEGORY NAVIGATION - Top (1/5) === */}
-            <div className="flex-shrink-0 px-4 pt-4 pb-3">
-              <div className="w-full grid grid-cols-1 gap-3">
+            <div className="flex-shrink-0 px-3 pt-3 pb-2">
+              <div className="w-full grid grid-cols-1 gap-2">
                 {Object.entries(metricsConfig).map(
                   ([categoryKey, categoryData]) => {
                     return (
                       <button
                         key={categoryKey}
                         onClick={() => setSelectedCategory(categoryKey)}
-                        className={`group overflow-x-hidden px-4 py-3 rounded-lg poppins transition-all flex flex-col items-start gap-1.5 
+                        className={`group overflow-x-hidden px-3 py-2 rounded-lg poppins transition-all flex flex-col items-start gap-1 
                         ${
                           selectedCategory === categoryKey
                             ? "bg-white text-[#001a8e] shadow-lg"
@@ -272,7 +269,7 @@ export default function MetricCard() {
                           {/* <div
                             className={`translate-y-3 group-hover:translate-y-0 ease-in duration-100 rounded-full w-2 h-2 border ${selectedCategory === categoryKey ? "border-[#001a8e]" : "border-white"} opacity-80 group-hover:opacity-100 transition-opacity`}
                           ></div> */}
-                          <span className="translate-y-3 group-hover:translate-y-0 ease-in duration-100 text-sm font-medium">
+                          <span className="translate-y-3 group-hover:translate-y-0 ease-in duration-100 text-xs font-medium">
                             {categoryData.category}
                           </span>
                         </div>
@@ -321,8 +318,8 @@ export default function MetricCard() {
                   margin="gap-0"
                   title="FILTER BY"
                 />
-                <div className="flex flex-col gap-4 px-4 py-3 border-t border-white/20">
-                  <span className="poppins text-sm uppercase">Date Range</span>
+                <div className="flex flex-col gap-3 px-3 py-2 border-t border-white/20">
+                  <span className="poppins text-xs uppercase">Date Range</span>
                   <div className="flex flex-row justify-between items-center gap-2">
                     {["7d", "30d", "all"].map((preset) => {
                       const datePresetIcons = {
@@ -479,7 +476,7 @@ export default function MetricCard() {
                           key={preset}
                           type="button"
                           onClick={() => handleDatePreset(preset)}
-                          className={`border w-full rounded-sm poppins text-sm py-2 transition-all flex items-center justify-center gap-2 ${
+                          className={`border w-full rounded-sm poppins text-xs py-1.5 transition-all flex items-center justify-center gap-2 ${
                             selectedDatePreset === preset
                               ? "bg-[#001a8e] text-white border-white"
                               : "bg-white text-[#001a8e] border-[#001a8e]"
@@ -505,11 +502,11 @@ export default function MetricCard() {
 
                 {/* Apply Filters Button */}
                 {isFilter && (
-                  <div className="px-4 py-3 border-t border-white/20">
+                  <div className="px-3 py-2 border-t border-white/20">
                     <button
                       onClick={handleApplyFilters}
                       disabled={Object.values(metricsLoading).some((v) => v)}
-                      className={`w-full px-4 py-3 rounded-lg poppins font-semibold transition-all flex items-center justify-center gap-2 ${
+                      className={`w-full px-3 py-2 rounded-lg poppins font-semibold transition-all flex items-center justify-center gap-2 ${
                         Object.values(metricsLoading).some((v) => v)
                           ? "bg-white/30 text-white/60 cursor-not-allowed"
                           : "bg-white text-[#001a8e] hover:bg-white/90 active:scale-95 shadow-lg"
@@ -582,8 +579,8 @@ export default function MetricCard() {
                             className={`${metricConfig.type === "scalar" ? "basis-1/4" : "basis-1/2"} rounded-xl`}
                           >
                             <div className="bg-zinc-50 border-l border-b border-r border-[#001a8e] h-full flex flex-col rounded-xl">
-                              <div className="flex flex-col gap-2 pt-3 pl-3 pb-2">
-                                <span className="oswald uppercase tracking-wider text-[#001a8e] text-xl">
+                              <div className="flex flex-col gap-1.5 pt-2 pl-2 pb-1">
+                                <span className="oswald uppercase tracking-wider text-[#001a8e] text-lg">
                                   {metricConfig.title}
                                 </span>
                                 {metricConfig.formula && (
@@ -595,8 +592,8 @@ export default function MetricCard() {
                                 {metricConfig.hasChart &&
                                   !isLoading &&
                                   data !== undefined && (
-                                    <div className="flex flex-row items-center gap-4">
-                                      <div className="text-3xl font-bold text-[#001a8e]">
+                                    <div className="flex flex-row items-center gap-3">
+                                      <div className="text-xl font-bold text-[#001a8e]">
                                         {formatMetricValue(data, metricConfig)}
                                       </div>
                                       {metricConfig.percent === true && (
@@ -606,12 +603,12 @@ export default function MetricCard() {
                                   )}
                               </div>
 
-                              <div className="flex-1 p-4 overflow-hidden">
+                              <div className="flex-1 p-3 overflow-hidden">
                                 {isLoading ? (
                                   <div className="h-full flex items-center justify-center">
                                     <div className="flex flex-col items-center gap-2">
-                                      <span className="h-5 w-5 rounded-full border-2 border-[#001a8e] border-t-transparent animate-spin" />
-                                      <span className="text-sm text-gray-600">
+                                      <span className="h-4 w-4 rounded-full border-2 border-[#001a8e] border-t-transparent animate-spin" />
+                                      <span className="text-xs text-gray-600">
                                         Loading...
                                       </span>
                                     </div>
@@ -624,11 +621,11 @@ export default function MetricCard() {
                                     chartData || data,
                                   )
                                 ) : metricConfig.type === "scalar" ? (
-                                  <div className="h-full flex items-center justify-center gap-8">
+                                  <div className="h-full flex items-center justify-center gap-6">
                                     {metricConfig.percent === true && (
                                       <SemiCircle pct={data} size="large" />
                                     )}
-                                    <div className="text-3xl font-bold text-[#001a8e]">
+                                    <div className="text-2xl font-bold text-[#001a8e]">
                                       {formatMetricValue(data, metricConfig)}
                                     </div>
                                   </div>
