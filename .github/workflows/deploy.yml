@@ -21,4 +21,4 @@ jobs:
             npm install
             npm run build
             tmux kill-session -t frontend 2>/dev/null || true
-            tmux new-session -d -s frontend "npm start 2>&1 | tee /tmp/frontend.log"
+            tmux new-session -d -s frontend "cd ~/chupps/frontend && npm start"

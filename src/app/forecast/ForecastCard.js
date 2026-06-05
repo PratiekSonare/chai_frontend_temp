@@ -14,7 +14,7 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from "recharts";
-import { apiUrl } from "@/lib/api";
+import { apiUrl, fetchForecastPresetsFromS3 } from "@/lib/api";
 
 const CHART_COLORS = {
   historical: "#1e40af",
@@ -36,18 +36,29 @@ const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl shadow-xl p-4" style={{ minWidth: 180 }}>
+    <div
+      className="bg-white border border-gray-200 rounded-xl shadow-xl p-4"
+      style={{ minWidth: 180 }}
+    >
       <p className="font-semibold text-gray-800 text-sm mb-2">{label}</p>
       {payload.map((entry, i) => {
         if (entry.dataKey === "upper" || entry.dataKey === "lower") return null;
         return (
-          <div key={i} className="flex items-center justify-between gap-4 text-sm py-0.5">
+          <div
+            key={i}
+            className="flex items-center justify-between gap-4 text-sm py-0.5"
+          >
             <div className="flex items-center gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: entry.color }} />
+              <div
+                className="w-2.5 h-2.5 rounded-full"
+                style={{ backgroundColor: entry.color }}
+              />
               <span className="text-gray-500">{entry.name}</span>
             </div>
             <span className="font-medium text-gray-900">
-              {typeof entry.value === "number" ? entry.value.toLocaleString("en-IN") : entry.value}
+              {typeof entry.value === "number"
+                ? entry.value.toLocaleString("en-IN")
+                : entry.value}
             </span>
           </div>
         );
@@ -73,6 +84,16 @@ export default function ForecastCard({ refreshKey }) {
     setError(null);
 
     try {
+      if (granularity === "daily") {
+        const s3Data = await fetchForecastPresetsFromS3();
+        const s3Key = `all_daily_${forecastMonths}m`;
+        if (s3Data && s3Data[s3Key] && s3Data[s3Key].success !== false) {
+          setForecastData(s3Data[s3Key]);
+          setLoading(false);
+          return;
+        }
+      }
+
       const res = await fetch(apiUrl("/forecast/demand"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -97,10 +118,6 @@ export default function ForecastCard({ refreshKey }) {
     }
   }, [granularity, forecastMonths]);
 
-  useEffect(() => {
-    fetchForecast();
-  }, [fetchForecast, refreshKey]);
-
   const chartData = (() => {
     if (!forecastData) return [];
 
@@ -108,7 +125,11 @@ export default function ForecastCard({ refreshKey }) {
     const map = new Map();
 
     historical.forEach((h) => {
-      map.set(h.date, { date: h.date, order_count: h.order_count, type: "historical" });
+      map.set(h.date, {
+        date: h.date,
+        order_count: h.order_count,
+        type: "historical",
+      });
     });
 
     forecast.forEach((f) => {
@@ -124,7 +145,9 @@ export default function ForecastCard({ refreshKey }) {
       });
     });
 
-    return Array.from(map.values()).sort((a, b) => a.date.localeCompare(b.date));
+    return Array.from(map.values()).sort((a, b) =>
+      a.date.localeCompare(b.date),
+    );
   })();
 
   const lastHistoricalDate = forecastData?.historical?.at(-1)?.date;
@@ -228,13 +251,17 @@ export default function ForecastCard({ refreshKey }) {
                   <div className="flex justify-between text-xs">
                     <span className="text-white/50">Historical Orders</span>
                     <span className="font-semibold">
-                      {forecastData.summary.total_historical_orders?.toLocaleString("en-IN")}
+                      {forecastData.summary.total_historical_orders?.toLocaleString(
+                        "en-IN",
+                      )}
                     </span>
                   </div>
                   <div className="flex justify-between text-xs">
                     <span className="text-white/50">Forecasted Orders</span>
                     <span className="font-semibold text-green-300">
-                      {forecastData.summary.total_forecasted_orders?.toLocaleString("en-IN")}
+                      {forecastData.summary.total_forecasted_orders?.toLocaleString(
+                        "en-IN",
+                      )}
                     </span>
                   </div>
                   <div className="flex justify-between text-xs">
@@ -274,9 +301,13 @@ export default function ForecastCard({ refreshKey }) {
                   Demand Forecast
                 </span>
                 <div className="poppins text-sm text-gray-700">
-                  <span className="font-semibold capitalize">{granularity}</span>
+                  <span className="font-semibold capitalize">
+                    {granularity}
+                  </span>
                   <span className="text-gray-400 mx-1">&middot;</span>
-                  <span>{forecastMonths} month{forecastMonths > 1 ? "s" : ""} ahead</span>
+                  <span>
+                    {forecastMonths} month{forecastMonths > 1 ? "s" : ""} ahead
+                  </span>
                 </div>
               </div>
 
@@ -284,11 +315,19 @@ export default function ForecastCard({ refreshKey }) {
               <div className="flex-1 overflow-hidden p-4">
                 {error ? (
                   <div className="h-full flex flex-col items-center justify-center gap-3">
-                    <svg className="w-12 h-12 text-red-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <svg
+                      className="w-12 h-12 text-red-300"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                    >
                       <circle cx="12" cy="12" r="10" />
                       <path d="M15 9l-6 6M9 9l6 6" />
                     </svg>
-                    <p className="poppins text-sm text-red-500 text-center max-w-md">{error}</p>
+                    <p className="poppins text-sm text-red-500 text-center max-w-md">
+                      {error}
+                    </p>
                     <button
                       onClick={fetchForecast}
                       className="mt-2 px-4 py-2 rounded-lg bg-[#001a8e] text-white text-sm font-semibold hover:bg-[#001570] transition-colors"
@@ -298,27 +337,72 @@ export default function ForecastCard({ refreshKey }) {
                   </div>
                 ) : chartData.length === 0 ? (
                   <div className="h-full flex flex-col items-center justify-center gap-3 text-center px-8">
-                    <svg className="w-16 h-16 text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                      <path d="M22 7L14.6203 14.3347C13.6227 15.3263 13.1238 15.822 12.5051 15.822C11.8864 15.8219 11.3876 15.326 10.3902 14.3342L10.1509 14.0962C9.15254 13.1035 8.65338 12.6071 8.03422 12.6074C7.41506 12.6076 6.91626 13.1043 5.91867 14.0977L2 18M22 7V12.5458M22 7H16.4179" strokeLinecap="round" strokeLinejoin="round" />
+                    <svg
+                      className="w-16 h-16 text-gray-300"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                    >
+                      <path
+                        d="M22 7L14.6203 14.3347C13.6227 15.3263 13.1238 15.822 12.5051 15.822C11.8864 15.8219 11.3876 15.326 10.3902 14.3342L10.1509 14.0962C9.15254 13.1035 8.65338 12.6071 8.03422 12.6074C7.41506 12.6076 6.91626 13.1043 5.91867 14.0977L2 18M22 7V12.5458M22 7H16.4179"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                     <p className="poppins text-gray-400 text-sm">
-                      Configure parameters and click Refresh to generate a forecast.
+                      Configure parameters and click Refresh to generate a
+                      forecast.
                     </p>
                   </div>
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+                    <AreaChart
+                      data={chartData}
+                      margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
+                    >
                       <defs>
-                        <linearGradient id="confidenceGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor={CHART_COLORS.confidenceFill} stopOpacity={0.4} />
-                          <stop offset="95%" stopColor={CHART_COLORS.confidenceFill} stopOpacity={0.05} />
+                        <linearGradient
+                          id="confidenceGradient"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="5%"
+                            stopColor={CHART_COLORS.confidenceFill}
+                            stopOpacity={0.4}
+                          />
+                          <stop
+                            offset="95%"
+                            stopColor={CHART_COLORS.confidenceFill}
+                            stopOpacity={0.05}
+                          />
                         </linearGradient>
-                        <linearGradient id="historicalGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor={CHART_COLORS.historical} stopOpacity={0.3} />
-                          <stop offset="95%" stopColor={CHART_COLORS.historical} stopOpacity={0.05} />
+                        <linearGradient
+                          id="historicalGradient"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="5%"
+                            stopColor={CHART_COLORS.historical}
+                            stopOpacity={0.3}
+                          />
+                          <stop
+                            offset="95%"
+                            stopColor={CHART_COLORS.historical}
+                            stopOpacity={0.05}
+                          />
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke={CHART_COLORS.grid}
+                      />
                       <XAxis
                         dataKey="date"
                         tick={{ fontSize: 11, fill: CHART_COLORS.text }}
@@ -344,7 +428,12 @@ export default function ForecastCard({ refreshKey }) {
                           x={lastHistoricalDate}
                           stroke="#9ca3af"
                           strokeDasharray="4 4"
-                          label={{ value: "Today", position: "insideTopLeft", fontSize: 11, fill: "#9ca3af" }}
+                          label={{
+                            value: "Today",
+                            position: "insideTopLeft",
+                            fontSize: 11,
+                            fill: "#9ca3af",
+                          }}
                         />
                       )}
                       {/* Confidence interval band */}

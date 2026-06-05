@@ -157,3 +157,87 @@ export const fetchMetricsFromS3 = async (executionDate = null) => {
     return null;
   }
 };
+
+/**
+ * Fetch pre-calculated RTO dashboard presets from S3
+ * @param {string} executionDate - Date in YYYY-MM-DD format (defaults to yesterday)
+ * @returns {Promise<Object|null>} - RTO presets payload or null
+ */
+export const fetchRtoPresetsFromS3 = async (executionDate = null) => {
+  try {
+    const s3BucketUrl = process.env.NEXT_PUBLIC_METRICS_S3_BUCKET_URL?.trim();
+    const s3Prefix = "rto-presets";
+
+    if (!s3BucketUrl) return null;
+
+    const targetDate =
+      executionDate || new Date(new Date().setDate(new Date().getDate() - 1));
+    const dateStr =
+      targetDate instanceof Date
+        ? targetDate.toISOString().split("T")[0]
+        : targetDate;
+
+    const s3Url = `${s3BucketUrl.replace(/\/+$/, "")}/${s3Prefix}/${dateStr}/all.json`;
+    console.log(`Fetching RTO presets from S3: ${s3Url}`);
+
+    const response = await fetch(s3Url, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      console.warn(`RTO S3 fetch returned ${response.status}`);
+      return null;
+    }
+
+    const payload = await response.json();
+    console.log("RTO presets loaded from S3");
+    return payload;
+  } catch (error) {
+    console.warn(`Error fetching RTO presets from S3: ${error.message}`);
+    return null;
+  }
+};
+
+/**
+ * Fetch pre-calculated forecast demand presets from S3
+ * @param {string} executionDate - Date in YYYY-MM-DD format (defaults to yesterday)
+ * @returns {Promise<Object|null>} - Forecast presets payload or null
+ */
+export const fetchForecastPresetsFromS3 = async (executionDate = null) => {
+  try {
+    const s3BucketUrl = process.env.NEXT_PUBLIC_METRICS_S3_BUCKET_URL?.trim();
+    const s3Prefix = "forecast-presets";
+
+    if (!s3BucketUrl) return null;
+
+    const targetDate =
+      executionDate || new Date(new Date().setDate(new Date().getDate() - 1));
+    const dateStr =
+      targetDate instanceof Date
+        ? targetDate.toISOString().split("T")[0]
+        : targetDate;
+
+    const s3Url = `${s3BucketUrl.replace(/\/+$/, "")}/${s3Prefix}/${dateStr}/all.json`;
+    console.log(`Fetching forecast presets from S3: ${s3Url}`);
+
+    const response = await fetch(s3Url, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      console.warn(`Forecast S3 fetch returned ${response.status}`);
+      return null;
+    }
+
+    const payload = await response.json();
+    console.log("Forecast presets loaded from S3");
+    return payload;
+  } catch (error) {
+    console.warn(`Error fetching forecast presets from S3: ${error.message}`);
+    return null;
+  }
+};

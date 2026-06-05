@@ -9,7 +9,7 @@ import Header from "../components/header";
 import DotField from "@/components/DotField";
 import { Button } from "@/components/ui/button";
 import DataTableComponent from "../components/table/DataTableComponent";
-import { apiUrl } from "@/lib/api";
+import { apiUrl, fetchRtoPresetsFromS3 } from "@/lib/api";
 
 const formatDate = (date) => {
   const year = date.getFullYear();
@@ -53,6 +53,29 @@ export default function RtoPage() {
     setRefreshKey((prev) => prev + 1);
   }, []);
 
+  const detectRtoPreset = useCallback((start, end) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const fmt = (d) =>
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    const addDays = (d, n) => {
+      const r = new Date(d);
+      r.setDate(r.getDate() + n);
+      return r;
+    };
+    const todayStr = fmt(today);
+    const yesterdayStr = fmt(addDays(today, -1));
+    const d7Ago = fmt(addDays(today, -6));
+    const d30Ago = fmt(addDays(today, -29));
+    const allStart = "2025-09-01";
+
+    if (start === yesterdayStr && end === yesterdayStr) return "yesterday";
+    if (start === d7Ago && end === todayStr) return "7d";
+    if (start === d30Ago && end === todayStr) return "30d";
+    if (start === allStart && end === todayStr) return "all";
+    return null;
+  }, []);
+
   const fetchRtoData = useCallback(async () => {
     if (!startDate || !endDate) return;
 
@@ -60,6 +83,17 @@ export default function RtoPage() {
     setError("");
 
     try {
+      const preset = detectRtoPreset(startDate, endDate);
+
+      if (preset) {
+        const s3Data = await fetchRtoPresetsFromS3();
+        if (s3Data && s3Data[preset] && s3Data[preset].success !== false) {
+          setPayload(s3Data[preset]);
+          setLoading(false);
+          return;
+        }
+      }
+
       const response = await fetch(apiUrl("/cancellation/rto/dashboard"), {
         method: "POST",
         headers: {
@@ -88,7 +122,7 @@ export default function RtoPage() {
     } finally {
       setLoading(false);
     }
-  }, [startDate, endDate]);
+  }, [startDate, endDate, detectRtoPreset]);
 
   useEffect(() => {
     // Auto-fetch on component mount with default yesterday's date
