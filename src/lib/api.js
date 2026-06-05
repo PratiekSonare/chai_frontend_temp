@@ -201,26 +201,40 @@ export const fetchRtoPresetsFromS3 = async (executionDate = null) => {
 };
 
 /**
- * Fetch pre-calculated forecast demand presets from S3
- * @param {string} executionDate - Date in YYYY-MM-DD format (defaults to yesterday)
- * @returns {Promise<Object|null>} - Forecast presets payload or null
+ * Fetch pre-calculated forecast from S3 for a specific granularity and months.
+ * @param {string} granularity - "daily" or "weekly"
+ * @param {number} months - Forecast period in months (1, 2, 3, or 6)
+ * @param {string} executionDate - Date in YYYY-MM-DD format (defaults to today)
+ * @returns {Promise<Object|null>} - Forecast payload or null
  */
-export const fetchForecastPresetsFromS3 = async (executionDate = null) => {
+export const fetchForecastPresetsFromS3 = async (
+  granularity,
+  months,
+  executionDate = null,
+) => {
   try {
     const s3BucketUrl = process.env.NEXT_PUBLIC_METRICS_S3_BUCKET_URL?.trim();
     const s3Prefix = "forecast-presets";
 
-    if (!s3BucketUrl) return null;
+    if (!s3BucketUrl) {
+      console.warn("NEXT_PUBLIC_METRICS_S3_BUCKET_URL not set");
+      return null;
+    }
 
-    const targetDate =
-      executionDate || new Date(new Date().setDate(new Date().getDate() - 1));
+    if (!granularity || !months) {
+      console.warn("fetchForecastPresetsFromS3 requires granularity and months");
+      return null;
+    }
+
+    const targetDate = executionDate || new Date();
     const dateStr =
       targetDate instanceof Date
         ? targetDate.toISOString().split("T")[0]
         : targetDate;
 
-    const s3Url = `${s3BucketUrl.replace(/\/+$/, "")}/${s3Prefix}/${dateStr}/all.json`;
-    console.log(`Fetching forecast presets from S3: ${s3Url}`);
+    const filename = `${granularity}_${months}m.json`;
+    const s3Url = `${s3BucketUrl.replace(/\/+$/, "")}/${s3Prefix}/${dateStr}/${filename}`;
+    console.log(`Fetching forecast from S3: ${s3Url}`);
 
     const response = await fetch(s3Url, {
       method: "GET",
@@ -229,15 +243,15 @@ export const fetchForecastPresetsFromS3 = async (executionDate = null) => {
     });
 
     if (!response.ok) {
-      console.warn(`Forecast S3 fetch returned ${response.status}`);
+      console.warn(`Forecast S3 fetch returned ${response.status} for ${s3Url}`);
       return null;
     }
 
     const payload = await response.json();
-    console.log("Forecast presets loaded from S3");
+    console.log(`Forecast loaded from S3: ${filename}`);
     return payload;
   } catch (error) {
-    console.warn(`Error fetching forecast presets from S3: ${error.message}`);
+    console.warn(`Error fetching forecast from S3: ${error.message}`);
     return null;
   }
 };

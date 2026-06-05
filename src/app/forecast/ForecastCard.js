@@ -14,7 +14,7 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from "recharts";
-import { apiUrl, fetchForecastPresetsFromS3 } from "@/lib/api";
+import { fetchForecastPresetsFromS3 } from "@/lib/api";
 
 const CHART_COLORS = {
   historical: "#1e40af",
@@ -84,32 +84,16 @@ export default function ForecastCard({ refreshKey }) {
     setError(null);
 
     try {
-      if (granularity === "daily") {
-        const s3Data = await fetchForecastPresetsFromS3();
-        const s3Key = `all_daily_${forecastMonths}m`;
-        if (s3Data && s3Data[s3Key] && s3Data[s3Key].success !== false) {
-          setForecastData(s3Data[s3Key]);
-          setLoading(false);
-          return;
-        }
+      const data = await fetchForecastPresetsFromS3(granularity, forecastMonths);
+
+      if (!data) {
+        setError(
+          `No forecast data found for ${granularity} (${forecastMonths}M). Please ensure presets have been generated for this date.`,
+        );
+        setLoading(false);
+        return;
       }
 
-      const res = await fetch(apiUrl("/forecast/demand"), {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          start_date: "2025-09-01",
-          forecast_months: forecastMonths,
-          granularity,
-        }),
-      });
-
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.detail || `HTTP ${res.status}`);
-      }
-
-      const data = await res.json();
       setForecastData(data);
     } catch (err) {
       setError(err.message || "Failed to load forecast");
@@ -117,6 +101,10 @@ export default function ForecastCard({ refreshKey }) {
       setLoading(false);
     }
   }, [granularity, forecastMonths]);
+
+  useEffect(() => {
+    fetchForecast();
+  }, [fetchForecast]);
 
   const chartData = (() => {
     if (!forecastData) return [];
