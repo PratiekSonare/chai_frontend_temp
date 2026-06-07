@@ -74,9 +74,7 @@ export default function InventoryLayout({ title, subtitle, children }) {
 
           <div className="relative z-10 p-6 pt-4 max-w-[1400px] mx-auto">
             <div className="mb-6 flex flex-col gap-2 items-center justify-center">
-              <h1 className="text-3xl font-bold text-[#001FB0] poppins">
-                {title}
-              </h1>
+              <h1 className="text-3xl font-bold text-black poppins">{title}</h1>
               <p className="text-zinc-500 text-sm">{subtitle}</p>
             </div>
 

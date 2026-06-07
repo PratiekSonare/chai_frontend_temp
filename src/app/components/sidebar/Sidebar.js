@@ -279,17 +279,51 @@ export default function Sidebar({ onHoverChange }) {
           ></g>
           <g id="SVGRepo_iconCarrier">
             <path
-              d="M5.31171 10.7615C8.23007 5.58716 9.68925 3 12 3C14.3107 3 15.7699 5.58716 18.6883 10.7615L19.0519 11.4063C21.4771 15.7061 22.6897 17.856 21.5937 19.428C20.4978 21 17.7864 21 12.3637 21H11.6363C6.21356 21 3.50217 21 2.40626 19.428C1.31034 17.856 2.52291 15.7061 4.94805 11.4063L5.31171 10.7615Z"
+              d="M16 4.00195C18.175 4.01406 19.3529 4.11051 20.1213 4.87889C21 5.75757 21 7.17179 21 10.0002V16.0002C21 18.8286 21 20.2429 20.1213 21.1215C19.2426 22.0002 17.8284 22.0002 15 22.0002H9C6.17157 22.0002 4.75736 22.0002 3.87868 21.1215C3 20.2429 3 18.8286 3 16.0002V10.0002C3 7.17179 3 5.75757 3.87868 4.87889C4.64706 4.11051 5.82497 4.01406 8 4.00195"
               stroke="#fff"
               strokeWidth="1.5"
             ></path>
             <path
-              d="M12 8V13"
+              d="M10.5 14L17 14"
               stroke="#fff"
               strokeWidth="1.5"
               strokeLinecap="round"
             ></path>
-            <circle cx="12" cy="16" r="1" fill="#fff"></circle>
+            <path
+              d="M7 14H7.5"
+              stroke="#fff"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            ></path>
+            <path
+              d="M7 10.5H7.5"
+              stroke="#fff"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            ></path>
+            <path
+              d="M7 17.5H7.5"
+              stroke="#fff"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            ></path>
+            <path
+              d="M10.5 10.5H17"
+              stroke="#fff"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            ></path>
+            <path
+              d="M10.5 17.5H17"
+              stroke="#fff"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            ></path>
+            <path
+              d="M8 3.5C8 2.67157 8.67157 2 9.5 2H14.5C15.3284 2 16 2.67157 16 3.5V4.5C16 5.32843 15.3284 6 14.5 6H9.5C8.67157 6 8 5.32843 8 4.5V3.5Z"
+              stroke="#fff"
+              strokeWidth="1.5"
+            ></path>
           </g>
         </svg>
       ),
@@ -318,24 +352,13 @@ export default function Sidebar({ onHoverChange }) {
           ></g>
           <g id="SVGRepo_iconCarrier">
             <path
-              d="M20 8H4C3.44772 8 3 8.44772 3 9V19C3 19.5523 3.44772 20 4 20H20C20.5523 20 21 19.5523 21 19V9C21 8.44772 20.5523 8 20 8Z"
-              stroke="currentColor"
-              strokeWidth="1.5"
-            ></path>
-            <path
-              d="M16 8V6C16 4.89543 15.1046 4 14 4H10C8.89543 4 8 4.89543 8 6V8"
+              d="M15.5777 3.38197L17.5777 4.43152C19.7294 5.56066 20.8052 6.12523 21.4026 7.13974C22 8.15425 22 9.41667 22 11.9415V12.0585C22 14.5833 22 15.8458 21.4026 16.8603C20.8052 17.8748 19.7294 18.4393 17.5777 19.5685L15.5777 20.618C13.8221 21.5393 12.9443 22 12 22C11.0557 22 10.1779 21.5393 8.42229 20.618L6.42229 19.5685C4.27063 18.4393 3.19479 17.8748 2.5974 16.8603C2 15.8458 2 14.5833 2 12.0585V11.9415C2 9.41667 2 8.15425 2.5974 7.13974C3.19479 6.12523 4.27063 5.56066 6.42229 4.43152L8.42229 3.38197C10.1779 2.46066 11.0557 2 12 2C12.9443 2 13.8221 2.46066 15.5777 3.38197Z"
               stroke="currentColor"
               strokeWidth="1.5"
               strokeLinecap="round"
             ></path>
             <path
-              d="M12 12V16"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            ></path>
-            <path
-              d="M10 14H14"
+              d="M21 7.5L17 9.5M12 12L3 7.5M12 12V21.5M12 12C12 12 14.7426 10.6287 16.5 9.75C16.6953 9.65237 17 9.5 17 9.5M17 9.5V13M17 9.5L7.5 4.5"
               stroke="currentColor"
               strokeWidth="1.5"
               strokeLinecap="round"
@@ -419,7 +442,7 @@ export default function Sidebar({ onHoverChange }) {
               </g>
             </svg>
           ),
-          text: "DATA TABLE",
+          text: "SNAPSHOT",
           route: "/inventory/table",
           content_title: "Inventory Data Table",
           desc: "Detailed SKU-level inventory data and metrics.",
@@ -476,25 +499,26 @@ export default function Sidebar({ onHoverChange }) {
           ></g>
           <g id="SVGRepo_iconCarrier">
             <path
-              d="M4 6V19C4 20.6569 5.34315 22 7 22H17C18.6569 22 20 20.6569 20 19V9C20 7.34315 18.6569 6 17 6H4ZM4 6V5"
+              d="M12 2l7 4v5c0 5-3.8 9.5-7 11-3.2-1.5-7-6-7-11V6l7-4z"
               stroke="#fff"
               strokeWidth="1.5"
-            ></path>
-            <path
-              d="M18 6.00002V6.75002H18.75V6.00002H18ZM15.7172 2.32614L15.6111 1.58368L15.7172 2.32614ZM4.91959 3.86865L4.81353 3.12619H4.81353L4.91959 3.86865ZM5.07107 6.75002H18V5.25002H5.07107V6.75002ZM18.75 6.00002V4.30604H17.25V6.00002H18.75ZM15.6111 1.58368L4.81353 3.12619L5.02566 4.61111L15.8232 3.0686L15.6111 1.58368ZM4.81353 3.12619C3.91638 3.25435 3.25 4.0227 3.25 4.92895H4.75C4.75 4.76917 4.86749 4.63371 5.02566 4.61111L4.81353 3.12619ZM18.75 4.30604C18.75 2.63253 17.2678 1.34701 15.6111 1.58368L15.8232 3.0686C16.5763 2.96103 17.25 3.54535 17.25 4.30604H18.75ZM5.07107 5.25002C4.89375 5.25002 4.75 5.10627 4.75 4.92895H3.25C3.25 5.9347 4.06532 6.75002 5.07107 6.75002V5.25002Z"
-              fill="#fff"
-            ></path>
-            <path
-              d="M8 12H16"
-              stroke="#fff"
-              strokeWidth="1.5"
+              strokeLinejoin="round"
               strokeLinecap="round"
+              fill="none"
             ></path>
             <path
-              d="M8 15.5H13.5"
+              d="M12 8v5"
               stroke="#fff"
-              strokeWidth="1.5"
+              strokeWidth="1.6"
               strokeLinecap="round"
+              strokeLinejoin="round"
+            ></path>
+            <path
+              d="M12 15.2h.01"
+              stroke="#fff"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
           </g>
         </svg>
