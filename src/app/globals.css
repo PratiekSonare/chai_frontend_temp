@@ -1,3 +1,8 @@
+@import "./bootstrap-layered.css";
+@import "./datatables-core-layered.css";
+@import "./datatables-buttons-layered.css";
+@import "./datatables-scroller-layered.css";
+@import "./datatables-searchbuilder-layered.css";
 @import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
@@ -253,11 +258,9 @@ button:active {
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    @apply border-border outline-ring/50;
   }
 
   body {
-    @apply bg-background text-foreground;
     @apply bg-background text-foreground;
   }
 }

@@ -102,15 +102,15 @@ export default function MetricCarousel({ searchData, isSuccess, cN = 'bg-[#001FB
             ]}
             className="w-full h-1/4"
         >
-            <CarouselContent className="h-full!">
+            <CarouselContent className="!h-full">
                 {/* Winner By */}
                 <CarouselItem className="basis-1/2">
-                    <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-blue-200 w-full h-fit!" onClick={() => setIsOpen(false)}>
+                    <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-blue-200 w-full !h-fit" onClick={() => setIsOpen(false)}>
                         <div onClick={(e) => { e.stopPropagation(); toggleCard(); }} className={cn('flex flex-row items-center justify-between rounded-t-xl h-fit cursor-pointer', cN)}>
                             <span className="block text-md py-2 px-4 text-white rounded-t-xl oswald">WINNER BY</span>
                             {isOpen && (
                                 <div className={cn(`${cN} absolute top-10 left-0 right-0 bottom-0 z-50 grid grid-cols-2 grid-rows-2 rounded-b-xl gap-3 justify-center items-center p-4`)}>
-                                    <div className='flex flex-col gap-0!'>
+                                    <div className='flex flex-col !gap-0'>
                                         <span className='poppins text-sm font-extrabold text-white'>Pairwise Comparison</span>
                                         <span className='poppins text-xs italic text-gray-300'>Compare two groups head-to-head by {isProfit ? 'margin, profit, and markup' : 'volume, revenue, and average order value'}</span>
                                     </div>
@@ -166,7 +166,7 @@ export default function MetricCarousel({ searchData, isSuccess, cN = 'bg-[#001FB
                             </div>
                             <div className="w-2/3 p-2 flex flex-col items-center justify-center gap-0">
                                 <div className="text-center">
-                                    <p className="text-2xl font-bold text-[#001FB0] capitalize poppins -mb-1!">
+                                    <p className="text-2xl font-bold text-[#001FB0] capitalize poppins !-mb-1">
                                         {defaultWinner === 'one' && winner_by_volume}
                                         {defaultWinner === 'two' && winner_by_revenue}
                                         {defaultWinner === 'three' && winner_by_aov}
@@ -193,12 +193,12 @@ export default function MetricCarousel({ searchData, isSuccess, cN = 'bg-[#001FB
 
                 {/* Metric 1: Count/Items */}
                 <CarouselItem className="basis-1/2">
-                    <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-orange-200 w-full h-fit!" onClick={() => setIsOpen(false)}>
+                    <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-orange-200 w-full !h-fit" onClick={() => setIsOpen(false)}>
                         <div onClick={(e) => { e.stopPropagation(); toggleCard(); }} className={cn('flex flex-row items-center justify-between rounded-t-xl h-fit cursor-pointer', 'bg-orange-600')}>
                             <span className="block text-md py-2 px-4 text-white rounded-t-xl oswald">{getMetricLabel()}</span>
                             {isOpen && (
                                 <div className={cn(`bg-orange-600 absolute top-10 left-0 right-0 bottom-0 z-50 grid grid-cols-2 grid-rows-2 rounded-b-xl gap-3 justify-center items-center p-4`)}>
-                                    <div className='flex flex-col gap-0!'>
+                                    <div className='flex flex-col !gap-0'>
                                         <span className='poppins text-sm font-extrabold text-white'>{getMetricLabel()} Comparison</span>
                                         <span className='poppins text-xs italic text-gray-300'>Head-to-head comparison of {isProfit ? 'items in each group' : 'order volumes'} with percentage difference analysis</span>
                                     </div>
@@ -211,7 +211,7 @@ export default function MetricCarousel({ searchData, isSuccess, cN = 'bg-[#001FB
 
                             <div className="w-2/3 flex flex-row">
                                 <button
-                                    className={`p-2 w-full rounded-bl-xl! border-r-2 border-gray-400 text-center flex flex-col items-center justify-center ${
+                                    className={`p-2 w-full !rounded-bl-xl border-r-2 border-gray-400 text-center flex flex-col items-center justify-center ${
                                         metric_higher === 'A' ? 'text-white bg-orange-600' : 'text-orange-600 bg-transparent'
                                     }`}
                                 >
@@ -263,12 +263,12 @@ export default function MetricCarousel({ searchData, isSuccess, cN = 'bg-[#001FB
 
                 {/* Metric 2: Revenue/Profit */}
                 <CarouselItem className="basis-1/2">
-                    <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-green-200 w-full h-fit!" onClick={() => setIsOpen(false)}>
+                    <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-green-200 w-full !h-fit" onClick={() => setIsOpen(false)}>
                         <div onClick={(e) => { e.stopPropagation(); toggleCard(); }} className={cn('flex flex-row items-center justify-between rounded-t-xl h-fit cursor-pointer', getRevenueColor())}>
                             <span className="block text-md py-2 px-4 text-white rounded-t-xl oswald">{getRevenueLabel()}</span>
                             {isOpen && (
                                 <div className={cn(`${getRevenueColor()} absolute top-10 left-0 right-0 bottom-0 z-50 grid grid-cols-2 grid-rows-2 rounded-b-xl gap-3 justify-center items-center p-4`)}>
-                                    <div className='flex flex-col gap-0!'>
+                                    <div className='flex flex-col !gap-0'>
                                         <span className='poppins text-sm font-extrabold text-white'>{getRevenueLabel()} Comparison</span>
                                         <span className='poppins text-xs italic text-gray-300'>Head-to-head {isProfit ? 'profit' : 'revenue'} comparison between two groups showing totals and percentage differences</span>
                                     </div>
@@ -281,7 +281,7 @@ export default function MetricCarousel({ searchData, isSuccess, cN = 'bg-[#001FB
 
                             <div className="w-2/3 flex flex-row">
                                 <button
-                                    className={`p-2 w-full rounded-bl-xl! border-r-2 border-gray-400 text-center flex flex-col items-center justify-center ${
+                                    className={`p-2 w-full !rounded-bl-xl border-r-2 border-gray-400 text-center flex flex-col items-center justify-center ${
                                         revenue_higher === 'A' ? 'text-white ' : 'text-orange-600 bg-transparent'
                                     }`}
                                     style={{backgroundColor: revenue_higher === 'A' ? (isProfit ? '#b45309' : '#16a34a') : 'transparent'}}
@@ -339,12 +339,12 @@ export default function MetricCarousel({ searchData, isSuccess, cN = 'bg-[#001FB
 
                 {/* Metric 3: Avg Margin/AOV */}
                 <CarouselItem className="basis-1/2">
-                    <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-purple-200 w-full h-fit!" onClick={() => setIsOpen(false)}>
+                    <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-purple-200 w-full !h-fit" onClick={() => setIsOpen(false)}>
                         <div onClick={(e) => { e.stopPropagation(); toggleCard(); }} className={cn('flex flex-row items-center justify-between rounded-t-xl h-fit cursor-pointer', getAvgColor())}>
                             <span className="block text-md py-2 px-4 text-white rounded-t-xl oswald">{getAvgLabel()}</span>
                             {isOpen && (
                                 <div className={cn(`${getAvgColor()} absolute top-10 left-0 right-0 bottom-0 z-50 grid grid-cols-2 grid-rows-2 rounded-b-xl gap-3 justify-center items-center p-4`)}>
-                                    <div className='flex flex-col gap-0!'>
+                                    <div className='flex flex-col !gap-0'>
                                         <span className='poppins text-sm font-extrabold text-white'>{getAvgLabel()} Comparison</span>
                                         <span className='poppins text-xs italic text-gray-300'>Compare {isProfit ? 'average profit margins' : 'average order values'} between groups</span>
                                     </div>
@@ -357,7 +357,7 @@ export default function MetricCarousel({ searchData, isSuccess, cN = 'bg-[#001FB
 
                             <div className="w-2/3 flex flex-row">
                                 <button
-                                    className={`p-2 w-full rounded-bl-xl! border-r-2 border-gray-400 text-center flex flex-col items-center justify-center ${
+                                    className={`p-2 w-full !rounded-bl-xl border-r-2 border-gray-400 text-center flex flex-col items-center justify-center ${
                                         avg_metric_higher === 'A' ? 'text-white bg-indigo-600' : 'text-indigo-600 bg-transparent'
                                     }`}
                                 >

@@ -21,7 +21,7 @@ export default function Standard({
   };
 
   return (
-    <div className="w-full h-screen p-5 -my-10!">
+    <div className="w-full h-screen p-5 !-my-10">
       {isSuccess && !metricsLoading && (
         <MetricCarouselOrder
           key={`metrics-${refreshKey}`}

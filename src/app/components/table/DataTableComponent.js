@@ -215,10 +215,10 @@ export default function DataTableComponent({
     <>
       <div className="">
         <div className="flex justify-between w-full">
-          <span className="text-md! py-1 px-4 bg-[#001FB0] text-white rounded-t-xl rounded-br-xl oswald text-center">
+          <span className="!text-md py-1 px-4 bg-[#001FB0] text-white rounded-t-xl rounded-br-xl oswald text-center">
             {title}
           </span>
-          <span className="text-md! font-stretch-200%% py-1 px-4 bg-[#001FB0] text-white rounded-t-xl rounded-bl-xl oswald text-center">
+          <span className="!text-md font-stretch-[200%] py-1 px-4 bg-[#001FB0] text-white rounded-t-xl rounded-bl-xl oswald text-center">
             {summarized_query}
           </span>
         </div>

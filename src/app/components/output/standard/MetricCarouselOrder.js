@@ -77,7 +77,7 @@ export default function MetricCarousel({ metrics, searchData, isSuccess }) {
             ]}
             className="w-full max-x-6xl h-1/4"
         >
-            <CarouselContent className="h-full!">
+            <CarouselContent className="!h-full">
                 {/* Volume Metrics */}
                 <CarouselItem className="basis-1/2">
                     <MetricGrid

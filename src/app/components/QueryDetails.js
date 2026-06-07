@@ -29,7 +29,7 @@ export default function QueryDetails({ requestId, inputQuery, summarizedQuery, l
     }, []);
 
     return (
-            <div className="h-fit!">
+            <div className="!h-fit">
                 <div className="!w-fit !h-fit flex items-center justify-between px-4 py-2">
                     <span className="poppins font-bold text-md text-blue-700 align-bottom">Query Details</span>
                 </div>

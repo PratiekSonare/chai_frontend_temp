@@ -82,15 +82,15 @@ export default function NewMetricCarouselComp({ searchData, isSuccess, cN = 'bg-
             ]}
             className="w-full h-1/4"
         >
-            <CarouselContent className="h-full!">
+            <CarouselContent className="!h-full">
                 {/* Winner By */}
                 <CarouselItem className="basis-1/2">
-                    <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-blue-200 w-full h-fit!" onClick={() => setIsOpen(false)}>
+                    <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-blue-200 w-full !h-fit" onClick={() => setIsOpen(false)}>
                         <div onClick={(e) => { e.stopPropagation(); toggleCard(); }} className={cn('flex flex-row items-center justify-between rounded-t-xl h-fit cursor-pointer', cN)}>
                             <span className="block text-md py-2 px-4 text-white rounded-t-xl oswald">WINNER BY</span>
                             {isOpen && (
                                 <div className={cn(`${cN} absolute top-10 left-0 right-0 bottom-0 z-50 grid grid-cols-2 grid-rows-2 rounded-b-xl gap-3 justify-center items-center p-4`)}>
-                                    <div className='flex flex-col gap-0!'>
+                                    <div className='flex flex-col !gap-0'>
                                         <span className='poppins text-sm font-extrabold text-white'>Comparison Winners</span>
                                         <span className='poppins text-xs italic text-gray-300'>Compare different groups by volume, revenue, and average order value to identify top performers</span>
                                     </div>
@@ -153,7 +153,7 @@ export default function NewMetricCarouselComp({ searchData, isSuccess, cN = 'bg-
                             </div>
                             <div className="w-2/3 p-2 flex flex-col items-center justify-center gap-0">
                                 <div className="text-center">
-                                    <p className="text-2xl font-bold text-[#001FB0] capitalize poppins -mb-1!">
+                                    <p className="text-2xl font-bold text-[#001FB0] capitalize poppins !-mb-1">
                                         {defaultWinner === 'one' && winnerByVolume}
                                         {defaultWinner === 'two' && winnerByRevenue}
                                         {defaultWinner === 'three' && winnerByAov}
@@ -180,12 +180,12 @@ export default function NewMetricCarouselComp({ searchData, isSuccess, cN = 'bg-
 
                 {/* Order Count Comparison */}
                 <CarouselItem className="basis-1/2">
-                    <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-orange-200 w-full h-fit!" onClick={() => setIsOpen(false)}>
+                    <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-orange-200 w-full !h-fit" onClick={() => setIsOpen(false)}>
                         <div onClick={(e) => { e.stopPropagation(); toggleCard(); }} className={cn('flex flex-row items-center justify-between rounded-t-xl h-fit cursor-pointer', 'bg-orange-600')}>
                             <span className="block text-md py-2 px-4 text-white rounded-t-xl oswald">ORDER COUNT</span>
                             {isOpen && (
                                 <div className={cn(`bg-orange-600 absolute top-10 left-0 right-0 bottom-0 z-50 grid grid-cols-2 grid-rows-2 rounded-b-xl gap-3 justify-center items-center p-4`)}>
-                                    <div className='flex flex-col gap-0!'>
+                                    <div className='flex flex-col !gap-0'>
                                         <span className='poppins text-sm font-extrabold text-white'>Order Volume Comparison</span>
                                         <span className='poppins text-xs italic text-gray-300'>Compare total number of orders across different groups to identify volume leaders</span>
                                     </div>
@@ -227,12 +227,12 @@ export default function NewMetricCarouselComp({ searchData, isSuccess, cN = 'bg-
 
                 {/* Revenue Comparison */}
                 <CarouselItem className="basis-1/2">
-                    <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-green-200 w-full h-fit!" onClick={() => setIsOpen(false)}>
+                    <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-green-200 w-full !h-fit" onClick={() => setIsOpen(false)}>
                         <div onClick={(e) => { e.stopPropagation(); toggleCard(); }} className={cn('flex flex-row items-center justify-between rounded-t-xl h-fit cursor-pointer', 'bg-green-600')}>
                             <span className="block text-md py-2 px-4 text-white rounded-t-xl oswald">TOTAL REVENUE</span>
                             {isOpen && (
                                 <div className={cn(`bg-green-600 absolute top-10 left-0 right-0 bottom-0 z-50 grid grid-cols-2 grid-rows-2 rounded-b-xl gap-3 justify-center items-center p-4`)}>
-                                    <div className='flex flex-col gap-0!'>
+                                    <div className='flex flex-col !gap-0'>
                                         <span className='poppins text-sm font-extrabold text-white'>Revenue Comparison</span>
                                         <span className='poppins text-xs italic text-gray-300'>Compare total revenue generated across different groups to identify top revenue drivers</span>
                                     </div>
@@ -247,7 +247,7 @@ export default function NewMetricCarouselComp({ searchData, isSuccess, cN = 'bg-
                                     const colors = ['#059669', '#10b981', '#34d399']; // Different shades of green
                                     const bgColor = colors[index] || '#10b981';
                                     const borderClass = index < Object.keys(groupSummaries).length - 1 ? 'border-r-2 border-gray-400' : '';
-                                    const radiusClass = index === 0 ? 'rounded-bl-xl!' : index === 2 ? 'rounded-br-xl!' : '';
+                                    const radiusClass = index === 0 ? '!rounded-bl-xl' : index === 2 ? '!rounded-br-xl' : '';
 
                                     return (
                                         <button
@@ -274,12 +274,12 @@ export default function NewMetricCarouselComp({ searchData, isSuccess, cN = 'bg-
 
                 {/* AOV Comparison */}
                 <CarouselItem className="basis-1/2">
-                    <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-purple-200 w-full h-fit!" onClick={() => setIsOpen(false)}>
+                    <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-purple-200 w-full !h-fit" onClick={() => setIsOpen(false)}>
                         <div onClick={(e) => { e.stopPropagation(); toggleCard(); }} className={cn('flex flex-row items-center justify-between rounded-t-xl h-fit cursor-pointer', 'bg-purple-600')}>
                             <span className="block text-md py-2 px-4 text-white rounded-t-xl oswald">AVERAGE ORDER VALUE</span>
                             {isOpen && (
                                 <div className={cn(`bg-purple-600 absolute top-10 left-0 right-0 bottom-0 z-50 grid grid-cols-2 grid-rows-2 rounded-b-xl gap-3 justify-center items-center p-4`)}>
-                                    <div className='flex flex-col gap-0!'>
+                                    <div className='flex flex-col !gap-0'>
                                         <span className='poppins text-sm font-extrabold text-white'>AOV Comparison</span>
                                         <span className='poppins text-xs italic text-gray-300'>Compare average order values across groups to identify higher-value customer segments</span>
                                     </div>
@@ -294,7 +294,7 @@ export default function NewMetricCarouselComp({ searchData, isSuccess, cN = 'bg-
                                     const colors = ['#7c3aed', '#8b5cf6', '#a78bfa']; // Different shades of purple
                                     const bgColor = colors[index] || '#8b5cf6';
                                     const borderClass = index < Object.keys(groupSummaries).length - 1 ? 'border-r-2 border-gray-400' : '';
-                                    const radiusClass = index === 0 ? 'rounded-bl-xl!' : index === 2 ? 'rounded-br-xl!' : '';
+                                    const radiusClass = index === 0 ? '!rounded-bl-xl' : index === 2 ? '!rounded-br-xl' : '';
 
                                     return (
                                         <button

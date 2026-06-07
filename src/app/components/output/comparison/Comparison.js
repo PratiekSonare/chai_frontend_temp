@@ -187,7 +187,7 @@ export default function Comparison({ isSuccess, searchData, searchType, searchFi
                         <MetricCarouselComp key={`metrics-${refreshKey}`} searchData={searchData} isSuccess={isSuccess} />
                     )}
 
-                    <div className='flex flex-row w-full gap-4 -mt-10!'>
+                    <div className='flex flex-row w-full gap-4 !-mt-10'>
                         {(
                             <ComparisonCarousel createPaymentChart={createPaymentChart} mapData={mapData} searchData={searchData} groups={groups} />
                         )}
@@ -204,7 +204,7 @@ export default function Comparison({ isSuccess, searchData, searchType, searchFi
                         <NewMetricCarouselComp key={`metrics-${refreshKey}`} searchData={searchData} isSuccess={isSuccess} />
                     )}
 
-                    <div className='flex flex-row w-full gap-4 -mt-10!'>
+                    <div className='flex flex-row w-full gap-4 !-mt-10'>
                         {(
                             <NewComparisonCarousel createPaymentChart={createPaymentChart} mapData={mapData} searchData={searchData} groups={groups} />
                         )}

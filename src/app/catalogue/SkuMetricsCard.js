@@ -85,10 +85,16 @@ const CustomTooltip = ({ active, payload, label }) => {
   );
 };
 
+const SPINNER_SIZES = {
+  5: "h-5 w-5",
+  8: "h-8 w-8",
+  12: "h-12 w-12",
+};
+
 function Spinner({ size = 5 }) {
   return (
     <span
-      className={`h-${size} w-${size} rounded-full border-2 border-[#001a8e] border-t-transparent animate-spin inline-block`}
+      className={`${SPINNER_SIZES[size] || "h-5 w-5"} rounded-full border-2 border-[#001a8e] border-t-transparent animate-spin inline-block`}
     />
   );
 }

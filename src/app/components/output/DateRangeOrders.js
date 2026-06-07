@@ -107,28 +107,9 @@ export default function DateRangeOrders({ orderType }) {
   };
 
   return (
-    <div className="w-full h-screen flex flex-col gap-2 p-3">
-      <div className="relative w-full h-full flex flex-col items-center justify-center gap-2 px-10">
-        <div className="flex flex-col items-center">
-          <span className="poppins font-extrabold text-2xl">
-            Extract Orders
-          </span>
-          <span className="poppins text-sm text-gray-500">
-            Fetch orders and analyze performance in seconds.
-          </span>
-
-          {error && (
-            <p className="bg-red-50 text-red-600 text-sm mt-2">({error})</p>
-          )}
-
-          {isSuccess && (
-            <p className="bg-green-50 text-green-600 text-sm mt-2">
-              (Loaded {searchData.length} orders from {startDate} to {endDate})
-            </p>
-          )}
-        </div>
-
-        <div className="z-100 absolute top-0 right-0">
+    <div className="w-full h-screen overflow-y-scroll flex flex-col gap-2">
+      <div className="w-full flex-1 flex flex-col justify-center items-center gap-2 px-10 min-h-0">
+        <div className="absolute top-2 right-2">
           <DatePickerDropdown
             startDate={startDate}
             setStartDate={setStartDate}
@@ -146,35 +127,103 @@ export default function DateRangeOrders({ orderType }) {
 
         {/* Results Section */}
         {isSuccess && !loading && (
-          <div className="w-full h-full">
+          <div className="w-full h-full flex-1 min-h-0 flex flex-col gap-2 overflow-hidden">
             {finalMetrics && (
-              <MetricCarouselOrder
-                key={`metrics-${refreshKey}`}
-                metrics={finalMetrics}
-                searchData={searchData}
-                isSuccess={isSuccess}
-              />
+              <div className="">
+                <MetricCarouselOrder
+                  key={`metrics-${refreshKey}`}
+                  metrics={finalMetrics}
+                  searchData={searchData}
+                  isSuccess={isSuccess}
+                />
+              </div>
             )}
 
-            <DataTableComponent
-              key={`datatable-${refreshKey}`}
-              data={tableData}
-              summarized_query={tableData.summarized_query}
-            />
+            <div className="flex-1 min-h-0 overflow-auto">
+              <DataTableComponent
+                key={`datatable-${refreshKey}`}
+                data={tableData}
+                summarized_query={tableData.summarized_query}
+              />
+            </div>
           </div>
         )}
 
         {!isSuccess && !loading && (
-          <div className="bg-gray-50 my-auto h-[70%] w-full flex items-center justify-center rounded-lg border-4 border-dashed border-gray-300 p-8 text-center">
-            <p className="text-gray-600 text-xl">
-              Click &ldquo;Fetch Orders&rdquo; to load data for the selected
-              date range
-            </p>
+          <div className="bg-gradient-to-br from-blue-50 via-blue-50 to-blue-50 w-fit h-fit min-h-0 flex items-center justify-center rounded-2xl border-2 drop-shadow-xl border-blue-200 p-10 text-center max-w-2xl">
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                <svg
+                  className="w-8 h-8 text-blue-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+
+              <h3 className="poppins font-bold text-xl text-gray-800">
+                Get Started with Date Range Orders
+              </h3>
+
+              <div className="flex flex-col gap-3 text-sm text-gray-600">
+                <div className="flex items-start gap-3">
+                  <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0">
+                    1
+                  </span>
+                  <p className="text-left">
+                    Open the{" "}
+                    <span className="font-semibold text-blue-600">
+                      Date Picker
+                    </span>{" "}
+                    and select a start and end date, or use a{" "}
+                    <span className="font-semibold text-blue-600">
+                      time preset
+                    </span>{" "}
+                    like Yesterday, Last Week, or Last Month.
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0">
+                    2
+                  </span>
+                  <p className="text-left">
+                    Click{" "}
+                    <span className="font-semibold text-blue-600">
+                      Fetch Orders
+                    </span>{" "}
+                    to instantly retrieve all orders within your selected date
+                    range.
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0">
+                    3
+                  </span>
+                  <p className="text-left">
+                    Browse the{" "}
+                    <span className="font-semibold text-blue-600">
+                      metrics carousel
+                    </span>{" "}
+                    for a quick overview, then click on any order row to view
+                    full details.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
         {loading && (
-          <div className="bg-gray-50 my-auto h-[70%] w-full flex items-center justify-center rounded-lg border-4 border-dashed border-gray-300 p-8 text-center">
+          <div className="bg-gray-50 flex-1 min-h-0 w-full flex items-center justify-center rounded-lg border-4 border-dashed border-gray-300 p-8 text-center">
             <p className="text-gray-600">Loading orders data...</p>
           </div>
         )}

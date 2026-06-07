@@ -36,7 +36,7 @@ export default function ComparisonCarousel({ mapData, searchData, groups, create
             className="relative w-1/2 h-full overflow-hidden"
         >
 
-            <CarouselContent className="h-fit!">
+            <CarouselContent className="!h-fit">
 
                 {/* Show map only for order data, not for profit */}
                 {!isProfit && (
@@ -45,7 +45,7 @@ export default function ComparisonCarousel({ mapData, searchData, groups, create
                             <div onClick={(e) => { e.stopPropagation(); toggleCard(); }} className='absolute top-0 right-0 rounded-bl-xl px-3 py-2 bg-[#0024af] oswald text-white cursor-pointer z-10'>MAP
                                 {isOpen && (
                                     <div className={cn(`bg-[#0024af] absolute top-10 right-0 left-[-200px] bottom-[-200px] z-50 grid grid-cols-1 rounded-b-xl gap-3 justify-center items-center p-4`)}>
-                                        <div className='flex flex-col gap-0!'>
+                                        <div className='flex flex-col !gap-0'>
                                             <span className='poppins text-sm font-extrabold text-white'>Geographic Map</span>
                                             <span className='poppins text-xs italic text-gray-300'>Visual representation of data comparison across different geographic regions</span>
                                         </div>
@@ -85,12 +85,12 @@ export default function ComparisonCarousel({ mapData, searchData, groups, create
                 {isProfit && searchData?.detailed_metrics && (
                     Object.entries(searchData.detailed_metrics).map(([groupName, groupMetrics], index) => (
                         <CarouselItem key={groupName} className="basis-full">
-                            <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-blue-200 w-full h-fit!" onClick={() => setIsOpen(false)}>
+                            <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-blue-200 w-full !h-fit" onClick={() => setIsOpen(false)}>
                                 <div onClick={(e) => { e.stopPropagation(); toggleCard(); }} className='flex flex-row items-center justify-between bg-[#001FB0] rounded-t-xl h-fit cursor-pointer'>
                                     <span className="block text-md py-2 px-4 text-white rounded-t-xl oswald">{groupName.toUpperCase()}</span>
                                     {isOpen && (
                                         <div className={cn(`bg-[#001FB0] absolute top-10 left-0 right-0 bottom-0 z-50 grid grid-cols-1 rounded-b-xl gap-3 justify-center items-center p-4`)}>
-                                            <div className='flex flex-col gap-0!'>
+                                            <div className='flex flex-col !gap-0'>
                                                 <span className='poppins text-sm font-extrabold text-white'>Profit Metrics</span>
                                                 <span className='poppins text-xs italic text-gray-300'>Detailed profit metrics for {groupName} style including margin, profit, and other indicators</span>
                                             </div>
@@ -156,12 +156,12 @@ export default function ComparisonCarousel({ mapData, searchData, groups, create
                 {!isProfit && searchData?.detailed_metrics && Object.entries(searchData.detailed_metrics).map(([stateName, metrics], index) => (
                     <CarouselItem key={stateName} className="basis-1/2">
 
-                        <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-green-200 w-full h-fit!" onClick={() => setIsOpen(false)}>
+                        <div className="pointer-events-auto select-none relative rounded-xl bg-gray-100 border border-green-200 w-full !h-fit" onClick={() => setIsOpen(false)}>
                             <div onClick={(e) => { e.stopPropagation(); toggleCard(); }} className='flex flex-row items-center justify-between bg-[#001FB0] rounded-t-xl h-fit cursor-pointer'>
                                 <span className="block text-md py-2 px-4 text-white rounded-t-xl oswald">{stateName.toUpperCase()} METRICS</span>
                                 {isOpen && (
                                     <div className={cn(`bg-[#001FB0] absolute top-10 left-0 right-0 bottom-0 z-50 grid grid-cols-2 grid-rows-2 rounded-b-xl gap-3 justify-center items-center p-4`)}>
-                                        <div className='flex flex-col gap-0!'>
+                                        <div className='flex flex-col !gap-0'>
                                             <span className='poppins text-sm font-extrabold text-white'>State Metrics</span>
                                             <span className='poppins text-xs italic text-gray-300'>Detailed metrics breakdown showing orders, revenue, AOV, payment modes, and geographic distribution for {stateName}</span>
                                         </div>

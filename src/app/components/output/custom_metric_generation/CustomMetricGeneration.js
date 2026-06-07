@@ -68,12 +68,12 @@ export default function CustomMetricGeneration({ metric_analysis, metric_calcula
     return (
         <div className="max-w-7xl grid grid-cols-3 grid-rows-3 gap-4">
             <div className="col-start-1 col-span-2 row-span-full">
-                <div className="pointer-events-auto select-none relative border rounded-xl w-full h-fit!" onClick={() => setIsOpen(false)}>
+                <div className="pointer-events-auto select-none relative border rounded-xl w-full !h-fit" onClick={() => setIsOpen(false)}>
                     <div onClick={(e) => { e.stopPropagation(); toggleCard(); }} className='flex flex-row items-center justify-between bg-[#001FB0] rounded-t-xl h-fit cursor-pointer'>
                         <span className="block text-md py-2 px-4 text-white rounded-t-xl oswald">METRIC INSIGHTS</span>
                         {isOpen && (
                             <div className={cn(`bg-[#001FB0] absolute top-10 left-0 right-0 bottom-0 z-50 grid grid-cols-2 grid-rows-2 rounded-b-xl gap-3 justify-center items-center p-4`)}>
-                                <div className='flex flex-col gap-0!'>
+                                <div className='flex flex-col !gap-0'>
                                     <span className='poppins text-sm font-extrabold text-white'>Metric Analysis</span>
                                     <span className='poppins text-xs italic text-gray-300'>Comprehensive analysis of calculated metrics with detailed insights and calculations</span>
                                 </div>
@@ -87,7 +87,7 @@ export default function CustomMetricGeneration({ metric_analysis, metric_calcula
                             components={{
                                 // Style bullet points
                                 ul: ({ children }) => (
-                                    <ul className="space-y-2 pl-0!">
+                                    <ul className="space-y-2 !pl-0">
                                         {children}
                                     </ul>
                                 ),
@@ -117,12 +117,12 @@ export default function CustomMetricGeneration({ metric_analysis, metric_calcula
             </div>
 
             <div className="col-start-3 row-span-3">
-                <div className="pointer-events-auto select-none relative w-full rounded-xl text-[#001FB0]! border-4 border-[#001FB0] h-full" onClick={() => setIsOpen(false)}>
+                <div className="pointer-events-auto select-none relative w-full rounded-xl !text-[#001FB0] border-4 border-[#001FB0] h-full" onClick={() => setIsOpen(false)}>
                     <div onClick={(e) => { e.stopPropagation(); toggleCard(); }} className='!border-b-4 !border-[#001FB0] flex flex-row items-center justify-between rounded-t-xl h-fit cursor-pointer'>
                         <span className="block text-lg py-2 px-4 rounded-t-xl oswald uppercase">{customMetricLabel}</span>
                         {isOpen && (
                             <div className={cn(`bg-[#001FB0] absolute top-10 left-0 right-0 bottom-0 z-50 grid grid-cols-1 rounded-b-xl gap-3 justify-center items-center p-4`)}>
-                                <div className='flex flex-col gap-0!'>
+                                <div className='flex flex-col !gap-0'>
                                     <span className='poppins text-sm font-extrabold text-white'>Custom Metric</span>
                                     <span className='poppins text-xs italic text-gray-300'>Single calculated metric result for the current query</span>
                                 </div>

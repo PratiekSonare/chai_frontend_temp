@@ -173,7 +173,7 @@ const LineChartComponent = ({ data, dataKey }) => {
 };
 
 const ScatterChartComponent = ({ data, xKey, yKey }) => (
-  <div className="h-64 overflow-visible!">
+  <div className="h-64 !overflow-visible">
     <ResponsiveContainer width="100%" height="100%">
       <ScatterChart margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" />

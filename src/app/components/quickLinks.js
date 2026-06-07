@@ -42,7 +42,7 @@ export default function QuickLinks() {
         >
           CATALOGUE
         </button>
-        <button className="p-2 w-full rounded-lg! bg-gray-100 border-2 border-dashed border-gray-300 text-gray-400 text-center">
+        <button className="p-2 w-full !rounded-lg bg-gray-100 border-2 border-dashed border-gray-300 text-gray-400 text-center">
           COMING SOON...
         </button>
       </div>
