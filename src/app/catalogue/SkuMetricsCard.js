@@ -1,6 +1,13 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo, useRef, startTransition } from "react";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+  startTransition,
+} from "react";
 import {
   BarChart,
   Bar,
@@ -58,7 +65,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
     <div
-      className="bg-white border border-gray-200 rounded-xl shadow-xl p-4"
+      className="bg-white border border-gray-200 rounded-xl shadow-xl p-5"
       style={{ minWidth: 200 }}
     >
       <p className="font-semibold text-gray-800 text-sm mb-2">{label}</p>
@@ -112,7 +119,7 @@ function EmptyState({ message }) {
 function OverviewSection({ cumulative }) {
   if (!cumulative) return <EmptyState message="No cumulative data" />;
   return (
-    <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 p-4 overflow-y-auto h-full">
+    <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 p-5 overflow-y-auto h-full">
       {OVERVIEW_FIELDS.map(({ key, label, currency, percent }) => {
         const val = cumulative[key];
         const isNegative = val < 0;
@@ -122,7 +129,7 @@ function OverviewSection({ cumulative }) {
         return (
           <div
             key={key}
-            className={`hover:border-[#001a8e]/30 metric-sdw ${bgColor} border ${borderColor} rounded-xl p-4 flex flex-col gap-2`}
+            className={`hover:border-[#001a8e]/30 metric-sdw ${bgColor} border ${borderColor} rounded-xl p-5 flex flex-col gap-2`}
           >
             <span className="oswald uppercase tracking-wider text-gray-600 text-sm">
               {label}
@@ -152,7 +159,7 @@ function OverviewSection({ cumulative }) {
 
       {/* Order status breakdown */}
       {cumulative.order_status_breakdown && (
-        <div className="metric-sdw col-span-2 bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-[#001a8e]/30 transition-all">
+        <div className="metric-sdw col-span-2 bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md hover:border-[#001a8e]/30 transition-all">
           <span className="oswald uppercase tracking-wider text-[#001a8e] text-sm block mb-3 font-bold">
             Order Status Breakdown
           </span>
@@ -183,7 +190,7 @@ function OverviewSection({ cumulative }) {
 
       {/* Payment split */}
       {cumulative.payment_split && (
-        <div className="metric-sdw col-span-2 bg-gradient-to-br from-zinc-50 to-white border border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-[#001a8e]/30 transition-all">
+        <div className="metric-sdw col-span-2 bg-gradient-to-br from-zinc-50 to-white border border-gray-200 rounded-xl p-5 hover:shadow-md hover:border-[#001a8e]/30 transition-all">
           <span className="oswald uppercase tracking-wider text-[#001a8e] text-sm block mb-3 font-bold">
             Payment Split
           </span>
@@ -239,7 +246,7 @@ function MarketplaceSection({ byMarketplace }) {
   }));
 
   return (
-    <div className="p-4 h-full overflow-y-auto flex flex-col gap-4">
+    <div className="p-5 h-full overflow-y-auto flex flex-col gap-4">
       <ResponsiveContainer width="100%" height={220}>
         <BarChart
           data={chartData.map((d) => ({
@@ -281,7 +288,7 @@ function MarketplaceSection({ byMarketplace }) {
         {Object.entries(byMarketplace).map(([mp, d]) => (
           <div
             key={mp}
-            className="metric-sdw bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-[#001a8e]/30 transition-all"
+            className="metric-sdw bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md hover:border-[#001a8e]/30 transition-all"
           >
             <div className="flex justify-between items-center mb-4 pb-3 border-b border-gray-200">
               <span className="oswald uppercase tracking-wider text-[#001a8e] text-base font-bold">
@@ -371,7 +378,7 @@ function MarketplaceSection({ byMarketplace }) {
 function PricingSection({ priceHistory }) {
   const marketplaces = useMemo(
     () => [...new Set((priceHistory || []).map((d) => d.marketplace))],
-    [priceHistory]
+    [priceHistory],
   );
   const [activeMp, setActiveMp] = useState(() => marketplaces[0] || null);
   const initializedRef = useRef(false);
@@ -391,7 +398,7 @@ function PricingSection({ priceHistory }) {
   const filtered = priceHistory.filter((d) => d.marketplace === activeMp);
 
   return (
-    <div className="p-4 h-full overflow-y-auto flex flex-col gap-4">
+    <div className="p-5 h-full overflow-y-auto flex flex-col gap-4">
       <div className="flex flex-wrap gap-2">
         {marketplaces.map((mp) => (
           <button
@@ -501,7 +508,7 @@ function GeographicSection({ byState, topStates }) {
     .map(([state, d]) => ({ state, ...d }));
 
   return (
-    <div className="p-4 h-full overflow-y-auto flex flex-col gap-4">
+    <div className="p-5 h-full overflow-y-auto flex flex-col gap-4">
       {topStates?.length > 0 && (
         <div className="flex flex-wrap gap-2">
           <span className="text-xs poppins text-gray-500 self-center">
@@ -569,7 +576,7 @@ function SizeSection({ bySize, totalRevenue }) {
     .map(([size, d]) => ({ size, ...d }));
 
   return (
-    <div className="p-4 h-full overflow-y-auto flex flex-col gap-4">
+    <div className="p-5 h-full overflow-y-auto flex flex-col gap-4">
       <ResponsiveContainer width="100%" height={260}>
         <BarChart
           data={data.map((d) => ({
@@ -615,7 +622,7 @@ function SizeSection({ bySize, totalRevenue }) {
         {data.map(({ size, units_sold, revenue, revenue_share_pct }) => (
           <div
             key={size}
-            className="bg-gradient-to-br from-zinc-50 to-white border border-gray-200 rounded-xl p-4 text-center hover:shadow-md hover:border-[#001a8e]/30 transition-all"
+            className="bg-gradient-to-br from-zinc-50 to-white border border-gray-200 rounded-xl p-5 text-center hover:shadow-md hover:border-[#001a8e]/30 transition-all"
           >
             <div className="oswald text-[#001a8e] text-xl font-bold mb-3">
               Size {size}
@@ -664,7 +671,7 @@ function DailySection({ dailySeries }) {
   }));
 
   return (
-    <div className="p-4 h-full overflow-y-auto flex flex-col gap-4">
+    <div className="p-5 h-full overflow-y-auto flex flex-col gap-4">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={data.map((d) => ({
@@ -755,7 +762,7 @@ function FulfillmentSection({ courierDist, warehouseDist }) {
     return <EmptyState message="No fulfillment data" />;
 
   return (
-    <div className="p-4 h-full overflow-y-auto flex flex-col gap-6">
+    <div className="p-5 h-full overflow-y-auto flex flex-col gap-6">
       {courierData.length > 0 && (
         <div>
           <span className="oswald uppercase tracking-wider text-[#001a8e] text-base block mb-3">

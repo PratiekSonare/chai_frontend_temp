@@ -109,7 +109,7 @@ export default function DateRangeOrders({ orderType }) {
   return (
     <div className="w-full h-screen overflow-y-scroll flex flex-col gap-2">
       <div className="w-full flex-1 flex flex-col justify-center items-center gap-2 px-10 min-h-0">
-        <div className="absolute top-2 right-2">
+        <div className="absolute top-2 right-2 z-300">
           <DatePickerDropdown
             startDate={startDate}
             setStartDate={setStartDate}
@@ -127,16 +127,14 @@ export default function DateRangeOrders({ orderType }) {
 
         {/* Results Section */}
         {isSuccess && !loading && (
-          <div className="w-full h-full flex-1 min-h-0 flex flex-col gap-2 overflow-hidden">
+          <div className="w-full h-full flex-1 min-h-0 flex flex-col gap-2 overflow-hidden scale-85">
             {finalMetrics && (
-              <div className="">
-                <MetricCarouselOrder
-                  key={`metrics-${refreshKey}`}
-                  metrics={finalMetrics}
-                  searchData={searchData}
-                  isSuccess={isSuccess}
-                />
-              </div>
+              <MetricCarouselOrder
+                key={`metrics-${refreshKey}`}
+                metrics={finalMetrics}
+                searchData={searchData}
+                isSuccess={isSuccess}
+              />
             )}
 
             <div className="flex-1 min-h-0 overflow-auto">
@@ -223,8 +221,41 @@ export default function DateRangeOrders({ orderType }) {
         )}
 
         {loading && (
-          <div className="bg-gray-50 flex-1 min-h-0 w-full flex items-center justify-center rounded-lg border-4 border-dashed border-gray-300 p-8 text-center">
-            <p className="text-gray-600">Loading orders data...</p>
+          <div className="w-full flex-1 min-h-0 flex items-center justify-center">
+            <div className="w-full max-w-3xl bg-white/80 backdrop-blur-sm rounded-lg shadow-lg p-6 border border-gray-100">
+              <div className="flex items-center gap-4">
+                <svg
+                  className="w-8 h-8 text-blue-600 animate-spin"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  />
+                </svg>
+
+                <div className="flex-1">
+                  <p className="text-gray-800 font-semibold">
+                    Loading orders...
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Fetching orders for the selected date range — this may take
+                    a few seconds.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>

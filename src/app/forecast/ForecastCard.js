@@ -43,7 +43,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 
   return (
     <div
-      className="bg-white border border-gray-200 rounded-xl shadow-xl p-4"
+      className="bg-white border border-gray-200 rounded-xl shadow-xl p-5"
       style={{ minWidth: 180 }}
     >
       <p className="font-semibold text-gray-800 text-sm mb-2">{label}</p>
@@ -90,7 +90,10 @@ export default function ForecastCard({ refreshKey }) {
     setError(null);
 
     try {
-      const data = await fetchForecastPresetsFromS3(granularity, forecastMonths);
+      const data = await fetchForecastPresetsFromS3(
+        granularity,
+        forecastMonths,
+      );
 
       if (!data) {
         setError(
@@ -306,7 +309,7 @@ export default function ForecastCard({ refreshKey }) {
               </div>
 
               {/* Chart Area */}
-              <div className="flex-1 overflow-hidden p-4">
+              <div className="flex-1 overflow-hidden p-5">
                 {error ? (
                   <div className="h-full flex flex-col items-center justify-center gap-3">
                     <svg

@@ -214,7 +214,7 @@ export default function DataTableComponent({
   return (
     <>
       <div className="">
-        <div className="flex justify-between w-full">
+        <div className="flex justify-between w-full bg-transparent">
           <span className="!text-md py-1 px-4 bg-[#001FB0] text-white rounded-t-xl rounded-br-xl oswald text-center">
             {title}
           </span>

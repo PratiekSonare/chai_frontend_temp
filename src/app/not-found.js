@@ -1,14 +1,63 @@
 "use client";
 
 import Link from "next/link";
-import { AlertTriangle, Home, ArrowLeft } from "lucide-react";
+import {
+  AlertTriangle,
+  Home,
+  ArrowLeft,
+  Search,
+  ShoppingCart,
+  RotateCcw,
+  Package,
+  Boxes,
+  ShieldAlert,
+} from "lucide-react";
+
+const sections = [
+  {
+    label: "Data Search",
+    href: "/",
+    icon: Search,
+    desc: "AI-powered data search across all sources.",
+  },
+  {
+    label: "Orders",
+    href: "/orders",
+    icon: ShoppingCart,
+    desc: "Order metrics, fetch orders & forecast.",
+  },
+  {
+    label: "RTO",
+    href: "/rto",
+    icon: RotateCcw,
+    desc: "Return & cancellation trends.",
+  },
+  {
+    label: "Catalogue",
+    href: "/catalogue",
+    icon: Package,
+    desc: "Explore SKUs & sales performance.",
+  },
+  {
+    label: "Inventory",
+    href: "/inventory",
+    icon: Boxes,
+    desc: "Stock health, forecasts & insights.",
+  },
+  {
+    label: "Risk",
+    href: "/risk",
+    icon: ShieldAlert,
+    desc: "Order risk estimation & scoring.",
+  },
+];
 
 export default function NotFound() {
   return (
-    <div className="h-screen flex items-center justify-center bg-zinc-50 font-sans">
-      <div className="text-center p-8 max-w-md mx-auto">
+    <div className="min-h-screen flex items-center justify-center bg-zinc-50 font-sans px-4">
+      <div className="text-center max-w-2xl mx-auto">
         <div className="flex justify-center mb-6">
-          <div className="p-4 bg-red-50 rounded-full border border-red-100">
+          <div className="p-5 bg-red-50 rounded-full border border-red-100">
             <AlertTriangle className="w-10 h-10 text-red-500" />
           </div>
         </div>
@@ -18,8 +67,29 @@ export default function NotFound() {
           Page Not Found
         </h2>
         <p className="text-sm text-gray-500 mb-8">
-          The page you're looking for doesn't exist or has been moved.
+          The page you&apos;re looking for doesn&apos;t exist or has been moved.
         </p>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
+          {sections.map((section) => {
+            const Icon = section.icon;
+            return (
+              <Link
+                key={section.href}
+                href={section.href}
+                className="group flex flex-col items-center gap-2 p-4 bg-white rounded-xl border border-gray-200 hover:border-[#001FB0] hover:shadow-md transition-all duration-200"
+              >
+                <Icon className="w-6 h-6 text-[#001FB0] group-hover:scale-110 transition-transform" />
+                <span className="text-sm font-semibold text-gray-700 group-hover:text-[#001FB0]">
+                  {section.label}
+                </span>
+                <span className="text-xs text-gray-400 leading-tight">
+                  {section.desc}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
 
         <div className="flex items-center justify-center gap-4">
           <Link

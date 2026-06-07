@@ -189,7 +189,7 @@ export default function RtoPage() {
             className={`relative h-full w-full flex flex-col items-center justify-center`}
           >
             <div
-              className="w-full flex flex-col justify-center items-center gap-5 overflow-y-auto"
+              className="w-full flex flex-col justify-center items-center gap-2 overflow-y-auto"
               key={refreshKey}
             >
               <div className="flex flex-col items-center">
@@ -207,7 +207,7 @@ export default function RtoPage() {
                   {/* Left Sidebar */}
                   <div className="border-r border-white/20 z-10 pb-4 text-white h-full flex flex-col justify-between w-1/4 bg-[#001a8e] rounded-l-xl overflow-y-auto sticky top-0">
                     {/* === SECTION NAVIGATION - Top === */}
-                    <div className="p-4">
+                    <div className="p-5">
                       <div className="w-full grid grid-cols-1 gap-3">
                         {sections.map((section) => (
                           <button
@@ -333,7 +333,7 @@ export default function RtoPage() {
                           <div className="space-y-3">
                             {/* Top Metrics Row */}
                             <div className="grid grid-cols-4 gap-3">
-                              <div className="metric-sdw rounded-xl bg-zinc-50 border-l border-b border-r border-[#001a8e] p-4 flex flex-col">
+                              <div className="metric-sdw rounded-xl bg-zinc-50 border-l border-b border-r border-[#001a8e] p-5 flex flex-col">
                                 <span className="oswald uppercase tracking-wider text-[#001a8e] text-md">
                                   Total orders
                                 </span>
@@ -341,7 +341,7 @@ export default function RtoPage() {
                                   {payload?.totals?.orders ?? 0}
                                 </p>
                               </div>
-                              <div className="metric-sdw rounded-xl bg-zinc-50 border-l border-b border-r border-[#001a8e] p-4 flex flex-col">
+                              <div className="metric-sdw rounded-xl bg-zinc-50 border-l border-b border-r border-[#001a8e] p-5 flex flex-col">
                                 <span className="oswald uppercase tracking-wider text-red-700 text-md">
                                   Cancelled
                                 </span>
@@ -349,7 +349,7 @@ export default function RtoPage() {
                                   {payload?.totals?.cancelled ?? 0}
                                 </p>
                               </div>
-                              <div className="metric-sdw rounded-xl bg-zinc-50 border-l border-b border-r border-[#001a8e] p-4 flex flex-col">
+                              <div className="metric-sdw rounded-xl bg-zinc-50 border-l border-b border-r border-[#001a8e] p-5 flex flex-col">
                                 <span className="oswald uppercase tracking-wider text-amber-700 text-md">
                                   Returned
                                 </span>
@@ -357,7 +357,7 @@ export default function RtoPage() {
                                   {payload?.totals?.returned ?? 0}
                                 </p>
                               </div>
-                              <div className="metric-sdw rounded-xl bg-zinc-50 border-l border-b border-r border-[#001a8e] p-4 flex flex-col">
+                              <div className="metric-sdw rounded-xl bg-zinc-50 border-l border-b border-r border-[#001a8e] p-5 flex flex-col">
                                 <span className="oswald uppercase tracking-wider text-violet-700 text-md">
                                   Pending
                                 </span>
@@ -368,7 +368,7 @@ export default function RtoPage() {
                             </div>
 
                             {/* Active Section Details */}
-                            <div className="metric-sdw bg-white rounded-xl border border-[#001a8e]/20 p-4 space-y-4">
+                            <div className="metric-sdw bg-white rounded-xl border border-[#001a8e]/20 p-5 space-y-4">
                               <div className="flex items-center justify-between">
                                 <div>
                                   <span className="oswald uppercase tracking-wider text-[#001a8e] text-md opacity-70">
@@ -599,7 +599,7 @@ export default function RtoPage() {
 
                             {/* Data Table */}
                             {payload && activeOrders.length > 0 && (
-                              <div className="metric-sdw bg-zinc-50 rounded-xl p-4 border border-[#001a8e]/10">
+                              <div className="metric-sdw bg-zinc-50 rounded-xl p-5 border border-[#001a8e]/10">
                                 <DataTableComponent
                                   data={activeOrders}
                                   summarized_query={`${activeSection} orders • ${startDate} to ${endDate}`}

@@ -235,7 +235,7 @@ export default function MetricCard() {
   }, []);
 
   return (
-    <div className="w-[85%] h-screen flex flex-col justify-start items-start gap-5 overflow-y-auto">
+    <div className="w-[85%] h-screen flex flex-col justify-start items-start gap-4 overflow-y-auto">
       <div className="flex flex-col items-center text-center pt-2 mx-auto">
         <span className="poppins font-extrabold text-2xl">
           Chupps Order Metrics
@@ -248,34 +248,145 @@ export default function MetricCard() {
 
       <div className="poppins w-full relative">
         <div className="relative bg-[#001a8e] rounded-xl flex h-[78vh] min-h-100">
-          <div className="z-10 pb-4 text-white h-full flex flex-col justify-between w-1/4 bg-[#001a8e] rounded-l-xl overflow-y-auto sticky top-0">
-            {/* === CATEGORY NAVIGATION - Top (1/5) === */}
+          <div className="z-10 text-white h-full flex flex-col w-1/4 bg-[#001a8e] rounded-l-xl border-r border-white/20 overflow-y-auto">
+            {/* === CATEGORY NAVIGATION - 2-col grid with icons === */}
             <div className="flex-shrink-0 px-3 pt-3 pb-2">
-              <div className="w-full grid grid-cols-1 gap-2">
+              <div className="w-full grid grid-cols-2 gap-2">
                 {Object.entries(metricsConfig).map(
                   ([categoryKey, categoryData]) => {
+                    const isActive = selectedCategory === categoryKey;
+                    const categoryIcons = {
+                      primaryKpis: (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke={isActive ? "#001a8e" : "white"}
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="w-5 h-5"
+                        >
+                          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                        </svg>
+                      ),
+                      productMetrics: (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke={isActive ? "#001a8e" : "white"}
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="w-5 h-5"
+                        >
+                          <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
+                          <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                          <line x1="12" y1="22.08" x2="12" y2="12" />
+                        </svg>
+                      ),
+                      performanceMetrics: (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke={isActive ? "#001a8e" : "white"}
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="w-5 h-5"
+                        >
+                          <path d="M12 2a10 10 0 0110 10" />
+                          <path d="M12 2a10 10 0 00-6.88 2.77" />
+                          <circle cx="12" cy="12" r="2" />
+                          <path d="M12 14v8" />
+                          <path d="M9 18l3 3 3-3" />
+                        </svg>
+                      ),
+                      geographicMetrics: (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke={isActive ? "#001a8e" : "white"}
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="w-5 h-5"
+                        >
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="2" y1="12" x2="22" y2="12" />
+                          <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
+                        </svg>
+                      ),
+                      channelPaymentMetrics: (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke={isActive ? "#001a8e" : "white"}
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="w-5 h-5"
+                        >
+                          <rect x="1" y="4" width="22" height="16" rx="2" />
+                          <line x1="1" y1="10" x2="23" y2="10" />
+                        </svg>
+                      ),
+                      orderTypeMetrics: (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke={isActive ? "#001a8e" : "white"}
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="w-5 h-5"
+                        >
+                          <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                          <path d="M2 17l10 5 10-5" />
+                          <path d="M2 12l10 5 10-5" />
+                        </svg>
+                      ),
+                      qualityRiskMetrics: (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke={isActive ? "#001a8e" : "white"}
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="w-5 h-5"
+                        >
+                          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                          <polyline points="9 12 11 14 15 10" />
+                        </svg>
+                      ),
+                    };
+
                     return (
                       <button
                         key={categoryKey}
                         onClick={() => setSelectedCategory(categoryKey)}
-                        className={`group overflow-x-hidden px-3 py-2 rounded-lg poppins transition-all flex flex-col items-start gap-1 
-                        ${
-                          selectedCategory === categoryKey
-                            ? "bg-white text-[#001a8e] shadow-lg"
-                            : "bg-white/10 text-white hover:bg-white/20 border border-white"
-                        }`}
+                        className={`group flex flex-col items-center justify-center gap-1.5 py-3.5 px-2 rounded-xl border-r border-white poppins transition-all duration-200
+                          ${
+                            isActive
+                              ? "bg-white text-[#001a8e] shadow-lg scale-[1.03]"
+                              : "bg-white/10 text-white"
+                          }`}
                       >
-                        <div className="flex items-center gap-3 w-full">
-                          {/* <div
-                            className={`translate-y-3 group-hover:translate-y-0 ease-in duration-100 rounded-full w-2 h-2 border ${selectedCategory === categoryKey ? "border-[#001a8e]" : "border-white"} opacity-80 group-hover:opacity-100 transition-opacity`}
-                          ></div> */}
-                          <span className="translate-y-3 group-hover:translate-y-0 ease-in duration-100 text-xs font-medium">
-                            {categoryData.category}
-                          </span>
+                        <div
+                          className={`flex items-center justify-center w-8 h-8 rounded-lg transition-all duration-200
+                            ${isActive ? "bg-[#001a8e]/10" : "bg-white/10 group-hover:bg-white/20"}`}
+                        >
+                          {categoryIcons[categoryKey]}
                         </div>
-
-                        <span className="-translate-x-40 group-hover:translate-x-0 ease-in duration-100 text-xs opacity-70 pl-4">
-                          {categoryData.subtitle || "View metrics"}
+                        <span className="text-[11px] font-semibold leading-tight text-center">
+                          {categoryData.category}
                         </span>
                       </button>
                     );
@@ -285,7 +396,7 @@ export default function MetricCard() {
             </div>
 
             {namesLoading ? (
-              <div className="px-4 py-4 flex items-center gap-2 text-xs text-white/80">
+              <div className="px-4 py-2 flex items-center gap-2 text-xs text-white/80">
                 <span className="h-4 w-4 rounded-full border-2 border-white/80 border-t-transparent animate-spin" />
                 <span>Loading filter options...</span>
               </div>
@@ -553,9 +664,9 @@ export default function MetricCard() {
             )}
           </div>
           {/* Right Content Area - Metrics */}
-          <div className="w-3/4 h-full bg-[#001a8e] border border-transparent flex flex-col rounded-xl">
+          <div className="w-3/4 h-full bg-[#001a8e] flex flex-col rounded-xl px-3">
             {/* === METRICS CAROUSEL - Takes 4/5 height === */}
-            <div className="flex-1 flex flex-col py-4 min-h-0 overflow-y-hidden">
+            <div className="flex-1 flex flex-col py-2 min-h-0 overflow-y-hidden">
               <Carousel
                 opts={{
                   align: "start",

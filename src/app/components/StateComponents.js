@@ -243,7 +243,7 @@ export const ErrorComponent = ({
           </div>
 
           {isGeminiOverloaded && (
-            <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-900 text-xs md:text-sm shadow-sm animate-in zoom-in-95 duration-200">
+            <div className="mb-4 p-5 bg-amber-50 border border-amber-200 rounded-xl text-amber-900 text-xs md:text-sm shadow-sm animate-in zoom-in-95 duration-200">
               <div className="flex items-center gap-2 font-bold mb-1.5 text-amber-800">
                 <span className="text-base">⚠️</span>
                 <span>Google Gemini API Service High Demand (503)</span>
@@ -251,12 +251,14 @@ export const ErrorComponent = ({
               <p className="leading-relaxed mb-2 font-medium">
                 Google&apos;s Gemini model is currently overloaded.{" "}
                 <strong>Please note: this is NOT an app issue</strong>, but
-                rather a temporary upstream service spike from Google&apos;s servers.
+                rather a temporary upstream service spike from Google&apos;s
+                servers.
               </p>
               <p className="opacity-90 leading-relaxed font-normal">
                 These spikes are usually temporary and resolve within a few
                 seconds. Please wait a moment and try clicking{" "}
-                <strong>&quot;Retry Request&quot;</strong> below to send your query again.
+                <strong>&quot;Retry Request&quot;</strong> below to send your
+                query again.
               </p>
             </div>
           )}
@@ -358,8 +360,8 @@ export const ErrorComponent = ({
             <span>Upstream API Service Limit (Google Gemini 503)</span>
           </div>
           <p className="leading-relaxed mb-2">
-            <strong>Notice:</strong> Google&apos;s Gemini AI service is currently
-            experiencing extremely high traffic and spikes in demand.{" "}
+            <strong>Notice:</strong> Google&apos;s Gemini AI service is
+            currently experiencing extremely high traffic and spikes in demand.{" "}
             <strong>This is NOT an issue with the Chupps application</strong>,
             but rather a temporary availability limitation on the Google Gemini
             API servers.
@@ -387,7 +389,7 @@ export const ErrorComponent = ({
             {errorList.map((err, idx) => (
               <div
                 key={idx}
-                className="bg-white/70 border border-red-300 rounded-lg p-4 text-left"
+                className="bg-white/70 border border-red-300 rounded-lg p-5 text-left"
               >
                 {/* Step/Stage Information */}
                 {err.step && (

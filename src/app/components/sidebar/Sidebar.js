@@ -179,6 +179,38 @@ export default function Sidebar({ onHoverChange }) {
           desc: "Get orders by date range instantly!",
           subtitle: "Query orders instantly!",
         },
+        // FORECAST
+        {
+          svg: (
+            <svg
+              className="w-8 h-8"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+              <g
+                id="SVGRepo_tracerCarrier"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></g>
+              <g id="SVGRepo_iconCarrier">
+                <path
+                  d="M22 7L14.6203 14.3347C13.6227 15.3263 13.1238 15.822 12.5051 15.822C11.8864 15.8219 11.3876 15.326 10.3902 14.3342L10.1509 14.0962C9.15254 13.1035 8.65338 12.6071 8.03422 12.6074C7.41506 12.6076 6.91626 13.1043 5.91867 14.0977L2 18M22 7V12.5458M22 7H16.4179"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                ></path>
+              </g>
+            </svg>
+          ),
+          text: "FORECAST",
+          route: "/forecast",
+          content_title: "Forecast Analytics",
+          desc: "Fetch mid-range, short-range forecasts for orders and inventory / assortments.",
+          subtitle: "Forecast demand and supply, with ease.",
+        },
       ],
     },
     // RTO (Top-level)
@@ -267,8 +299,10 @@ export default function Sidebar({ onHoverChange }) {
       desc: "Explore all available SKUs, compare historical sales performance among different SKUs.",
       subtitle: "Repository of all Chupps SKUs.",
     },
-    // RISK (Top-level)
+    // INVENTORY (Parent)
     {
+      text: "INVENTORY",
+      route: "/inventory",
       svg: (
         <svg
           className="w-8 h-8"
@@ -284,34 +318,146 @@ export default function Sidebar({ onHoverChange }) {
           ></g>
           <g id="SVGRepo_iconCarrier">
             <path
-              d="M4 6V19C4 20.6569 5.34315 22 7 22H17C18.6569 22 20 20.6569 20 19V9C20 7.34315 18.6569 6 17 6H4ZM4 6V5"
-              stroke="#fff"
+              d="M20 8H4C3.44772 8 3 8.44772 3 9V19C3 19.5523 3.44772 20 4 20H20C20.5523 20 21 19.5523 21 19V9C21 8.44772 20.5523 8 20 8Z"
+              stroke="currentColor"
               strokeWidth="1.5"
             ></path>
             <path
-              d="M18 6.00002V6.75002H18.75V6.00002H18ZM15.7172 2.32614L15.6111 1.58368L15.7172 2.32614ZM4.91959 3.86865L4.81353 3.12619H4.81353L4.91959 3.86865ZM5.07107 6.75002H18V5.25002H5.07107V6.75002ZM18.75 6.00002V4.30604H17.25V6.00002H18.75ZM15.6111 1.58368L4.81353 3.12619L5.02566 4.61111L15.8232 3.0686L15.6111 1.58368ZM4.81353 3.12619C3.91638 3.25435 3.25 4.0227 3.25 4.92895H4.75C4.75 4.76917 4.86749 4.63371 5.02566 4.61111L4.81353 3.12619ZM18.75 4.30604C18.75 2.63253 17.2678 1.34701 15.6111 1.58368L15.8232 3.0686C16.5763 2.96103 17.25 3.54535 17.25 4.30604H18.75ZM5.07107 5.25002C4.89375 5.25002 4.75 5.10627 4.75 4.92895H3.25C3.25 5.9347 4.06532 6.75002 5.07107 6.75002V5.25002Z"
-              fill="#fff"
-            ></path>
-            <path
-              d="M8 12H16"
-              stroke="#fff"
+              d="M16 8V6C16 4.89543 15.1046 4 14 4H10C8.89543 4 8 4.89543 8 6V8"
+              stroke="currentColor"
               strokeWidth="1.5"
               strokeLinecap="round"
             ></path>
             <path
-              d="M8 15.5H13.5"
-              stroke="#fff"
+              d="M12 12V16"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            ></path>
+            <path
+              d="M10 14H14"
+              stroke="currentColor"
               strokeWidth="1.5"
               strokeLinecap="round"
             ></path>
           </g>
         </svg>
       ),
-      text: "CATALOGUE",
-      route: "/catalogue",
-      content_title: "Catalogue",
-      desc: "Explore all available SKUs, compare historical sales performance among different SKUs.",
-      subtitle: "Repository of all Chupps SKUs.",
+      content_title: "Inventory Intelligence",
+      desc: "Track stock health, damage rates, QC performance, dead stock, and channel distribution.",
+      subtitle: "Real-time inventory insights and forecasting.",
+      subItems: [
+        // DASHBOARD
+        {
+          svg: (
+            <svg
+              className="w-8 h-8"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+              <g
+                id="SVGRepo_tracerCarrier"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></g>
+              <g id="SVGRepo_iconCarrier">
+                <path d="M3 13H5V3H3V13Z" fill="currentColor"></path>
+                <path d="M10 21H12V3H10V21Z" fill="currentColor"></path>
+                <path d="M17 18H19V3H17V18Z" fill="currentColor"></path>
+              </g>
+            </svg>
+          ),
+          text: "DASHBOARD",
+          route: "/inventory/dashboard",
+          content_title: "Inventory Dashboard",
+          desc: "Overview of key inventory metrics and health indicators.",
+          subtitle: "Real-time inventory analytics and key metrics.",
+        },
+        // DATA TABLE
+        {
+          svg: (
+            <svg
+              className="w-8 h-8"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+              <g
+                id="SVGRepo_tracerCarrier"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></g>
+              <g id="SVGRepo_iconCarrier">
+                <path
+                  d="M3 6C3 4.89543 3.89543 4 5 4H19C20.1046 4 21 4.89543 21 6V18C21 19.1046 20.1046 20 19 20H5C3.89543 20 3 19.1046 3 18V6Z"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                ></path>
+                <path
+                  d="M3 10H21"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                ></path>
+                <path
+                  d="M3 14H21"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                ></path>
+                <path
+                  d="M3 18H21"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                ></path>
+                <path
+                  d="M9 4V20"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                ></path>
+              </g>
+            </svg>
+          ),
+          text: "DATA TABLE",
+          route: "/inventory/table",
+          content_title: "Inventory Data Table",
+          desc: "Detailed SKU-level inventory data and metrics.",
+          subtitle: "Detailed SKU-level inventory data.",
+        },
+        // FORECAST
+        {
+          svg: (
+            <svg
+              className="w-8 h-8"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+              <g
+                id="SVGRepo_tracerCarrier"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></g>
+              <g id="SVGRepo_iconCarrier">
+                <path
+                  d="M22 7L14.6203 14.3347C13.6227 15.3263 13.1238 15.822 12.5051 15.822C11.8864 15.8219 11.3876 15.326 10.3902 14.3342L10.1509 14.0962C9.15254 13.1035 8.65338 12.6071 8.03422 12.6074C7.41506 12.6076 6.91626 13.1043 5.91867 14.0977L2 18M22 7V12.5458M22 7H16.4179"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                ></path>
+              </g>
+            </svg>
+          ),
+          text: "FORECAST",
+          route: "/inventory/forecast",
+          content_title: "Inventory Forecast",
+          desc: "AI-powered inventory demand forecasting and predictions.",
+          subtitle: "AI-powered inventory demand forecasting.",
+        },
+      ],
     },
     // RISK (Top-level)
     {
@@ -359,45 +505,27 @@ export default function Sidebar({ onHoverChange }) {
       desc: "Fetch risk scores of real-time orders for address & order intention verification.",
       subtitle: "How risky is this order?",
     },
-    // FORECAST (Top-level)
-    {
-      svg: (
-        <svg
-          className="w-8 h-8"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-          <g
-            id="SVGRepo_tracerCarrier"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          ></g>
-          <g id="SVGRepo_iconCarrier">
-            <path
-              d="M22 7L14.6203 14.3347C13.6227 15.3263 13.1238 15.822 12.5051 15.822C11.8864 15.8219 11.3876 15.326 10.3902 14.3342L10.1509 14.0962C9.15254 13.1035 8.65338 12.6071 8.03422 12.6074C7.41506 12.6076 6.91626 13.1043 5.91867 14.0977L2 18M22 7V12.5458M22 7H16.4179"
-              stroke="#fff"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            ></path>
-          </g>
-        </svg>
-      ),
-      text: "FORECAST",
-      route: "/forecast",
-      content_title: "Forecast Analytics",
-      desc: "Fetch mid-range, short-range forecasts for orders and inventory / assortments.",
-      subtitle: "Forecast demand and supply, with ease.",
-    },
   ];
 
   const [ordersExpanded, setOrdersExpanded] = useState(false);
+  const [inventoryExpanded, setInventoryExpanded] = useState(false);
 
-  const handleNavClick = (route) => {
+  const handleNavClick = (route, closeAll = true) => {
     router.push(route);
-    setOrdersExpanded(false); // Close any open sections on navigation
+    if (closeAll) {
+      setOrdersExpanded(false);
+      setInventoryExpanded(false);
+    }
+  };
+
+  const toggleSection = (section) => {
+    if (section === "orders") {
+      setOrdersExpanded(!ordersExpanded);
+      setInventoryExpanded(false);
+    } else if (section === "inventory") {
+      setInventoryExpanded(!inventoryExpanded);
+      setOrdersExpanded(false);
+    }
   };
 
   return (
@@ -414,16 +542,26 @@ export default function Sidebar({ onHoverChange }) {
         <div className="flex overflow-hidden">
           <div className="flex justify-center items-center gap-0 h-[75%] my-auto overflow-visible">
             {sidebarItems.map((item, idx) => {
-              // Check if it's a section with subItems (like ORDERS)
+              // Check if it's a section with subItems (like ORDERS or INVENTORY)
               if (item.subItems && item.subItems.length > 0) {
+                const isOrders = item.text === "ORDERS";
+                const isInventory = item.text === "INVENTORY";
+                const isExpanded = isOrders
+                  ? ordersExpanded
+                  : isInventory
+                    ? inventoryExpanded
+                    : false;
+
                 return (
                   <Fragment key={idx}>
-                    {/* Parent item button (e.g., ORDERS) */}
+                    {/* Parent item button */}
                     <button
-                      onClick={() => setOrdersExpanded(!ordersExpanded)} // Toggle expansion
+                      onClick={() =>
+                        toggleSection(isOrders ? "orders" : "inventory")
+                      }
                       className={`
-                        relative px-10 z-20 flex flex-col justify-center !rounded-2xl items-center !gap-3 w-full h-full transition-all duration-200
-                        ${ordersExpanded ? "opacity-100 bg-zinc-50 text-[#001FB0] shadow-[8px_0px_24px_rgba(0,0,0,0.18)] " : "opacity-80 hover:opacity-100 hover:bg-[#001a8e] text-white"}
+                        relative px-10 z-20 flex flex-col justify-center !rounded-2xl items-center !gap-3 w-full h-full transition-all duration-100
+                        ${isExpanded ? "ml-2 opacity-100 bg-zinc-50 text-[#001FB0] shadow-[8px_0px_24px_rgba(0,0,0,0.18)] " : "opacity-80 hover:opacity-100 hover:bg-[#001a8e] text-white"}
                         overflow-visible
                       `}
                     >
@@ -435,18 +573,15 @@ export default function Sidebar({ onHoverChange }) {
                       </span>
                     </button>
 
-                    {ordersExpanded && (
+                    {isExpanded && (
                       <div className="w-fit bg-zinc-200 z-10 flex flex-row gap-2 items-center justify-center my-5 -ml-4 mr-2 p-1 !rounded-2xl">
                         {item.subItems.map((subItem, subIdx) => (
                           <Fragment key={subIdx}>
                             <button
                               onClick={() => handleNavClick(subItem.route)}
-                              className={`
-                                relative group w-fit h-full transition-all duration-200 overflow-visible text-[#001FB0] transition-colors bg-transparent
-                                ${subItem.text === "ORDER METRICS" || subItem.text === "FETCH ORDERS" ? "visible" : "hidden"} 
-                              `}
+                              className="relative group w-fit h-full transition-all duration-100 overflow-visible text-[#001FB0] transition-colors bg-transparent"
                             >
-                              <div className="px-3 !border group-hover:!border-[#001FB0] opacity-80 group-hover:opacity-100 transition-all duration-200 ease-in flex flex-col items-center justify-center rounded-2xl gap-2">
+                              <div className="px-3 !border group-hover:!border-[#001FB0] opacity-80 group-hover:opacity-100 transition-all duration-100 ease-in flex flex-col items-center justify-center rounded-2xl gap-2">
                                 <div className="w-6 h-6 flex items-center justify-center">
                                   {subItem.svg}
                                 </div>
@@ -475,7 +610,7 @@ export default function Sidebar({ onHoverChange }) {
                     <button
                       onClick={() => handleNavClick(item.route)}
                       className={`
-                        relative px-10 z-20 flex flex-col justify-center !rounded-2xl items-center !gap-3 w-full h-full transition-all duration-200 opacity-80 hover:opacity-100 hover:bg-[#001a8e] text-white overflow-visible
+                        relative px-10 z-20 flex flex-col justify-center !rounded-2xl items-center !gap-3 w-full h-full transition-all duration-100 opacity-80 hover:opacity-100 hover:bg-[#001a8e] text-white overflow-visible
                       `}
                     >
                       <div className="w-6 h-6 flex items-center justify-center">

@@ -131,7 +131,9 @@ function SkuInsightRow({ sku, data, fields }) {
   return (
     <div className="flex items-center justify-between py-2.5 px-3 hover:bg-[#001FB0]/5 rounded-lg transition-colors group">
       <div className="flex flex-col min-w-max pr-3">
-        <div className="font-semibold text-[#001FB0] text-sm">{displayName}</div>
+        <div className="font-semibold text-[#001FB0] text-sm">
+          {displayName}
+        </div>
         <div className="text-xs text-gray-500">{data.model_no}</div>
       </div>
       <div className="flex gap-3 flex-1 justify-end text-sm">
@@ -156,9 +158,7 @@ function SkuInsightCard({ cardKey, cardData }) {
   const topItems = cardData.data?.slice(0, 5) || [];
 
   return (
-    <div
-      className="bg-white border-2 border-[#001FB0]/20 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col w-full h-full min-h-[400px]"
-    >
+    <div className="bg-white border-2 border-[#001FB0]/20 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col w-full h-full min-h-[400px]">
       {/* Header */}
       <div className="bg-[#001FB0] p-5 text-white">
         <div className="flex items-center justify-between mb-2">
@@ -171,7 +171,7 @@ function SkuInsightCard({ cardKey, cardData }) {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-hidden flex flex-col p-4 bg-white">
+      <div className="flex-1 overflow-hidden flex flex-col p-5 bg-white">
         {topItems.length > 0 ? (
           <div className="overflow-y-auto space-y-1">
             {topItems.map((item, idx) => (
@@ -194,7 +194,10 @@ function SkuInsightCard({ cardKey, cardData }) {
       <div className="border-t border-[#001FB0]/10 px-4 py-2 bg-white text-xs text-gray-500">
         {cardData.metadata && (
           <>
-            <span className="font-semibold text-[#001FB0]">{cardData.metadata.shown}</span> of{" "}
+            <span className="font-semibold text-[#001FB0]">
+              {cardData.metadata.shown}
+            </span>{" "}
+            of{" "}
             <span className="font-semibold text-[#001FB0]">
               {cardData.metadata.total_skus}
             </span>{" "}
@@ -287,7 +290,7 @@ export default function SkuInsightsCards() {
           cardData={insights.cards[activeCardKey]}
         />
       </div>
-      
+
       {/* progress indicators */}
       <div className="flex gap-2 mt-4">
         {cardKeys.map((key, idx) => (

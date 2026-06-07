@@ -75,7 +75,7 @@ function RiskSummaryCard({
     : 0;
 
   return (
-    <div className="bg-white rounded-lg p-4 border border-gray-200 h-full flex flex-col shadow-lg">
+    <div className="bg-white rounded-lg p-5 border border-gray-200 h-full flex flex-col shadow-lg">
       {isEmpty ? (
         <div className="flex flex-col items-center justify-center gap-3 flex-1">
           <div className="text-center">
@@ -432,10 +432,41 @@ export default function Risk() {
               {/* Bottom Section: Data Table */}
               <div className="flex-1 overflow-hidden flex flex-col min-h-0">
                 {loading ? (
-                  <div className="text-center py-4 flex-shrink-0">
-                    <h2 className="poppins font-bold text-lg mb-2 flex-shrink-0">
-                      Loading orders...
-                    </h2>
+                  <div className="w-full flex-1 min-h-0 flex items-center justify-center">
+                    <div className="w-full max-w-3xl bg-white/80 backdrop-blur-sm rounded-lg shadow-lg p-6 border border-gray-100">
+                      <div className="flex items-center gap-4">
+                        <svg
+                          className="w-8 h-8 text-blue-600 animate-spin"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          aria-hidden="true"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                          />
+                        </svg>
+
+                        <div className="flex-1">
+                          <p className="text-gray-800 font-semibold">
+                            Loading inventory...
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            Fetching orders for cancellation risk estimation —
+                            this may take a few seconds.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 ) : (
                   <div className="overflow-hidden flex flex-col flex-1 min-h-0">

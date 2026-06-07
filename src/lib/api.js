@@ -14,6 +14,7 @@ const QUERY_SERVICE_ENDPOINTS = [
   "/query_v2/",
   "/query-v2/",
 ];
+
 const METRICS_SERVICE_ENDPOINTS = [
   "/orders/",
   "/revenue/",
@@ -23,6 +24,7 @@ const METRICS_SERVICE_ENDPOINTS = [
   "/history/",
   "/predict",
   "/forecast/",
+  "/inventory/",
 ];
 
 const getQueryServiceUrl = (path = "") => {
@@ -222,7 +224,9 @@ export const fetchForecastPresetsFromS3 = async (
     }
 
     if (!granularity || !months) {
-      console.warn("fetchForecastPresetsFromS3 requires granularity and months");
+      console.warn(
+        "fetchForecastPresetsFromS3 requires granularity and months",
+      );
       return null;
     }
 
@@ -243,7 +247,9 @@ export const fetchForecastPresetsFromS3 = async (
     });
 
     if (!response.ok) {
-      console.warn(`Forecast S3 fetch returned ${response.status} for ${s3Url}`);
+      console.warn(
+        `Forecast S3 fetch returned ${response.status} for ${s3Url}`,
+      );
       return null;
     }
 

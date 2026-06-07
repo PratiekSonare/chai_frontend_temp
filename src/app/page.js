@@ -352,42 +352,44 @@ export default function ChatLandingPage() {
               className="flex-1 overflow-y-auto no-scrollbar p-6 space-y-6 flex flex-col min-h-0"
             >
               {messages.length === 0 && !isLoading && (
-                <div className="flex-1 flex flex-col items-center justify-center text-center p-8 max-w-2xl mx-auto my-auto z-10">
+                <div className="flex-1 flex flex-col items-center justify-around text-center p-8 max-w-2xl mx-auto my-auto z-10">
                   <div className="relative mb-10">
                     <img
                       src="/data_portal_new.png"
-                      className="mx-auto w-4/5 object-contain filter"
+                      className="mx-auto mt-auto w-full object-contain filter"
                       alt="Portal"
                     />
                   </div>
 
-                  <h1 className="text-xs font-bold text-gray-400 hover:text-[#001FB0] transition-colors duration-200 cursor-pointer mb-2">
-                    Get started, click on any query to test Chupps AI.
-                  </h1>
+                  <div className="flex flex-col gap-2">
+                    <h1 className="text-xs font-bold text-gray-400 hover:text-[#001FB0] transition-colors duration-200 cursor-pointer mb-2">
+                      Get started, click on any query to test Chupps AI.
+                    </h1>
 
-                  {/* Quick Starter Cards */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-lg">
-                    {quickStarters.map((starter, i) => (
-                      <button
-                        key={i}
-                        onClick={() => handleSearch(starter.query)}
-                        className="p-4 bg-white hover:bg-blue-50 border border-blue-100 hover:border-[#001FB0] rounded-xl text-left transition-all duration-200 shadow-sm hover:shadow-md group cursor-pointer"
-                      >
-                        <div className="flex items-center gap-3">
-                          <span className="p-2 bg-blue-50 text-[#001FB0] rounded-lg group-hover:bg-[#001FB0] group-hover:text-white transition-colors duration-200 flex items-center justify-center">
-                            {starter.icon}
-                          </span>
-                          <div>
-                            <p className="font-semibold text-xs text-[#001FB0] uppercase tracking-wider">
-                              {starter.label}
-                            </p>
-                            <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">
-                              {starter.query}
-                            </p>
+                    {/* Quick Starter Cards */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-lg">
+                      {quickStarters.map((starter, i) => (
+                        <button
+                          key={i}
+                          onClick={() => handleSearch(starter.query)}
+                          className="p-5 bg-white hover:bg-blue-50 border border-blue-100 hover:border-[#001FB0] rounded-xl text-left transition-all duration-200 shadow-sm hover:shadow-md group cursor-pointer"
+                        >
+                          <div className="flex items-center gap-3">
+                            <span className="p-2 bg-blue-50 text-[#001FB0] rounded-lg group-hover:bg-[#001FB0] group-hover:text-white transition-colors duration-200 flex items-center justify-center">
+                              {starter.icon}
+                            </span>
+                            <div>
+                              <p className="font-semibold text-xs text-[#001FB0] uppercase tracking-wider">
+                                {starter.label}
+                              </p>
+                              <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">
+                                {starter.query}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                      </button>
-                    ))}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
@@ -620,7 +622,7 @@ export default function ChatLandingPage() {
               <div className="w-full max-w-4xl relative flex items-center focus-within:border-[#001FB0]  drop-shadow-2xl focus-within:ring-4 focus-within:ring-[#001FB0] rounded-2xl transition-all pr-2">
                 <input
                   ref={searchbarRef}
-                  className="w-full p-4 pr-16 bg-zinc-50 rounded-2xl outline-none poppins text-gray-700 placeholder-gray-400 text-sm md:text-base"
+                  className="w-full p-5 pr-16 bg-zinc-50 rounded-2xl outline-none poppins text-gray-700 placeholder-gray-400 text-sm md:text-base"
                   placeholder="Ask a follow up question..."
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
