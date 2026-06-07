@@ -4,7 +4,7 @@
   "type": "module",
 
   "scripts": {
-    "dev": "next dev --webpack",
+    "dev": "NODE_OPTIONS=--disable-warning=DEP0205 next dev --webpack",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"

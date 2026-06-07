@@ -2,7 +2,13 @@
 "use client";
 
 import DotField from "../components/DotField";
-import { useState, useEffect, useRef, useCallback, startTransition } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  startTransition,
+} from "react";
 import { useMachine } from "@xstate/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
@@ -133,7 +139,7 @@ export default function ChatLandingPage() {
   const isSuccess = searchState.matches("success");
   const isError = searchState.matches("failure");
   const requestId = searchState.context?.requestId;
-  const workflowLogs = searchState.context?.logs || [];
+  const workflowLogs = searchState.context.logs;
 
   // Poll backend logs during loading for real-time step updates
   useEffect(() => {
@@ -422,7 +428,7 @@ export default function ChatLandingPage() {
 
                   {msg.role === "user" && (
                     <div className="flex items-start gap-3 max-w-[80%] self-end flex-row-reverse">
-                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#001FB0] text-white flex items-center justify-center font-bold text-xs shadow">
+                      <div className="shrink-0 w-8 h-8 rounded-full bg-[#001FB0] text-white flex items-center justify-center font-bold text-xs shadow">
                         <User className="w-4 h-4" />
                       </div>
                       <div className="rounded-2xl px-4 py-3 bg-[#001FB0] text-white shadow-sm rounded-tr-none">
@@ -455,7 +461,7 @@ export default function ChatLandingPage() {
 
                   {msg.role === "bot" && (
                     <div className="flex items-start gap-3 self-start w-fit">
-                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 text-[#001FB0] flex items-center justify-center font-bold text-xs shadow-sm border border-blue-200">
+                      <div className="shrink-0 w-8 h-8 rounded-full bg-blue-100 text-[#001FB0] flex items-center justify-center font-bold text-xs shadow-sm border border-blue-200">
                         <Bot className="w-4 h-4" />
                       </div>
                       <div className="rounded-2xl p-5 bg-white border border-blue-100 text-gray-800 rounded-tl-none shadow-sm flex-1">

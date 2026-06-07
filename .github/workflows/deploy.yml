@@ -17,7 +17,7 @@ jobs:
           script: |
             cd ~/chupps/frontend
             git pull
-            tmux kill-session -t frontend 2>/dev/null || true
+            rm -rf .next node_modules/.cache
             npm install
             npm run build
             tmux kill-session -t frontend 2>/dev/null || true
