@@ -1010,7 +1010,7 @@ export default function SkuMetricsCard({ refreshKey }) {
   }, [rolling]);
 
   return (
-    <div className="w-full h-screen flex flex-col justify-center items-center gap-5 overflow-y-auto">
+    <div className="w-full h-screen flex flex-col justify-center items-center gap-3 overflow-y-auto">
       <div className="flex flex-col items-center">
         <span className="poppins font-extrabold text-3xl">
           Chupps SKU Catalogue

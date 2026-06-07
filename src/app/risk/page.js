@@ -45,6 +45,12 @@ function RiskSummaryCard({
   isLoadingPrediction,
   predictionError,
 }) {
+  const [isOpen, setIsOpen] = useState(true);
+
+  useEffect(() => {
+    if (selectedOrder) setIsOpen(true);
+  }, [selectedOrder]);
+
   const getRiskLevel = (probability) => {
     if (probability < 0.3)
       return {
@@ -75,126 +81,198 @@ function RiskSummaryCard({
     : 0;
 
   return (
-    <div className="bg-white rounded-lg p-5 border border-gray-200 h-full flex flex-col shadow-lg">
-      {isEmpty ? (
-        <div className="flex flex-col items-center justify-center gap-3 flex-1">
-          <div className="text-center">
-            <span className="poppins font-bold text-2xl text-gray-400">--</span>
-            <p className="text-gray-500 mt-1 text-xs">
-              Select an order from the table to analyze risk
-            </p>
-          </div>
-        </div>
-      ) : isLoadingPrediction ? (
-        <div className="flex flex-col items-center justify-center gap-3 flex-1">
-          <div className="animate-spin h-6 w-6 border-3 border-blue-500 border-t-transparent rounded-full"></div>
-          <p className="text-gray-600 text-xs">Running risk prediction...</p>
-        </div>
-      ) : predictionError ? (
-        <div className="flex flex-col items-center justify-center gap-2 flex-1">
-          <div className="text-red-600 text-xs text-center">
-            <p className="font-medium">Error analyzing order</p>
-            <p className="text-xs mt-1">{predictionError}</p>
-          </div>
-        </div>
-      ) : (
-        <div className="flex flex-row flex-1 w-full gap-4 min-h-0">
-          {/* Order Details - Left */}
-          <div className="flex-1 flex flex-col gap-3 overflow-y-auto min-h-0 pr-2">
-            <div>
-              <div className="bg-gray-50 rounded-lg p-3 space-y-2.5">
-                <div className="flex justify-between items-center group hover:bg-white transition-colors p-2 rounded">
-                  <span className="text-xs font-medium text-gray-600">
-                    Order ID
+    <div className="bg-white rounded-2xl border border-gray-200 shadow-md flex flex-col h-full w-144">
+      {/* Collapsible Header */}
+      <button
+        type="button"
+        onClick={() => setIsOpen((current) => !current)}
+        className="flex items-center justify-between w-full px-5 py-3 rounded-2xl hover:rounded-2xl hover:bg-gray-50 transition-colors text-left flex-shrink-0"
+        aria-expanded={isOpen}
+        aria-controls="risk-summary-content"
+      >
+        <span className="poppins font-bold text-sm text-gray-700 uppercase tracking-wider">
+          Risk Summary
+        </span>
+        <svg
+          className={`w-4 h-4 text-gray-500 transition-transform ${
+            isOpen ? "rotate-180" : "rotate-0"
+          }`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+          />
+        </svg>
+      </button>
+
+      {/* Dropdown Content */}
+      {isOpen && (
+        <div
+          id="risk-summary-content"
+          className="flex-1 flex flex-col min-h-0 border-t border-gray-200"
+        >
+          <div className="flex-1 flex flex-col p-5">
+            {isEmpty ? (
+              <div className="flex flex-col items-center justify-center gap-3 flex-1">
+                <div className="text-center">
+                  <span className="poppins font-bold text-2xl text-gray-400">
+                    --
                   </span>
-                  <span className="text-xs font-semibold text-gray-900 text-right">
-                    {selectedOrder.order_id || "--"}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center group hover:bg-white transition-colors p-2 rounded">
-                  <span className="text-xs font-medium text-gray-600">
-                    Date
-                  </span>
-                  <span className="text-xs font-semibold text-gray-900">
-                    {selectedOrder.order_date
-                      ? new Date(selectedOrder.order_date).toLocaleDateString()
-                      : "--"}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center group hover:bg-white transition-colors p-2 rounded">
-                  <span className="text-xs font-medium text-gray-600">
-                    Marketplace
-                  </span>
-                  <span className="text-xs font-semibold text-gray-900 text-right max-w-[150px] truncate">
-                    {selectedOrder.marketplace || "--"}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center group hover:bg-white transition-colors p-2 rounded">
-                  <span className="text-xs font-medium text-gray-600">SKU</span>
-                  <span className="text-xs font-mono text-gray-900 text-right max-w-[120px] truncate">
-                    {selectedOrder.suborders[0].sku || "--"}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center group hover:bg-white transition-colors p-2 rounded bg-amber-50">
-                  <span className="text-xs font-medium text-gray-600">
-                    Price
-                  </span>
-                  <span className="text-xs font-bold text-amber-700">
-                    ₹{selectedOrder.suborders[0].selling_price || "--"}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center group hover:bg-white transition-colors p-2 rounded">
-                  <span className="text-xs font-medium text-gray-600">
-                    State
-                  </span>
-                  <span className="text-xs font-semibold text-gray-900">
-                    {selectedOrder.state || "--"}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center group hover:bg-white transition-colors p-2 rounded">
-                  <span className="text-xs font-medium text-gray-600">
-                    Payment
-                  </span>
-                  <span className="text-xs font-semibold text-gray-900">
-                    {selectedOrder.payment_mode || "--"}
-                  </span>
+                  <p className="text-gray-500 mt-1 text-xs">
+                    Select an order from the table to analyze risk
+                  </p>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* Risk Score - Right */}
-          <div className="flex-1 flex flex-col items-center justify-between gap-4 min-h-0">
-            {/* Risk Score Visualization */}
-            <div className="flex flex-col items-center gap-2">
-              <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">
-                Risk Score
-              </p>
-              <div className="flex items-center justify-center">
-                <SemiCircle pct={riskPercentage} size="large" />
+            ) : isLoadingPrediction ? (
+              <div className="flex flex-col items-center justify-center gap-4 flex-1">
+                <svg
+                  className="w-10 h-10 text-blue-600 animate-spin"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  />
+                </svg>
+                <div className="text-center">
+                  <p className="text-gray-800 font-semibold text-sm">
+                    Analyzing risk...
+                  </p>
+                  <p className="text-gray-500 text-xs mt-1">
+                    Running prediction model on order data
+                  </p>
+                </div>
               </div>
-              <p className="text-center poppins font-bold text-2xl text-gray-900">
-                {riskPercentage}%
-              </p>
-            </div>
-
-            {/* Risk Level Badge */}
-            <div
-              className={`${riskData.color} ${riskData.textColor} px-4 py-3 rounded-lg text-center font-medium w-full shadow-sm`}
-            >
-              <div className="text-xl mb-1">{riskData.badge}</div>
-              <div className="text-sm font-bold">{riskData.level}</div>
-            </div>
-
-            {/* Prediction Details */}
-            <div className="flex flex-col gap-2 w-full">
-              <div className="bg-blue-50 rounded-lg p-2.5 text-center">
-                <p className="text-xs font-medium text-blue-900">
-                  Return
-                  {prediction.prediction === 1 ? " Expected" : " Unlikely"}
-                </p>
+            ) : predictionError ? (
+              <div className="flex flex-col items-center justify-center gap-2 flex-1">
+                <div className="text-red-600 text-xs text-center">
+                  <p className="font-medium">Error analyzing order</p>
+                  <p className="text-xs mt-1">{predictionError}</p>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="flex flex-row flex-1 w-full gap-4 min-h-0">
+                {/* Order Details - Left */}
+                <div className="flex-1 flex flex-col gap-3 overflow-y-auto min-h-0 pr-2">
+                  <div>
+                    <div className="bg-gray-50 rounded-lg p-3 space-y-2.5">
+                      <div className="flex justify-between items-center group hover:bg-white transition-colors p-2 rounded">
+                        <span className="text-xs font-medium text-gray-600">
+                          Order ID
+                        </span>
+                        <span className="text-xs font-semibold text-gray-900 text-right">
+                          {selectedOrder.order_id || "--"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center group hover:bg-white transition-colors p-2 rounded">
+                        <span className="text-xs font-medium text-gray-600">
+                          Date
+                        </span>
+                        <span className="text-xs font-semibold text-gray-900">
+                          {selectedOrder.order_date
+                            ? new Date(
+                                selectedOrder.order_date,
+                              ).toLocaleDateString()
+                            : "--"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center group hover:bg-white transition-colors p-2 rounded">
+                        <span className="text-xs font-medium text-gray-600">
+                          Marketplace
+                        </span>
+                        <span className="text-xs font-semibold text-gray-900 text-right max-w-[150px] truncate">
+                          {selectedOrder.marketplace || "--"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center group hover:bg-white transition-colors p-2 rounded">
+                        <span className="text-xs font-medium text-gray-600">
+                          SKU
+                        </span>
+                        <span className="text-xs font-mono text-gray-900 text-right max-w-[120px] truncate">
+                          {selectedOrder.suborders[0].sku || "--"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center group hover:bg-white transition-colors p-2 rounded bg-amber-50">
+                        <span className="text-xs font-medium text-gray-600">
+                          Price
+                        </span>
+                        <span className="text-xs font-bold text-amber-700">
+                          ₹{selectedOrder.suborders[0].selling_price || "--"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center group hover:bg-white transition-colors p-2 rounded">
+                        <span className="text-xs font-medium text-gray-600">
+                          State
+                        </span>
+                        <span className="text-xs font-semibold text-gray-900">
+                          {selectedOrder.state || "--"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center group hover:bg-white transition-colors p-2 rounded">
+                        <span className="text-xs font-medium text-gray-600">
+                          Payment
+                        </span>
+                        <span className="text-xs font-semibold text-gray-900">
+                          {selectedOrder.payment_mode || "--"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Risk Score - Right */}
+                <div className="flex-1 flex flex-col items-center justify-between gap-4 min-h-0">
+                  {/* Risk Score Visualization */}
+                  <div className="flex flex-col items-center gap-2">
+                    <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                      Risk Score
+                    </p>
+                    <div className="flex items-center justify-center">
+                      <SemiCircle pct={riskPercentage} size="large" />
+                    </div>
+                    <p className="text-center poppins font-bold text-2xl text-gray-900">
+                      {riskPercentage}%
+                    </p>
+                  </div>
+
+                  {/* Risk Level Badge */}
+                  <div
+                    className={`${riskData.color} ${riskData.textColor} px-4 py-3 rounded-lg text-center font-medium w-full shadow-sm`}
+                  >
+                    <div className="text-xl mb-1">{riskData.badge}</div>
+                    <div className="text-sm font-bold">{riskData.level}</div>
+                  </div>
+
+                  {/* Prediction Details */}
+                  <div className="flex flex-col gap-2 w-full">
+                    <div className="bg-blue-50 rounded-lg p-2.5 text-center">
+                      <p className="text-xs font-medium text-blue-900">
+                        Return
+                        {prediction.prediction === 1
+                          ? " Expected"
+                          : " Unlikely"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -349,7 +427,7 @@ export default function Risk() {
     <div className="overflow-hidden h-screen">
       {/* Sidebar */}
       <Sidebar onHoverChange={setSidebarHovered} />
-      <div className="h-screen bg-[#001fb0] p-5 pt-0">
+      <div className="h-screen bg-[#001fb0] p-4 pt-0">
         <div className="relative landing-sdw overflow-hidden h-[calc(100vh-1.25rem)] bg-zinc-50 font-sans rounded-t-4xl !pointer-events-auto flex flex-col">
           {/* background dotfield */}
           <div className="absolute inset-0.5 z-0 opacity-70">
@@ -376,21 +454,39 @@ export default function Risk() {
             } transition-[margin] duration-100 ease-in flex-1 w-full flex flex-col overflow-hidden`}
           >
             {/* Main Container - Flex Column */}
-            <div className="flex-1 flex flex-col overflow-hidden px-6 py-4 gap-4">
+            <div className="flex-1 flex flex-col overflow-hidden px-6 py-5 gap-5">
               {/* Top Section: Risk Analysis & Date Selection (Left) + Risk Summary (Right) */}
-              <div className="flex flex-row justify-between gap-4 h-80">
+              <div className="flex flex-row gap-5 min-h-0">
                 {/* Left Side: Risk Analysis & Date Selection */}
-                <div className="flex flex-col gap-3 flex-1">
+                <div className="flex flex-col gap-4 flex-1 min-w-0">
                   {/* Header */}
-                  <div className="flex flex-col items-start text-left gap-2">
-                    <span className="poppins font-extrabold text-3xl">
+                  <div className="flex flex-col items-start text-left gap-1">
+                    <span className="poppins font-extrabold text-2xl tracking-tight">
                       Risk Analysis
                     </span>
-                    <span className="poppins text-lg text-gray-500">
+                    <span className="poppins text-sm text-gray-500">
                       Analyze order return risk scores using ML predictions
                     </span>
                   </div>
 
+                  {/* Error Message */}
+                  {error && (
+                    <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex-shrink-0">
+                      <p className="text-xs text-red-700">{error}</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Right Side: Risk Summary Card */}
+                <div className="absolute top-2 right-2 flex flex-col gap-2 z-300">
+                  <div className="shrink-0 flex flex-col min-h-0">
+                    <RiskSummaryCard
+                      selectedOrder={selectedOrder}
+                      prediction={prediction}
+                      isLoadingPrediction={isLoadingPrediction}
+                      predictionError={predictionError}
+                    />
+                  </div>
                   <DatePickerDropdown
                     startDate={startDate}
                     setStartDate={setStartDate}
@@ -404,28 +500,6 @@ export default function Risk() {
                     loading={loading}
                     isSuccess={isSuccess}
                   />
-
-                  {/* Error Message */}
-                  {error && (
-                    <div className="p-3 bg-red-50 border border-red-200 rounded flex-shrink-0">
-                      <p className="text-xs text-red-700">{error}</p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Right Side: Risk Summary Card */}
-                <div className="flex-1/3 flex flex-col shrink-0 h-full min-h-0">
-                  <h2 className="poppins font-bold text-lg mb-2">
-                    Risk Summary
-                  </h2>
-                  <div className="flex-1 overflow-y-auto rounded-lg shadow-lg min-h-0">
-                    <RiskSummaryCard
-                      selectedOrder={selectedOrder}
-                      prediction={prediction}
-                      isLoadingPrediction={isLoadingPrediction}
-                      predictionError={predictionError}
-                    />
-                  </div>
                 </div>
               </div>
 
@@ -433,7 +507,7 @@ export default function Risk() {
               <div className="flex-1 overflow-hidden flex flex-col min-h-0">
                 {loading ? (
                   <div className="w-full flex-1 min-h-0 flex items-center justify-center">
-                    <div className="w-full max-w-3xl bg-white/80 backdrop-blur-sm rounded-lg shadow-lg p-6 border border-gray-100">
+                    <div className="w-full max-w-3xl bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-6 border border-gray-200/60">
                       <div className="flex items-center gap-4">
                         <svg
                           className="w-8 h-8 text-blue-600 animate-spin"

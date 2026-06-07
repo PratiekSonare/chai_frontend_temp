@@ -17,16 +17,16 @@ export default function DatePickerDropdown({
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <div className="z-100 flex flex-col gap-4 bg-white shadow-lg rounded-2xl p-3 w-95">
+    <div className="z-100 flex flex-col bg-white shadow-md rounded-2xl h-full min-w-96">
       {/* Dropdown Header */}
       <button
         type="button"
         onClick={() => setIsOpen((current) => !current)}
-        className="flex items-center justify-between w-full px-2 py-1 rounded-md hover:bg-gray-100 transition-colors text-left"
+        className="flex items-center justify-between w-full px-5 py-3 rounded-t-xl hover:bg-gray-50 hover:rounded-2xl transition-colors text-left shrink-0"
         aria-expanded={isOpen}
         aria-controls="date-picker-dropdown-content"
       >
-        <span className="poppins text-xs font-semibold tracking-widest uppercase text-gray-800">
+        <span className="poppins text-sm font-semibold tracking-widest uppercase text-gray-800">
           Date Picker
         </span>
         <svg
@@ -50,7 +50,7 @@ export default function DatePickerDropdown({
       {isOpen && (
         <div
           id="date-picker-dropdown-content"
-          className="flex flex-col gap-4 w-full border-t border-gray-200 pt-4"
+          className="flex flex-col gap-4 w-full border-t border-gray-200 p-3"
         >
           <div className="flex flex-row items-center w-full gap-3">
             <div className="flex flex-col gap-1.5 flex-1">
