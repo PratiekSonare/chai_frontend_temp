@@ -299,6 +299,7 @@ export default function ChatLandingPage() {
               content: response.answer,
               requestId: response.request_id,
               results: response.results,
+              thinking: response.thinking || null,
               queryType: response.query_type,
               summarizedQuery: response.summarized_query,
             },
@@ -493,6 +494,34 @@ export default function ChatLandingPage() {
                             {msg.content}
                           </ReactMarkdown>
                         </div>
+
+                        {msg.thinking && (
+                          <details className="mt-3 group">
+                            <summary className="text-xs text-gray-400 hover:text-[#001FB0] cursor-pointer select-none transition-colors flex items-center gap-1.5">
+                              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M12 2a7 7 0 0 1 7 7c0 2.5-1.3 4.7-3.2 6-.5.5-.8 1.2-.8 2v1a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-1c0-.8-.3-1.5-.8-2C6.3 13.7 5 11.5 5 9a7 7 0 0 1 7-7z"/>
+                                <path d="M9 22h6"/>
+                              </svg>
+                              Thinking
+                              <span className="text-[10px] text-gray-300 group-open:hidden">· click to expand</span>
+                              <span className="text-[10px] text-gray-300 hidden group-open:inline">· click to collapse</span>
+                            </summary>
+                            <div className="mt-2 text-xs text-gray-500 bg-gray-50 rounded-lg p-3 border border-gray-100 whitespace-pre-wrap leading-relaxed">
+                              <ReactMarkdown
+                                components={{
+                                  strong: ({ children }) => (
+                                    <strong className="text-[#001FB0] font-semibold">{children}</strong>
+                                  ),
+                                  p: ({ children }) => (
+                                    <p className="mb-1 last:mb-0">{children}</p>
+                                  ),
+                                }}
+                              >
+                                {msg.thinking}
+                              </ReactMarkdown>
+                            </div>
+                          </details>
+                        )}
 
                         {msg.results && (
                           <div className="mt-4 flex flex-wrap gap-2 border-t border-gray-100 pt-4">
