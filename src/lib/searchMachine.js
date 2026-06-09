@@ -120,13 +120,13 @@ export const searchMachine = createMachine({
             sessionId: ({ context, event }) =>
               event.output?.session_id || context.sessionId,
             logs: ({ context, event }) => {
-              const backendLogs = Array.isArray(event.output?.logs)
+              const incoming = Array.isArray(event.output?.logs)
                 ? event.output.logs
                 : [];
-              if (!backendLogs.length) {
+              if (!incoming.length) {
                 return context.logs;
               }
-              return [...context.logs, ...backendLogs].reduce((acc, item) => {
+              return [...context.logs, ...incoming].reduce((acc, item) => {
                 if (!acc.some((log) => log.sequence === item.sequence)) {
                   acc.push(item);
                 }
@@ -187,6 +187,17 @@ export const searchMachine = createMachine({
               );
               return Math.max(context.lastLogSequence, latestIncoming);
             },
+          }),
+        },
+        RESET: {
+          target: "idle",
+          actions: assign({
+            metrics: null,
+            logs: [],
+            lastLogSequence: 0,
+            requestId: null,
+            sessionId: null,
+            data: null,
           }),
         },
       },

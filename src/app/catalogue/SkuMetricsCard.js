@@ -92,6 +92,40 @@ const CustomTooltip = ({ active, payload, label }) => {
   );
 };
 
+const DISTRIBUTION_NOTE_SECTIONS = new Set([
+  "marketplace",
+  "geographic",
+  "size",
+  "fulfillment",
+]);
+
+const DISTRIBUTION_TOOLTIP =
+  "Distribution metrics shown here are computed from the latest batch of processed orders only, not the full order history.";
+
+function InfoTooltip({ text }) {
+  return (
+    <span className="relative group inline-flex items-center ml-2 cursor-help">
+      <svg
+        className="w-4 h-4 text-gray-400 hover:text-[#001a8e] transition-colors"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="16" x2="12" y2="12" />
+        <line x1="12" y1="8" x2="12.01" y2="8" />
+      </svg>
+      <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 px-3 py-2 text-xs text-white bg-gray-900 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50 poppins leading-relaxed">
+        {text}
+        <span className="absolute top-full left-1/2 -translate-x-1/2 -mt-px border-4 border-transparent border-t-gray-900" />
+      </span>
+    </span>
+  );
+}
+
 const SPINNER_SIZES = {
   5: "h-5 w-5",
   8: "h-8 w-8",
@@ -1228,9 +1262,14 @@ export default function SkuMetricsCard({ refreshKey }) {
               {/* Section header */}
               {skuData && (
                 <div className="py-4 w-full flex flex-row items-center justify-between px-4 border-b border-gray-200">
-                  <span className="oswald uppercase tracking-wider text-[#001a8e] text-lg">
-                    {SECTIONS.find((s) => s.key === selectedSection)?.label}
-                  </span>
+                  <div className="flex items-center">
+                    <span className="oswald uppercase tracking-wider text-[#001a8e] text-lg">
+                      {SECTIONS.find((s) => s.key === selectedSection)?.label}
+                    </span>
+                    {DISTRIBUTION_NOTE_SECTIONS.has(selectedSection) && (
+                      <InfoTooltip text={DISTRIBUTION_TOOLTIP} />
+                    )}
+                  </div>
                   <div className="poppins text-sm text-gray-700">
                     <span className="font-semibold">
                       {(Array.isArray(skuData.suborder_model_no)
